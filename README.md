@@ -14,6 +14,13 @@ isaiahstook@gmx.com - 44539120
 
 Instructions to download code to ROS workspace:
 ------------------
+First time:
+Github account settings -> developer settings -> personal access tokens -> Tokens (classic) -> generate new token (classic)
+Give name (e.g. "metr4202")
+Set expiration to 90 days
+Tick all permissions on
+Generate
+This gives you a password to use to access git via commandline
 
 Instructions to git commit (for reference):
 ----------------------
