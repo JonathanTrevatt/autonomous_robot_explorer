@@ -21,6 +21,11 @@ This gives you a password to use to access git via commandline
 
 To save credentials (WARNING - in plain text!): git config --global credential.helper store
 
+git config --global user.name "Your Name"
+git config --global user.email "your_email@whatever.com"
+git config --global core.autocrlf true
+git config --global core.safecrlf warn
+
 Instructions to git commit (for reference):
 ----------------------
 
