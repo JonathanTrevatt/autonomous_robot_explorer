@@ -34,6 +34,28 @@ git add .
 git commit -m "Comment"
 git push
 
+Common ros commands:
+--------------
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export GAZEBO_MODEL_PATH=~/.gazebo/models:$GAZEBO_MODEL_PATH
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/path/to/turtlebot3_simulations/turtlebot3_gazebo/models
+export TURTLEBOT3_MODEL=waffle_pi
+
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+
+ros2 launch slam_toolbox online_async_launch.py
+
+ros2 run turtlebot3_teleop teleop_keyboard
+
+rviz2
+
+Save map:
+cd && mkdir maps
+ros2 run nav2_map_server map_saver_cli -f ~/turtlebot3_ws/maps/turtlebot3_world_map
+
+Open map:
+ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=$HOME/turtlebot3_ws/maps/turtlebot3_world_map.yaml
 
 First task:
 ------------------
