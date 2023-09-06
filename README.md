@@ -6,7 +6,7 @@ Team members:
 --------------
 Jonathan Trevatt - jonathan@trevatt.net - 43538706\
 Tom (Chun Yu) NG - chun.y.ng@uqconnect.edu.au - 45685211\
-Isaiah Stook - isaiahstook@gmx.com - 44539120\
+Isaiah Stook - isaiahstook@gmx.com - 44539120
 
 
 Instructions to download code to ROS workspace:
