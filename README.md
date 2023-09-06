@@ -5,3 +5,5 @@ This code will autonomously operate a turtlebot robot in using ROS and gazebo, a
 Instructions to download code to ROS workspace:
 ------------------
 
+Instructions to git commit (for reference):
+----------------------
