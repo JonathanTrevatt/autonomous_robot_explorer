@@ -5,11 +5,8 @@ This code will autonomously operate a turtlebot robot in using ROS and gazebo, a
 Team members:
 --------------
 Jonathan Trevatt - jonathan@trevatt.net - 43538706
-
 Tom (Chun Yu) NG - chun.y.ng@uqconnect.edu.au - 45685211
-
-Isaiah Stook -
-isaiahstook@gmx.com - 44539120
+Isaiah Stook - isaiahstook@gmx.com - 44539120
 
 
 Instructions to download code to ROS workspace:
@@ -21,6 +18,8 @@ Set expiration to 90 days
 Tick all permissions on
 Generate
 This gives you a password to use to access git via commandline
+
+To save credentials (WARNING - in plain text!): git config --global credential.helper store
 
 Instructions to git commit (for reference):
 ----------------------
