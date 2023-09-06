@@ -2,6 +2,11 @@
 Group project for metr4202 course
 This code will autonomously operate a turtlebot robot in using ROS and gazebo, and using SLAM for mapping and navigation.
 
+Team members:
+--------------
+Jonathan Trevatt - jonathan@trevatt.net - 43538706
+
+
 Instructions to download code to ROS workspace:
 ------------------
 
