@@ -69,6 +69,12 @@ Open map:
 
 ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=$HOME/turtlebot3_ws/maps/turtlebot3_world_map.yaml
 
+Resources:
+--------------------
+git tutorial - https://githowto.com/
+Turtlebot3 emanual - https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/
+Nav2 - https://navigation.ros.org/
+
 First task:
 ------------------
 ![image](https://github.com/Darkspore52/METR4202/assets/53199626/2ed54762-153d-4e1a-82b4-4402c19c313a)
