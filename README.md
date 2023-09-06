@@ -26,8 +26,14 @@ git config --global user.email "your_email@whatever.com"
 git config --global core.autocrlf true
 git config --global core.safecrlf warn
 
-Instructions to git commit (for reference):
+git clone https://github.com/Darkspore52/METR4202.git
+
+Instructions to commit changes (for reference):
 ----------------------
+git add .
+git commit -m "Comment"
+git push
+
 
 First task:
 ------------------
