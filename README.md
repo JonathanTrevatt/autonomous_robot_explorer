@@ -7,3 +7,7 @@ Instructions to download code to ROS workspace:
 
 Instructions to git commit (for reference):
 ----------------------
+
+First task:
+------------------
+![image](https://github.com/Darkspore52/METR4202/assets/53199626/2ed54762-153d-4e1a-82b4-4402c19c313a)
