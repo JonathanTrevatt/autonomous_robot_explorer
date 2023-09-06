@@ -71,6 +71,7 @@ ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:
 
 Resources:
 --------------------
+git tutorial - https://githowto.com/
 Turtlebot3 emanual - https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/
 Nav2 - https://navigation.ros.org/
 
