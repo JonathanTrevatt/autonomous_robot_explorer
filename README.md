@@ -17,9 +17,9 @@ Give name (e.g. "metr4202")\
 Set expiration to 90 days\
 Tick all permissions on\
 Generate\
-This gives you a password to use to access git via commandline\
+This gives you a password to use to access git via commandline
 
-To save credentials (WARNING - in plain text!): git config --global credential.helper store\
+To save credentials (WARNING - in plain text!): git config --global credential.helper store
 
 Instructions to git commit (for reference):
 ----------------------
