@@ -20,9 +20,8 @@ def generate_launch_description():
             executable='mimic',
             name='mimic',
             remappings=[
-                # (Topic, remapping)
-                ('/input/pose', '/turtlesim1/turtle1/pose'), # subscription
-                ('/output/cmd_vel', '/turtlesim2/turtle1/cmd_vel'), #publish
+                ('/input/pose', '/turtlesim1/turtle1/pose'),
+                ('/output/cmd_vel', '/turtlesim2/turtle1/cmd_vel'),
             ]
         )
     ])
