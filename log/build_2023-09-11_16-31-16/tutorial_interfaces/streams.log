@@ -1,0 +1,209 @@
+[0.047s] Invoking command in '/home/johnson/METR4202/build/tutorial_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/johnson/METR4202/install/py_srvcli:/home/johnson/METR4202/install/py_pubsub:/home/johnson/METR4202/install/my_package:/home/johnson/METR4202/install/my_first_package:/opt/ros/humble /usr/bin/cmake --build /home/johnson/METR4202/build/tutorial_interfaces -- -j8 -l8
+[0.365s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_generator_c[0m
+[0.366s] [  2%] Built target tutorial_interfaces__cpp
+[0.366s] [ 12%] Built target tutorial_interfaces__rosidl_generator_c
+[0.367s] [ 12%] Built target ament_cmake_python_copy_tutorial_interfaces
+[0.367s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_typesupport_cpp[0m
+[0.367s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_typesupport_fastrtps_cpp[0m
+[0.368s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_typesupport_fastrtps_c[0m
+[0.368s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_typesupport_introspection_c[0m
+[0.368s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_typesupport_introspection_cpp[0m
+[0.368s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_typesupport_c[0m
+[0.368s] [ 31%] Built target tutorial_interfaces__rosidl_typesupport_fastrtps_c
+[0.368s] [ 36%] Built target tutorial_interfaces__rosidl_typesupport_fastrtps_cpp
+[0.369s] [ 51%] Built target tutorial_interfaces__rosidl_typesupport_introspection_cpp
+[0.369s] [ 63%] Built target tutorial_interfaces__rosidl_typesupport_introspection_c
+[0.369s] [ 65%] Built target tutorial_interfaces__rosidl_typesupport_cpp
+[0.369s] [ 76%] Built target tutorial_interfaces__rosidl_typesupport_c
+[0.369s] [ 76%] Built target tutorial_interfaces
+[0.369s] [ 78%] Built target tutorial_interfaces__py
+[0.369s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_generator_py[0m
+[0.369s] [ 87%] Built target tutorial_interfaces__rosidl_generator_py
+[0.370s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_typesupport_introspection_c__pyext[0m
+[0.370s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_typesupport_c__pyext[0m
+[0.370s] [35m[1mConsolidate compiler generated dependencies of target tutorial_interfaces__rosidl_typesupport_fastrtps_c__pyext[0m
+[0.370s] [ 91%] Built target tutorial_interfaces__rosidl_typesupport_introspection_c__pyext
+[0.371s] [100%] Built target tutorial_interfaces__rosidl_typesupport_fastrtps_c__pyext
+[0.371s] [100%] Built target tutorial_interfaces__rosidl_typesupport_c__pyext
+[0.374s] running egg_info
+[0.375s] writing tutorial_interfaces.egg-info/PKG-INFO
+[0.375s] writing dependency_links to tutorial_interfaces.egg-info/dependency_links.txt
+[0.375s] writing top-level names to tutorial_interfaces.egg-info/top_level.txt
+[0.377s] reading manifest file 'tutorial_interfaces.egg-info/SOURCES.txt'
+[0.378s] writing manifest file 'tutorial_interfaces.egg-info/SOURCES.txt'
+[0.406s] [100%] Built target ament_cmake_python_build_tutorial_interfaces_egg
+[0.645s] Invoked command in '/home/johnson/METR4202/build/tutorial_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/johnson/METR4202/install/py_srvcli:/home/johnson/METR4202/install/py_pubsub:/home/johnson/METR4202/install/my_package:/home/johnson/METR4202/install/my_first_package:/opt/ros/humble /usr/bin/cmake --build /home/johnson/METR4202/build/tutorial_interfaces -- -j8 -l8
+[0.750s] Invoking command in '/home/johnson/METR4202/build/tutorial_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/johnson/METR4202/install/py_srvcli:/home/johnson/METR4202/install/py_pubsub:/home/johnson/METR4202/install/my_package:/home/johnson/METR4202/install/my_first_package:/opt/ros/humble /usr/bin/cmake --install /home/johnson/METR4202/build/tutorial_interfaces
+[0.756s] -- Install configuration: ""
+[0.757s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/ament_index/resource_index/rosidl_interfaces/tutorial_interfaces
+[0.757s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces
+[0.758s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv
+[0.758s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail
+[0.758s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__functions.h
+[0.758s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__functions.c
+[0.758s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__struct.h
+[0.758s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__type_support.h
+[0.759s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/add_three_ints.h
+[0.759s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg
+[0.759s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/sphere.h
+[0.759s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/rosidl_generator_c__visibility_control.h
+[0.759s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/num.h
+[0.760s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail
+[0.760s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__struct.h
+[0.760s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__struct.h
+[0.760s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__type_support.h
+[0.761s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__functions.h
+[0.761s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__functions.c
+[0.761s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__type_support.h
+[0.761s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__functions.h
+[0.761s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__functions.c
+[0.761s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/environment/library_path.sh
+[0.762s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/environment/library_path.dsv
+[0.762s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/lib/libtutorial_interfaces__rosidl_generator_c.so
+[0.762s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces
+[0.762s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv
+[0.762s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail
+[0.763s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__rosidl_typesupport_fastrtps_c.h
+[0.763s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg
+[0.763s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[0.763s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail
+[0.764s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__rosidl_typesupport_fastrtps_c.h
+[0.764s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__rosidl_typesupport_fastrtps_c.h
+[0.764s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/lib/libtutorial_interfaces__rosidl_typesupport_fastrtps_c.so
+[0.764s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces
+[0.764s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv
+[0.764s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/add_three_ints.hpp
+[0.764s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail
+[0.765s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__traits.hpp
+[0.765s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__builder.hpp
+[0.765s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__struct.hpp
+[0.765s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg
+[0.765s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/sphere.hpp
+[0.765s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/num.hpp
+[0.765s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail
+[0.766s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__struct.hpp
+[0.766s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__struct.hpp
+[0.766s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__traits.hpp
+[0.766s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__traits.hpp
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__builder.hpp
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__builder.hpp
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__rosidl_typesupport_fastrtps_cpp.hpp
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/dds_fastrtps
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/dds_fastrtps
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__rosidl_typesupport_fastrtps_cpp.hpp
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__rosidl_typesupport_fastrtps_cpp.hpp
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/lib/libtutorial_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv
+[0.767s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__rosidl_typesupport_introspection_c.h
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__type_support.c
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__type_support.c
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__rosidl_typesupport_introspection_c.h
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__rosidl_typesupport_introspection_c.h
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__type_support.c
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/lib/libtutorial_interfaces__rosidl_typesupport_introspection_c.so
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/lib/libtutorial_interfaces__rosidl_typesupport_c.so
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__type_support.cpp
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/srv/detail/add_three_ints__rosidl_typesupport_introspection_cpp.hpp
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail
+[0.768s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__type_support.cpp
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/sphere__rosidl_typesupport_introspection_cpp.hpp
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__type_support.cpp
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/include/tutorial_interfaces/tutorial_interfaces/msg/detail/num__rosidl_typesupport_introspection_cpp.hpp
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/lib/libtutorial_interfaces__rosidl_typesupport_introspection_cpp.so
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/lib/libtutorial_interfaces__rosidl_typesupport_cpp.so
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/environment/pythonpath.sh
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/environment/pythonpath.dsv
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces-0.0.0-py3.10.egg-info
+[0.769s] -- Installing: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces-0.0.0-py3.10.egg-info/top_level.txt
+[0.769s] -- Installing: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces-0.0.0-py3.10.egg-info/dependency_links.txt
+[0.769s] -- Installing: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces-0.0.0-py3.10.egg-info/SOURCES.txt
+[0.769s] -- Installing: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces-0.0.0-py3.10.egg-info/PKG-INFO
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/srv
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/srv/_add_three_ints_s.c
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/srv/_add_three_ints.py
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/srv/__init__.py
+[0.769s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/tutorial_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/_tutorial_interfaces_s.ep.rosidl_typesupport_c.c
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/tutorial_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/msg
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/msg/_sphere_s.c
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/msg/_num.py
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/msg/_num_s.c
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/msg/__init__.py
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/msg/_sphere.py
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/tutorial_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/libtutorial_interfaces__rosidl_generator_py.so
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/_tutorial_interfaces_s.ep.rosidl_typesupport_introspection_c.c
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/__init__.py
+[0.770s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/_tutorial_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c
+[0.804s] Listing '/home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces'...
+[0.804s] Listing '/home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/msg'...
+[0.804s] Listing '/home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/srv'...
+[0.809s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/tutorial_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[0.809s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/tutorial_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[0.809s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages/tutorial_interfaces/tutorial_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[0.809s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/lib/libtutorial_interfaces__rosidl_generator_py.so
+[0.809s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/msg/Num.idl
+[0.810s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/msg/Sphere.idl
+[0.810s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/srv/AddThreeInts.idl
+[0.810s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/msg/Num.msg
+[0.810s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/msg/Sphere.msg
+[0.810s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/srv/AddThreeInts.srv
+[0.810s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/srv/AddThreeInts_Request.msg
+[0.811s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/srv/AddThreeInts_Response.msg
+[0.811s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/ament_index/resource_index/package_run_dependencies/tutorial_interfaces
+[0.811s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/ament_index/resource_index/parent_prefix_path/tutorial_interfaces
+[0.811s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/environment/ament_prefix_path.sh
+[0.811s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/environment/ament_prefix_path.dsv
+[0.811s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/environment/path.sh
+[0.811s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/environment/path.dsv
+[0.811s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/local_setup.bash
+[0.811s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/local_setup.sh
+[0.812s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/local_setup.zsh
+[0.812s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/local_setup.dsv
+[0.812s] -- Installing: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/package.dsv
+[0.812s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/ament_index/resource_index/packages/tutorial_interfaces
+[0.812s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/export_tutorial_interfaces__rosidl_generator_cExport.cmake
+[0.812s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/export_tutorial_interfaces__rosidl_generator_cExport-noconfig.cmake
+[0.813s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/export_tutorial_interfaces__rosidl_typesupport_fastrtps_cExport.cmake
+[0.813s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/export_tutorial_interfaces__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[0.813s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/export_tutorial_interfaces__rosidl_generator_cppExport.cmake
+[0.813s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/export_tutorial_interfaces__rosidl_typesupport_fastrtps_cppExport.cmake
+[0.813s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/export_tutorial_interfaces__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[0.813s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfaces__rosidl_typesupport_introspection_cExport.cmake
+[0.813s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfaces__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[0.813s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfaces__rosidl_typesupport_cExport.cmake
+[0.813s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfaces__rosidl_typesupport_cExport-noconfig.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfaces__rosidl_typesupport_introspection_cppExport.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfaces__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfaces__rosidl_typesupport_cppExport.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfaces__rosidl_typesupport_cppExport-noconfig.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/export_tutorial_interfaces__rosidl_generator_pyExport.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/export_tutorial_interfaces__rosidl_generator_pyExport-noconfig.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/rosidl_cmake-extras.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/ament_cmake_export_dependencies-extras.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/ament_cmake_export_include_directories-extras.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/ament_cmake_export_libraries-extras.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/ament_cmake_export_targets-extras.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[0.814s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[0.815s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfacesConfig.cmake
+[0.815s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/cmake/tutorial_interfacesConfig-version.cmake
+[0.815s] -- Up-to-date: /home/johnson/METR4202/install/tutorial_interfaces/share/tutorial_interfaces/package.xml
+[0.817s] Invoked command in '/home/johnson/METR4202/build/tutorial_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/johnson/METR4202/install/py_srvcli:/home/johnson/METR4202/install/py_pubsub:/home/johnson/METR4202/install/my_package:/home/johnson/METR4202/install/my_first_package:/opt/ros/humble /usr/bin/cmake --install /home/johnson/METR4202/build/tutorial_interfaces
