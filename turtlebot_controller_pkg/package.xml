@@ -3,9 +3,9 @@
 <package format="3">
   <name>turtlebot_controller_pkg</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>This package controls a turtlebot3 robot. It should subscribe to the map and sensors created by the robot (or a gazebo simulation of the robot), and seeks to explore unexplored regions of the environment.</description>
   <maintainer email="jonathan@trevatt.net">jonno</maintainer>
-  <license>TODO: License declaration</license>
+  <license>MIT</license>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

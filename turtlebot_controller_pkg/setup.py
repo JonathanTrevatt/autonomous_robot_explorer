@@ -13,10 +13,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='jonno',
+    maintainer='Jonathan Trevatt',
     maintainer_email='jonathan@trevatt.net',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='This package controls a turtlebot3 robot. It should subscribe to the map and sensors created by the robot (or a gazebo simulation of the robot), and seeks to explore unexplored regions of the environment.',
+    license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
