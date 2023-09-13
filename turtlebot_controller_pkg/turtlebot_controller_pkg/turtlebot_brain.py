@@ -1,32 +1,9 @@
 """
 System Demonstration Checklist:
-□ Automatically sends waypoints to the robot
-    # Waypoints are automatically generated
-    # Waypoints are manually generated
-□ Uses SLAM to create a map
-□ Algorithm for detecting unexplored areas
-    # Finds unexplored areas
-    # Finds unexplored areas next to known and free cells
-□ Uses documented exploration strategy
-    □ Subscribes to map
-    □ Computes waypoint based on map
-    □ Computes waypoint that is known to be reachable
-□ Strategy works in all world files (entire space is visited)
-    # Some areas not detected by algorithm
-    # Entire space visited
-    # All unexplored areas detected by algorithm but some ignored according to exploration strategy
-□ Includes mechanism for detecting when exploration strategy fails
-    □ Subscribes to navigation status
-    □ Detects and reacts when navigation fails to find a valid path
-    □ Strategy implemented for not re-sending bad waypoints
-□ Algorithm for navigating robot to unexplored areas
-    # Uses nav2 to move robot to waypoint
-    # Uses custom planning algorithm to move robot to waypoint
-□ Not hard-coded for certain test environments
+□ Uses SLAM to create a map (I.e. launch file opens slam, this node subscribes to map)
 
 Use slam to create map
 subscribe to map
-subscribe to navigation status
 Detect unexplored area
     Suggestion: use watershedding method
     Fill region (with model of robot) from robot location (going around obstacles)
@@ -36,6 +13,7 @@ generate suggested waypoint based on unexplored area of map
 test if waypoint is reachable (if not, list it as a bad waypoint and pick a new one)
 Go to waypoint (detect if navigation fails)
 """
+
 import rclpy
 from rclpy.node import Node
 
@@ -53,6 +31,10 @@ class Brain(Node):
         self.subscription = self.create_subscription(String,'topic',self.listener_callback,10)
         self.subscription  # prevent unused variable warning
 
+        ###TODO Subscribe to map
+        ###TODO Subscribe to navigation status
+
+
     # timer_callback for publisher example code
     def timer_callback(self):
         msg = String()
@@ -65,9 +47,40 @@ class Brain(Node):
     def listener_callback(self, msg):
         self.get_logger().info('I heard: "%s"' % msg.data)
 
+    # TODO - Detect and react when navigation fails to find a valid path
+    # TODO - Implement strategy for not re-sending bad waypoints
+    def on_exploration_fail():
+        pass
+
+    # TODO - Detect unexplored areas of map
+    def map_find_unexplored(map):
+        pass
+
+    # TODO - Generate a trivial waypoint (e.g., step forwards small amount)
+    # To be used for checklist points in event non-trivial solution fails
+    def waypoint_compute_trivial():
+        pass
+
+    # TODO - Implement exploration strategy to generate a test waypoint (based on map)
+    def waypoint_compute(map):
+        unexplored = map_find_unexplored(map) # must navigate robot to unexplored areas
+        waypoint = None
+        return waypoint
+    
+    # TODO - Check if a waypoint is reachable
+    def waypoint_check_reachable(waypoint):
+        pass
+
+    # TODO
+    def move_to_waypoint(waypoint):
+        #Use nav2 or custom planning algorithm to move robot to waypoint
+        PassFail = None
+        return PassFail
+
 
 def main(args=None):
     print('Hi from turtlebot_controller_pkg.')
+
     rclpy.init(args=args)
     brain = Brain()
     rclpy.spin(brain)
