@@ -18,6 +18,34 @@ import rclpy
 from rclpy.node import Node
 
 from std_msgs.msg import String
+from nav2_msgs.msg import BehaviorTreeLog
+from geometry_msgs.msg import PoseStamped
+
+class Waypoint(PoseStamped):
+    def __init__(self, x, y, orientation):
+        super().__init__('waypoint')
+        self.header.frame_id = 'map'
+        self.pose.position.x = x
+        self.pose.position.y = y
+        self.pose.orientation.w = orientation
+
+    def set_x(self, x):
+        self.pose.position.x = x
+
+    def set_y(self, y):
+        self.pose.position.y = y
+
+    def set_orientation(self, orientation):
+        self.pose.orientation.w = orientation
+
+    def get_x(self):
+        return self.pose.position.x
+    
+    def get_y(self):
+        return self.pose.position.y
+    
+    def get_orientation(self):
+        return self.pose.orientation.w
 
 class Brain(Node):
     def __init__(self):
@@ -32,8 +60,17 @@ class Brain(Node):
         self.subscription  # prevent unused variable warning
 
         ###TODO Subscribe to map
-        ###TODO Subscribe to navigation status
-
+        
+        self.status_subscription = self.create_subscription(
+            BehaviorTreeLog,
+            'behavior_tree_log',
+            self.bt_log_callback,
+            10)
+        
+        self.waypoint_publisher = self.create_publisher(
+            PoseStamped,
+            'goal_pose',
+            10)
 
     # timer_callback for publisher example code
     def timer_callback(self):
@@ -47,35 +84,50 @@ class Brain(Node):
     def listener_callback(self, msg):
         self.get_logger().info('I heard: "%s"' % msg.data)
 
+    # If idle, calculate for another waypoint
+    # from lab code
+    def bt_log_callback(self, msg:BehaviorTreeLog):
+        for event in msg.event_log:
+            if event.node_name == 'NavigateRecovery' and \
+                event.current_status == 'IDLE':
+                self.waypoint_compute(map)
+
     # TODO - Detect and react when navigation fails to find a valid path
     # TODO - Implement strategy for not re-sending bad waypoints
-    def on_exploration_fail():
+    def on_exploration_fail(self):
         pass
 
     # TODO - Detect unexplored areas of map
-    def map_find_unexplored(map):
+    def map_find_unexplored(self, map):
         pass
 
     # TODO - Generate a trivial waypoint (e.g., step forwards small amount)
     # To be used for checklist points in event non-trivial solution fails
-    def waypoint_compute_trivial():
+    def waypoint_compute_trivial(self):
         pass
 
     # TODO - Implement exploration strategy to generate a test waypoint (based on map)
-    def waypoint_compute(map):
-        unexplored = map_find_unexplored(map) # must navigate robot to unexplored areas
+    def waypoint_compute(self, map):
+        unexplored = self.map_find_unexplored(map) # must navigate robot to unexplored areas
         waypoint = None
         return waypoint
     
     # TODO - Check if a waypoint is reachable
-    def waypoint_check_reachable(waypoint):
+    def waypoint_check_reachable(self, waypoint):
         pass
 
-    # TODO
-    def move_to_waypoint(waypoint):
+    def move_to_waypoint(self, waypoint):
         #Use nav2 or custom planning algorithm to move robot to waypoint
-        PassFail = None
+        if self.waypoint_check_reachable(waypoint):
+            self.waypoint_publisher.publish(waypoint)
+            PassFail = True
+        PassFail = False
         return PassFail
+    
+    # TODO - Check if the robot has finished exploring the area
+    def area_is_explored(self, map):
+        isExplored = None
+        return isExplored
 
 
 def main(args=None):
