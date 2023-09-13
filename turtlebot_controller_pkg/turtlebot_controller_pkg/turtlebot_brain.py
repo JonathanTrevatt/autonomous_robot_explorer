@@ -1,3 +1,42 @@
+"""
+System Demonstration Checklist:
+□ Automatically sends waypoints to the robot
+    # Waypoints are automatically generated
+    # Waypoints are manually generated
+□ Uses SLAM to create a map
+□ Algorithm for detecting unexplored areas
+    # Finds unexplored areas
+    # Finds unexplored areas next to known and free cells
+□ Uses documented exploration strategy
+    □ Subscribes to map
+    □ Computes waypoint based on map
+    □ Computes waypoint that is known to be reachable
+□ Strategy works in all world files (entire space is visited)
+    # Some areas not detected by algorithm
+    # Entire space visited
+    # All unexplored areas detected by algorithm but some ignored according to exploration strategy
+□ Includes mechanism for detecting when exploration strategy fails
+    □ Subscribes to navigation status
+    □ Detects and reacts when navigation fails to find a valid path
+    □ Strategy implemented for not re-sending bad waypoints
+□ Algorithm for navigating robot to unexplored areas
+    # Uses nav2 to move robot to waypoint
+    # Uses custom planning algorithm to move robot to waypoint
+□ Not hard-coded for certain test environments
+
+Use slam to create map
+subscribe to map
+subscribe to navigation status
+Detect unexplored area
+    Suggestion: use watershedding method
+    Fill region (with model of robot) from robot location (going around obstacles)
+    explore first unexplored region that is filled
+    I.e., goes to the closest unexplored area
+generate suggested waypoint based on unexplored area of map
+test if waypoint is reachable (if not, list it as a bad waypoint and pick a new one)
+Go to waypoint (detect if navigation fails)
+"""
+
 def main():
     print('Hi from turtlebot_controller_pkg.')
 
