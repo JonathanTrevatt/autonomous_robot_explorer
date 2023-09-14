@@ -19,7 +19,7 @@ from rclpy.node import Node
 
 from std_msgs.msg import String
 from nav2_msgs.msg import BehaviorTreeLog
-from nav2_msgs.msg import CostmapMetaData
+from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import PoseStamped
 
 class Waypoint(PoseStamped):
@@ -56,12 +56,14 @@ class Brain(Node):
         timer_period = 0.5  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
+        self.map = None
         # Subscriber example code:
         self.subscription = self.create_subscription(String,'topic',self.listener_callback,10)
         self.subscription  # prevent unused variable warning
 
         ###TODO Subscribe to map
-        self.map_subscription = self.create_subscription(CostmapMetaData,'map', self.listener_callback,10)
+        # OccupancyGrid not in nav2_msgs/msg???
+        self.map_subscription = self.create_subscription(OccupancyGrid,'map', self.map_callback, 10)
         
         self.status_subscription = self.create_subscription(
             BehaviorTreeLog,
@@ -85,6 +87,10 @@ class Brain(Node):
     # listener_callback function for subscriber example code
     def listener_callback(self, msg):
         self.get_logger().info('I heard: "%s"' % msg.data)
+
+    # map callback to assign map data to variables
+    def map_callback(self, msg:OccupancyGrid):
+        self.map = msg.data
 
     # If idle, calculate for another waypoint
     # from lab code
