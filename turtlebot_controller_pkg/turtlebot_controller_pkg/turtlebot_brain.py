@@ -19,6 +19,7 @@ from rclpy.node import Node
 
 from std_msgs.msg import String
 from nav2_msgs.msg import BehaviorTreeLog
+from nav2_msgs.msg import CostmapMetaData
 from geometry_msgs.msg import PoseStamped
 
 class Waypoint(PoseStamped):
@@ -60,6 +61,7 @@ class Brain(Node):
         self.subscription  # prevent unused variable warning
 
         ###TODO Subscribe to map
+        self.map_subscription = self.create_subscription(CostmapMetaData,'map', self.listener_callback,10)
         
         self.status_subscription = self.create_subscription(
             BehaviorTreeLog,
@@ -114,7 +116,7 @@ class Brain(Node):
     
     # TODO - Check if a waypoint is reachable
     def waypoint_check_reachable(self, waypoint):
-        pass
+        return True
 
     def move_to_waypoint(self, waypoint):
         #Use nav2 or custom planning algorithm to move robot to waypoint
