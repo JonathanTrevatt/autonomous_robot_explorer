@@ -1,0 +1,93 @@
+[0.000000] (-) TimerEvent: {}
+[0.001031] (-) JobUnselected: {'identifier': 'action_tutorials_interfaces'}
+[0.001100] (-) JobUnselected: {'identifier': 'launch_tutorial'}
+[0.001146] (-) JobUnselected: {'identifier': 'my_first_package'}
+[0.001190] (-) JobUnselected: {'identifier': 'my_package'}
+[0.001239] (-) JobUnselected: {'identifier': 'py_launch_example'}
+[0.001297] (-) JobUnselected: {'identifier': 'py_pubsub'}
+[0.001351] (-) JobUnselected: {'identifier': 'py_pubsub'}
+[0.001403] (-) JobUnselected: {'identifier': 'py_srvcli'}
+[0.001429] (-) JobUnselected: {'identifier': 'python_parameters'}
+[0.001454] (-) JobUnselected: {'identifier': 'turtlebot3_fake_node'}
+[0.001503] (-) JobUnselected: {'identifier': 'turtlebot3_gazebo'}
+[0.001555] (-) JobUnselected: {'identifier': 'turtlebot3_simulations'}
+[0.001608] (-) JobUnselected: {'identifier': 'turtlebot_controller_pkg'}
+[0.001673] (-) JobUnselected: {'identifier': 'tutorial_interfaces'}
+[0.036892] (waypoint_commander) JobQueued: {'identifier': 'waypoint_commander', 'dependencies': OrderedDict()}
+[0.036984] (waypoint_commander) JobStarted: {'identifier': 'waypoint_commander'}
+[0.094492] (-) TimerEvent: {}
+[0.195294] (-) TimerEvent: {}
+[0.296032] (-) TimerEvent: {}
+[0.396418] (-) TimerEvent: {}
+[0.496857] (-) TimerEvent: {}
+[0.597379] (-) TimerEvent: {}
+[0.697834] (-) TimerEvent: {}
+[0.798319] (-) TimerEvent: {}
+[0.898691] (-) TimerEvent: {}
+[0.999062] (-) TimerEvent: {}
+[1.099608] (-) TimerEvent: {}
+[1.200445] (-) TimerEvent: {}
+[1.300904] (-) TimerEvent: {}
+[1.401338] (-) TimerEvent: {}
+[1.445561] (waypoint_commander) Command: {'cmd': ['/usr/bin/python3', 'setup.py', 'develop', '--uninstall', '--editable', '--build-directory', '/home/johnson/METR4202/build/waypoint_commander/build'], 'cwd': '/home/johnson/METR4202/build/waypoint_commander', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'johnson', 'SHLVL': '1', 'LIBGL_ALWAYS_SOFTWARE': '1', 'LD_LIBRARY_PATH': '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib', 'WT_PROFILE_ID': '{51855cb2-8cce-5362-8f54-464b92b32386}', 'HOME': '/home/johnson', 'OLDPWD': '/home/johnson', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/johnson/turtlebot3_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'johnson', 'NAME': 'LAPTOP-U25S854H', 'WSL_INTEROP': '/run/WSL/132372_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'GAZEBO_MODEL_PATH': '/home/johnson/.gazebo/models::/home/johnson/turtlebot3_ws/src/turtlebot3_simulations/turtlebot3_gazebo/models', 'LIBGL_ALWAYS_INDIRECT': '0', 'ROS_LOCALHOST_ONLY': '1', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/Eclipse Adoptium/jdk-17.0.4.8-hotspot/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/MATLAB/R2021b/bin:/mnt/c/Program Files/Wolfram Research/WolframScript/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/laptr/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/laptr/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'WT_SESSION': '8bf520f9-5a5b-45ef-b6ee-a4536a998bbc', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'ROS_DOMAIN_ID': '30', 'AMENT_PREFIX_PATH': '/home/johnson/turtlebot3_ws/install/turtlebot3_simulations:/home/johnson/turtlebot3_ws/install/turtlebot3_gazebo:/home/johnson/turtlebot3_ws/install/turtlebot3_fake_node:/opt/ros/humble', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'PWD': '/home/johnson/METR4202/build/waypoint_commander', 'TURTLEBOT3_MODEL': 'waffle_pi', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'LDS_MODEL': 'LDS-02', 'PYTHONPATH': '/home/johnson/METR4202/build/waypoint_commander/prefix_override:/home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/johnson/turtlebot3_ws/install/turtlebot3_simulations:/home/johnson/turtlebot3_ws/install/turtlebot3_gazebo:/home/johnson/turtlebot3_ws/install/turtlebot3_fake_node', 'WSLENV': 'WT_SESSION::WT_PROFILE_ID'}, 'shell': False}
+[1.501499] (-) TimerEvent: {}
+[1.602016] (-) TimerEvent: {}
+[1.703254] (-) TimerEvent: {}
+[1.804126] (-) TimerEvent: {}
+[1.904767] (-) TimerEvent: {}
+[1.924377] (waypoint_commander) StdoutLine: {'line': b'running develop\n'}
+[1.926112] (waypoint_commander) StderrLine: {'line': b'/usr/lib/python3/dist-packages/setuptools/command/easy_install.py:158: EasyInstallDeprecationWarning: easy_install command is deprecated. Use build and pip and other standards-based tools.\n'}
+[1.926410] (waypoint_commander) StderrLine: {'line': b'  warnings.warn(\n'}
+[1.928721] (waypoint_commander) StderrLine: {'line': b'/usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.\n'}
+[1.928979] (waypoint_commander) StderrLine: {'line': b'  warnings.warn(\n'}
+[2.004891] (-) TimerEvent: {}
+[2.054409] (waypoint_commander) StderrLine: {'line': b'/usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 1.16.0-unknown is an invalid version and will not be supported in a future release\n'}
+[2.054696] (waypoint_commander) StderrLine: {'line': b'  warnings.warn(\n'}
+[2.059055] (waypoint_commander) StderrLine: {'line': b'/usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 1.1build1 is an invalid version and will not be supported in a future release\n'}
+[2.059289] (waypoint_commander) StderrLine: {'line': b'  warnings.warn(\n'}
+[2.105284] (-) TimerEvent: {}
+[2.206557] (-) TimerEvent: {}
+[2.271896] (waypoint_commander) StdoutLine: {'line': b'Removing /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint-commander.egg-link (link to .)\n'}
+[2.306695] (-) TimerEvent: {}
+[2.343963] (waypoint_commander) CommandEnded: {'returncode': 0}
+[2.347809] (waypoint_commander) Command: {'cmd': ['/usr/bin/python3', 'setup.py', 'egg_info', '--egg-base', '../../build/waypoint_commander', 'build', '--build-base', '/home/johnson/METR4202/build/waypoint_commander/build', 'install', '--record', '/home/johnson/METR4202/build/waypoint_commander/install.log', '--single-version-externally-managed'], 'cwd': '/home/johnson/METR4202/src/waypoint_commander', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'johnson', 'SHLVL': '1', 'LIBGL_ALWAYS_SOFTWARE': '1', 'LD_LIBRARY_PATH': '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib', 'WT_PROFILE_ID': '{51855cb2-8cce-5362-8f54-464b92b32386}', 'HOME': '/home/johnson', 'OLDPWD': '/home/johnson', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/johnson/turtlebot3_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'johnson', 'NAME': 'LAPTOP-U25S854H', 'WSL_INTEROP': '/run/WSL/132372_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'GAZEBO_MODEL_PATH': '/home/johnson/.gazebo/models::/home/johnson/turtlebot3_ws/src/turtlebot3_simulations/turtlebot3_gazebo/models', 'LIBGL_ALWAYS_INDIRECT': '0', 'ROS_LOCALHOST_ONLY': '1', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/Eclipse Adoptium/jdk-17.0.4.8-hotspot/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/MATLAB/R2021b/bin:/mnt/c/Program Files/Wolfram Research/WolframScript/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/laptr/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/laptr/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'WT_SESSION': '8bf520f9-5a5b-45ef-b6ee-a4536a998bbc', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'ROS_DOMAIN_ID': '30', 'AMENT_PREFIX_PATH': '/home/johnson/turtlebot3_ws/install/turtlebot3_simulations:/home/johnson/turtlebot3_ws/install/turtlebot3_gazebo:/home/johnson/turtlebot3_ws/install/turtlebot3_fake_node:/opt/ros/humble', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'PWD': '/home/johnson/METR4202/build/waypoint_commander', 'TURTLEBOT3_MODEL': 'waffle_pi', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'LDS_MODEL': 'LDS-02', 'PYTHONPATH': '/home/johnson/METR4202/build/waypoint_commander/prefix_override:/home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/johnson/turtlebot3_ws/install/turtlebot3_simulations:/home/johnson/turtlebot3_ws/install/turtlebot3_gazebo:/home/johnson/turtlebot3_ws/install/turtlebot3_fake_node', 'WSLENV': 'WT_SESSION::WT_PROFILE_ID'}, 'shell': False}
+[2.406872] (-) TimerEvent: {}
+[2.507500] (-) TimerEvent: {}
+[2.608211] (-) TimerEvent: {}
+[2.708635] (-) TimerEvent: {}
+[2.806895] (waypoint_commander) StdoutLine: {'line': b'running egg_info\n'}
+[2.808892] (-) TimerEvent: {}
+[2.810193] (waypoint_commander) StdoutLine: {'line': b'writing ../../build/waypoint_commander/waypoint_commander.egg-info/PKG-INFO\n'}
+[2.812121] (waypoint_commander) StdoutLine: {'line': b'writing dependency_links to ../../build/waypoint_commander/waypoint_commander.egg-info/dependency_links.txt\n'}
+[2.813364] (waypoint_commander) StdoutLine: {'line': b'writing entry points to ../../build/waypoint_commander/waypoint_commander.egg-info/entry_points.txt\n'}
+[2.821297] (waypoint_commander) StdoutLine: {'line': b'writing requirements to ../../build/waypoint_commander/waypoint_commander.egg-info/requires.txt\n'}
+[2.822654] (waypoint_commander) StdoutLine: {'line': b'writing top-level names to ../../build/waypoint_commander/waypoint_commander.egg-info/top_level.txt\n'}
+[2.838806] (waypoint_commander) StdoutLine: {'line': b"reading manifest file '../../build/waypoint_commander/waypoint_commander.egg-info/SOURCES.txt'\n"}
+[2.841398] (waypoint_commander) StdoutLine: {'line': b"writing manifest file '../../build/waypoint_commander/waypoint_commander.egg-info/SOURCES.txt'\n"}
+[2.848105] (waypoint_commander) StdoutLine: {'line': b'running build\n'}
+[2.848394] (waypoint_commander) StdoutLine: {'line': b'running build_py\n'}
+[2.849651] (waypoint_commander) StdoutLine: {'line': b'creating /home/johnson/METR4202/build/waypoint_commander/build\n'}
+[2.849930] (waypoint_commander) StdoutLine: {'line': b'creating /home/johnson/METR4202/build/waypoint_commander/build/lib\n'}
+[2.852325] (waypoint_commander) StdoutLine: {'line': b'creating /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander\n'}
+[2.852652] (waypoint_commander) StdoutLine: {'line': b'copying waypoint_commander/waypoint_cycler.py -> /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander\n'}
+[2.853573] (waypoint_commander) StdoutLine: {'line': b'copying waypoint_commander/__init__.py -> /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander\n'}
+[2.854672] (waypoint_commander) StdoutLine: {'line': b'running install\n'}
+[2.854967] (waypoint_commander) StderrLine: {'line': b'/usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.\n'}
+[2.855069] (waypoint_commander) StderrLine: {'line': b'  warnings.warn(\n'}
+[2.858696] (waypoint_commander) StdoutLine: {'line': b'running install_lib\n'}
+[2.859181] (waypoint_commander) StdoutLine: {'line': b'creating /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander\n'}
+[2.859336] (waypoint_commander) StdoutLine: {'line': b'copying /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander/waypoint_cycler.py -> /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander\n'}
+[2.862147] (waypoint_commander) StdoutLine: {'line': b'copying /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander/__init__.py -> /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander\n'}
+[2.862380] (waypoint_commander) StdoutLine: {'line': b'byte-compiling /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander/waypoint_cycler.py to waypoint_cycler.cpython-310.pyc\n'}
+[2.862487] (waypoint_commander) StdoutLine: {'line': b'byte-compiling /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander/__init__.py to __init__.cpython-310.pyc\n'}
+[2.862589] (waypoint_commander) StdoutLine: {'line': b'running install_data\n'}
+[2.862788] (waypoint_commander) StdoutLine: {'line': b'running install_egg_info\n'}
+[2.872251] (waypoint_commander) StdoutLine: {'line': b'Copying ../../build/waypoint_commander/waypoint_commander.egg-info to /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander-0.0.0-py3.10.egg-info\n'}
+[2.886205] (waypoint_commander) StdoutLine: {'line': b'running install_scripts\n'}
+[2.909348] (-) TimerEvent: {}
+[2.974127] (waypoint_commander) StdoutLine: {'line': b'Installing waypoint_cycler script to /home/johnson/METR4202/install/waypoint_commander/lib/waypoint_commander\n'}
+[2.975296] (waypoint_commander) StdoutLine: {'line': b"writing list of installed files to '/home/johnson/METR4202/build/waypoint_commander/install.log'\n"}
+[3.009499] (-) TimerEvent: {}
+[3.065804] (waypoint_commander) CommandEnded: {'returncode': 0}
+[3.097280] (waypoint_commander) JobEnded: {'identifier': 'waypoint_commander', 'rc': 0}
+[3.099083] (-) EventReactorShutdown: {}

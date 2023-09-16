@@ -4,6 +4,9 @@ Navigate to src of the workspace (src is in workspace folder)
 in console:
 ros2 pkg create --build-type ament_python <package name>
 
+###IMPORTANT: if package not found, build it from workspace and
+source install/setup.bash
+
 Change maintainer, maintainer email, licence and description in both package.xml
 and setup.py within the package
 

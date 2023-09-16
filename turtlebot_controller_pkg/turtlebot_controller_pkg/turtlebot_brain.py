@@ -17,17 +17,19 @@ Go to waypoint (detect if navigation fails)
 import rclpy
 from rclpy.node import Node
 
+from nav2_simple_commander.robot_navigator import BasicNavigator
 from std_msgs.msg import String
 from nav2_msgs.msg import BehaviorTreeLog
-from nav_msgs.msg import OccupancyGrid
-from geometry_msgs.msg import PoseStamped
+from nav_msgs.msg import OccupancyGrid, Odometry
+from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 
 class Waypoint(PoseStamped):
-    def __init__(self, x, y, orientation):
+    def __init__(self, x, y, z, orientation):
         super().__init__('waypoint')
         self.header.frame_id = 'map'
         self.pose.position.x = x
         self.pose.position.y = y
+        self.pose.position.z = z
         self.pose.orientation.w = orientation
 
     def set_x(self, x):
@@ -57,12 +59,11 @@ class Brain(Node):
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
         self.map = None
+        self.cur_pos = Waypoint(0, 0, 0, 1)
         # Subscriber example code:
         self.subscription = self.create_subscription(String,'topic',self.listener_callback,10)
         self.subscription  # prevent unused variable warning
 
-        ###TODO Subscribe to map
-        # OccupancyGrid not in nav2_msgs/msg???
         self.map_subscription = self.create_subscription(OccupancyGrid,'map', self.map_callback, 10)
         
         self.status_subscription = self.create_subscription(
@@ -71,10 +72,39 @@ class Brain(Node):
             self.bt_log_callback,
             10)
         
+        self.position_subscription = self.create_subscription(
+            Odometry,
+            'odom',
+            self.odom_callback,
+            10
+        )
+        
         self.waypoint_publisher = self.create_publisher(
             PoseStamped,
             'goal_pose',
             10)
+        
+        # Initialise navigator
+        self.nav = BasicNavigator()
+        init_pose = self.cur_pos
+        self.nav.setInitialPose(init_pose)
+        self.nav.waitUntilNav2Active()
+        
+    # USING NAV2 FOR AUTOMATIC PATH PLANNING
+
+    def odom_callback(self, msg:Odometry):
+        self.pos_x = msg.pose.pose.position.x
+        self.pos_y = msg.pose.pose.position.y
+        self.pos_z = msg.pose.pose.position.z
+        self.pos_w = msg.pose.pose.orientation.w
+        self.cur_pos = Waypoint(
+            self.pos_x,
+            self.pos_y,
+            self.pos_z,
+            self.pos_w
+        )
+
+    #TODO Subscribe to error for unreachable path (in planner_server node)
 
     # timer_callback for publisher example code
     def timer_callback(self):
@@ -98,7 +128,8 @@ class Brain(Node):
         for event in msg.event_log:
             if event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE':
-                self.waypoint_compute(map)
+                waypoint = self.waypoint_compute(map)
+                self.move_to_waypoint(waypoint)
 
     # TODO - Detect and react when navigation fails to find a valid path
     # TODO - Implement strategy for not re-sending bad waypoints
@@ -126,6 +157,7 @@ class Brain(Node):
 
     def move_to_waypoint(self, waypoint):
         #Use nav2 or custom planning algorithm to move robot to waypoint
+        #This requires sending initial pose and a first waypoint through command line
         if self.waypoint_check_reachable(waypoint):
             self.waypoint_publisher.publish(waypoint)
             PassFail = True

@@ -1,0 +1,44 @@
+[1.412s] Invoking command in '/home/johnson/METR4202/build/waypoint_commander': PYTHONPATH=/home/johnson/METR4202/build/waypoint_commander/prefix_override:/home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --uninstall --editable --build-directory /home/johnson/METR4202/build/waypoint_commander/build
+[1.889s] running develop
+[1.889s] /usr/lib/python3/dist-packages/setuptools/command/easy_install.py:158: EasyInstallDeprecationWarning: easy_install command is deprecated. Use build and pip and other standards-based tools.
+[1.889s]   warnings.warn(
+[1.892s] /usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+[1.892s]   warnings.warn(
+[2.018s] /usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 1.16.0-unknown is an invalid version and will not be supported in a future release
+[2.019s]   warnings.warn(
+[2.022s] /usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 1.1build1 is an invalid version and will not be supported in a future release
+[2.022s]   warnings.warn(
+[2.235s] Removing /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint-commander.egg-link (link to .)
+[2.310s] Invoked command in '/home/johnson/METR4202/build/waypoint_commander' returned '0': PYTHONPATH=/home/johnson/METR4202/build/waypoint_commander/prefix_override:/home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --uninstall --editable --build-directory /home/johnson/METR4202/build/waypoint_commander/build
+[2.323s] Invoking command in '/home/johnson/METR4202/src/waypoint_commander': PYTHONPATH=/home/johnson/METR4202/build/waypoint_commander/prefix_override:/home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/waypoint_commander build --build-base /home/johnson/METR4202/build/waypoint_commander/build install --record /home/johnson/METR4202/build/waypoint_commander/install.log --single-version-externally-managed
+[2.770s] running egg_info
+[2.773s] writing ../../build/waypoint_commander/waypoint_commander.egg-info/PKG-INFO
+[2.775s] writing dependency_links to ../../build/waypoint_commander/waypoint_commander.egg-info/dependency_links.txt
+[2.777s] writing entry points to ../../build/waypoint_commander/waypoint_commander.egg-info/entry_points.txt
+[2.784s] writing requirements to ../../build/waypoint_commander/waypoint_commander.egg-info/requires.txt
+[2.786s] writing top-level names to ../../build/waypoint_commander/waypoint_commander.egg-info/top_level.txt
+[2.802s] reading manifest file '../../build/waypoint_commander/waypoint_commander.egg-info/SOURCES.txt'
+[2.805s] writing manifest file '../../build/waypoint_commander/waypoint_commander.egg-info/SOURCES.txt'
+[2.811s] running build
+[2.811s] running build_py
+[2.813s] creating /home/johnson/METR4202/build/waypoint_commander/build
+[2.813s] creating /home/johnson/METR4202/build/waypoint_commander/build/lib
+[2.815s] creating /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander
+[2.816s] copying waypoint_commander/waypoint_cycler.py -> /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander
+[2.817s] copying waypoint_commander/__init__.py -> /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander
+[2.818s] running install
+[2.818s] /usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+[2.818s]   warnings.warn(
+[2.822s] running install_lib
+[2.822s] creating /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander
+[2.822s] copying /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander/waypoint_cycler.py -> /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander
+[2.825s] copying /home/johnson/METR4202/build/waypoint_commander/build/lib/waypoint_commander/__init__.py -> /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander
+[2.825s] byte-compiling /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander/waypoint_cycler.py to waypoint_cycler.cpython-310.pyc
+[2.826s] byte-compiling /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander/__init__.py to __init__.cpython-310.pyc
+[2.826s] running install_data
+[2.826s] running install_egg_info
+[2.835s] Copying ../../build/waypoint_commander/waypoint_commander.egg-info to /home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages/waypoint_commander-0.0.0-py3.10.egg-info
+[2.850s] running install_scripts
+[2.937s] Installing waypoint_cycler script to /home/johnson/METR4202/install/waypoint_commander/lib/waypoint_commander
+[2.938s] writing list of installed files to '/home/johnson/METR4202/build/waypoint_commander/install.log'
+[3.029s] Invoked command in '/home/johnson/METR4202/src/waypoint_commander' returned '0': PYTHONPATH=/home/johnson/METR4202/build/waypoint_commander/prefix_override:/home/johnson/METR4202/install/waypoint_commander/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/waypoint_commander build --build-base /home/johnson/METR4202/build/waypoint_commander/build install --record /home/johnson/METR4202/build/waypoint_commander/install.log --single-version-externally-managed
