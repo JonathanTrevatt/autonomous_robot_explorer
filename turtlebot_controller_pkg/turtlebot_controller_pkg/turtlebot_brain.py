@@ -140,10 +140,17 @@ class Brain(Node):
     def map_find_unexplored(self, map):
         pass
 
-    # TODO - Generate a trivial waypoint (e.g., step forwards small amount)
+    # TODO - Test
     # To be used for checklist points in event non-trivial solution fails
-    def waypoint_compute_trivial(self):
-        pass
+    # Returns a trivial waypoint set to move the robot a small distance from the current position
+    def waypoint_compute_trivial(self, delta):
+        x = self.pos_x + delta
+        y = self.pos_y + delta
+        z = self.pos_z
+        w = self.pos_w
+        waypoint = Waypoint(x, y, z, w)
+        return waypoint
+
 
     # TODO - Implement exploration strategy to generate a test waypoint (based on map)
     def waypoint_compute(self, map):
