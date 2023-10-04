@@ -1,0 +1,32 @@
+[1.931s] Invoking command in '/home/johnson/METR4202/build/turtlebot_controller_pkg': PYTHONPATH=/home/johnson/METR4202/build/turtlebot_controller_pkg/prefix_override:/home/johnson/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --editable --build-directory /home/johnson/METR4202/build/turtlebot_controller_pkg/build --no-deps install_data
+[2.491s] running develop
+[2.499s] /usr/lib/python3/dist-packages/setuptools/command/easy_install.py:158: EasyInstallDeprecationWarning: easy_install command is deprecated. Use build and pip and other standards-based tools.
+[2.500s]   warnings.warn(
+[2.502s] /usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+[2.502s]   warnings.warn(
+[2.603s] /usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 1.16.0-unknown is an invalid version and will not be supported in a future release
+[2.603s]   warnings.warn(
+[2.604s] /usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 1.1build1 is an invalid version and will not be supported in a future release
+[2.604s]   warnings.warn(
+[2.841s] running egg_info
+[2.842s] creating turtlebot_controller_pkg.egg-info
+[2.844s] writing turtlebot_controller_pkg.egg-info/PKG-INFO
+[2.846s] writing dependency_links to turtlebot_controller_pkg.egg-info/dependency_links.txt
+[2.848s] writing entry points to turtlebot_controller_pkg.egg-info/entry_points.txt
+[2.849s] writing requirements to turtlebot_controller_pkg.egg-info/requires.txt
+[2.851s] writing top-level names to turtlebot_controller_pkg.egg-info/top_level.txt
+[2.852s] writing manifest file 'turtlebot_controller_pkg.egg-info/SOURCES.txt'
+[2.860s] reading manifest file 'turtlebot_controller_pkg.egg-info/SOURCES.txt'
+[2.862s] writing manifest file 'turtlebot_controller_pkg.egg-info/SOURCES.txt'
+[2.865s] running build_ext
+[2.865s] Creating /home/johnson/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages/turtlebot-controller-pkg.egg-link (link to .)
+[2.866s] Installing turtlebot_brain script to /home/johnson/METR4202/install/turtlebot_controller_pkg/lib/turtlebot_controller_pkg
+[2.870s] 
+[2.870s] Installed /home/johnson/METR4202/build/turtlebot_controller_pkg
+[2.870s] running install_data
+[2.871s] creating /home/johnson/METR4202/install/turtlebot_controller_pkg/share/ament_index
+[2.871s] creating /home/johnson/METR4202/install/turtlebot_controller_pkg/share/ament_index/resource_index
+[2.871s] creating /home/johnson/METR4202/install/turtlebot_controller_pkg/share/ament_index/resource_index/packages
+[2.872s] copying resource/turtlebot_controller_pkg -> /home/johnson/METR4202/install/turtlebot_controller_pkg/share/ament_index/resource_index/packages
+[2.872s] copying package.xml -> /home/johnson/METR4202/install/turtlebot_controller_pkg/share/turtlebot_controller_pkg
+[2.941s] Invoked command in '/home/johnson/METR4202/build/turtlebot_controller_pkg' returned '0': PYTHONPATH=/home/johnson/METR4202/build/turtlebot_controller_pkg/prefix_override:/home/johnson/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --editable --build-directory /home/johnson/METR4202/build/turtlebot_controller_pkg/build --no-deps install_data

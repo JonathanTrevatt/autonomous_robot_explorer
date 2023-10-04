@@ -16,21 +16,23 @@ Go to waypoint (detect if navigation fails)
 
 import rclpy
 from rclpy.node import Node
-
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, QoSDurabilityPolicy
 from nav2_simple_commander.robot_navigator import BasicNavigator
-from std_msgs.msg import String
 from nav2_msgs.msg import BehaviorTreeLog
 from nav_msgs.msg import OccupancyGrid, Odometry
-from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped, Polygon
 
 class Waypoint(PoseStamped):
-    def __init__(self, x, y, z, orientation):
-        super().__init__('waypoint')
+    def __init__(self, x, y, orientation_z, w):
+        super().__init__()
         self.header.frame_id = 'map'
         self.pose.position.x = x
         self.pose.position.y = y
-        self.pose.position.z = z
-        self.pose.orientation.w = orientation
+        self.pose.position.z = 0.0
+        self.pose.orientation.x = 0.0
+        self.pose.orientation.y = 0.0
+        self.pose.orientation.z = orientation_z
+        self.pose.orientation.w = w
 
     def set_x(self, x):
         self.pose.position.x = x
@@ -54,16 +56,12 @@ class Brain(Node):
     def __init__(self):
         super().__init__('brain')
         # Publisher example code:
-        self.publisher_ = self.create_publisher(String, 'topic', 10)
         timer_period = 0.5  # seconds
-        self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
         self.map = None
-        self.cur_pos = Waypoint(0, 0, 0, 1)
+        self.cur_pos = Waypoint(0.0, 0.0, 1.0, 1.0)
         # Subscriber example code:
-        self.subscription = self.create_subscription(String,'topic',self.listener_callback,10)
-        self.subscription  # prevent unused variable warning
-
+    
         self.map_subscription = self.create_subscription(OccupancyGrid,'map', self.map_callback, 10)
         
         self.status_subscription = self.create_subscription(
@@ -76,47 +74,69 @@ class Brain(Node):
             Odometry,
             'odom',
             self.odom_callback,
-            10
-        )
+            10)
         
         self.waypoint_publisher = self.create_publisher(
             PoseStamped,
             'goal_pose',
             10)
         
+        qos_profile = QoSProfile(
+            reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
+            history=QoSHistoryPolicy.KEEP_LAST,
+            durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
+            depth=1)
+
+        self.amcl_pose_publisher = self.create_publisher(
+            PoseWithCovarianceStamped,
+            'amcl_pose',
+            qos_profile=qos_profile)
+        
+        self.init_pose_publisher = self.create_publisher(
+            PoseWithCovarianceStamped,
+            'initialpose',
+            10)
+        
+        self.first = True
         # Initialise navigator
         self.nav = BasicNavigator()
-        init_pose = self.cur_pos
-        self.nav.setInitialPose(init_pose)
-        self.nav.waitUntilNav2Active()
-        
+        #init_pose = self.cur_pos
+        self.nav.lifecycleStartup()
+
     # USING NAV2 FOR AUTOMATIC PATH PLANNING
 
     def odom_callback(self, msg:Odometry):
         self.pos_x = msg.pose.pose.position.x
         self.pos_y = msg.pose.pose.position.y
-        self.pos_z = msg.pose.pose.position.z
+        self.orientation_z = msg.pose.pose.orientation.z
         self.pos_w = msg.pose.pose.orientation.w
         self.cur_pos = Waypoint(
             self.pos_x,
             self.pos_y,
-            self.pos_z,
+            self.orientation_z,
             self.pos_w
         )
+        if self.first:
+            self.first = False
+            self.init_pose = PoseWithCovarianceStamped()
+            self.init_pose.pose.pose.position.x = self.pos_x
+            self.init_pose.pose.pose.position.y = self.pos_y
+            self.init_pose.pose.pose.orientation.z = self.orientation_z
+            self.init_pose.pose.pose.orientation.w = self.pos_w
+            self.init_pose_publisher.publish(self.init_pose)
+            self.amcl_pose_publisher.publish(self.init_pose)
+            new_pose = PoseStamped()
+            new_pose.pose.position.x = 0.0
+            new_pose.pose.position.y = 0.0
+            new_pose.pose.orientation.z = self.orientation_z
+            new_pose.pose.orientation.w = 1.0
+            self.nav.goToPose(new_pose)
 
     #TODO Subscribe to error for unreachable path (in planner_server node)
 
     # timer_callback for publisher example code
-    def timer_callback(self):
-        msg = String()
-        msg.data = 'Hello World: %d' % self.i
-        self.publisher_.publish(msg)
-        self.get_logger().info('Publishing: "%s"' % msg.data)
-        self.i += 1
 
     # listener_callback function for subscriber example code
-    def listener_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg.data)
 
     # map callback to assign map data to variables
     def map_callback(self, msg:OccupancyGrid):
@@ -129,7 +149,7 @@ class Brain(Node):
             if event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE':
                 waypoint = self.waypoint_compute(map)
-                self.move_to_waypoint(waypoint)
+                self.move_to_waypoint(Waypoint(0.2, 0.0, self.orientation_z, 1.0))
 
     # TODO - Detect and react when navigation fails to find a valid path
     # TODO - Implement strategy for not re-sending bad waypoints
@@ -158,11 +178,7 @@ class Brain(Node):
     def move_to_waypoint(self, waypoint):
         #Use nav2 or custom planning algorithm to move robot to waypoint
         #This requires sending initial pose and a first waypoint through command line
-        if self.waypoint_check_reachable(waypoint):
-            self.waypoint_publisher.publish(waypoint)
-            PassFail = True
-        PassFail = False
-        return PassFail
+        self.waypoint_publisher.publish(waypoint)
     
     # TODO - Check if the robot has finished exploring the area
     def area_is_explored(self, map):
