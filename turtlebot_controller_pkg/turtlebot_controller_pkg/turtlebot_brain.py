@@ -20,37 +20,8 @@ from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, QoSDur
 from nav2_simple_commander.robot_navigator import BasicNavigator
 from nav2_msgs.msg import BehaviorTreeLog
 from nav_msgs.msg import OccupancyGrid, Odometry
-from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped, Polygon
-
-class Waypoint(PoseStamped):
-    def __init__(self, x, y, orientation_z, w):
-        super().__init__()
-        self.header.frame_id = 'map'
-        self.pose.position.x = x
-        self.pose.position.y = y
-        self.pose.position.z = 0.0
-        self.pose.orientation.x = 0.0
-        self.pose.orientation.y = 0.0
-        self.pose.orientation.z = orientation_z
-        self.pose.orientation.w = w
-
-    def set_x(self, x):
-        self.pose.position.x = x
-
-    def set_y(self, y):
-        self.pose.position.y = y
-
-    def set_orientation(self, orientation):
-        self.pose.orientation.w = orientation
-
-    def get_x(self):
-        return self.pose.position.x
-    
-    def get_y(self):
-        return self.pose.position.y
-    
-    def get_orientation(self):
-        return self.pose.orientation.w
+import os
+from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 
 class Brain(Node):
     def __init__(self):
@@ -59,7 +30,6 @@ class Brain(Node):
         timer_period = 0.5  # seconds
         self.i = 0
         self.map = None
-        self.cur_pos = Waypoint(0.0, 0.0, 1.0, 1.0)
         # Subscriber example code:
     
         self.map_subscription = self.create_subscription(OccupancyGrid,'map', self.map_callback, 10)
@@ -108,29 +78,15 @@ class Brain(Node):
     def odom_callback(self, msg:Odometry):
         self.pos_x = msg.pose.pose.position.x
         self.pos_y = msg.pose.pose.position.y
-        self.orientation_z = msg.pose.pose.orientation.z
         self.pos_w = msg.pose.pose.orientation.w
-        self.cur_pos = Waypoint(
-            self.pos_x,
-            self.pos_y,
-            self.orientation_z,
-            self.pos_w
-        )
-        if self.first:
+        self.cur_pos = PoseStamped()
+        self.cur_pos.pose.position.x = self.pos_x
+        self.cur_pos.pose.position.y = self.pos_y
+        self.cur_pos.pose.orientation.w = self.pos_w
+        if self.first:  
             self.first = False
-            self.init_pose = PoseWithCovarianceStamped()
-            self.init_pose.pose.pose.position.x = self.pos_x
-            self.init_pose.pose.pose.position.y = self.pos_y
-            self.init_pose.pose.pose.orientation.z = self.orientation_z
-            self.init_pose.pose.pose.orientation.w = self.pos_w
-            self.init_pose_publisher.publish(self.init_pose)
-            self.amcl_pose_publisher.publish(self.init_pose)
-            new_pose = PoseStamped()
-            new_pose.pose.position.x = 0.0
-            new_pose.pose.position.y = 0.0
-            new_pose.pose.orientation.z = self.orientation_z
-            new_pose.pose.orientation.w = 1.0
-            self.nav.goToPose(new_pose)
+            self.move_to_waypoint(1.0, -0.5, 1)
+            
 
     #TODO Subscribe to error for unreachable path (in planner_server node)
 
@@ -149,7 +105,7 @@ class Brain(Node):
             if event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE':
                 waypoint = self.waypoint_compute(map)
-                self.move_to_waypoint(Waypoint(0.2, 0.0, self.orientation_z, 1.0))
+                self.move_to_waypoint(1.0, -0.5, 1)
 
     # TODO - Detect and react when navigation fails to find a valid path
     # TODO - Implement strategy for not re-sending bad waypoints
@@ -175,10 +131,10 @@ class Brain(Node):
     def waypoint_check_reachable(self, waypoint):
         return True
 
-    def move_to_waypoint(self, waypoint):
+    def move_to_waypoint(self, x, y, w):
         #Use nav2 or custom planning algorithm to move robot to waypoint
         #This requires sending initial pose and a first waypoint through command line
-        self.waypoint_publisher.publish(waypoint)
+        os.system("ros2 topic pub -1 /goal_pose geometry_msgs/PoseStamped '{header: {frame_id: 'map'}, pose: {position: {x: %s, y: %s}, orientation: {w: %s}}}'" % (x, y, w))
     
     # TODO - Check if the robot has finished exploring the area
     def area_is_explored(self, map):
