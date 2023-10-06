@@ -1,0 +1,17 @@
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+ros2 launch slam_toolbox online_async_launch.py
+rviz2 # subscribe to map
+ros2 run turtlebot3_controller_pkg turtlebot_brain
+
+
+
+ros2 topic pub /goal_pose geometry_msgs/PoseStamped "{header: {stamp: {sec: 0}, frame_id: 'map'}, pose: {position: {x: 0.2, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}"
+
+ros2 topic pub 
+/goal_pose geometry_msgs/PoseStamped 
+"
+{header: {stamp: {sec: 0}, frame_id: 'map'}, 
+pose: {position: {x: 0.2, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}
+"
+
+
