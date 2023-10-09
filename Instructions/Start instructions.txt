@@ -1,7 +1,9 @@
+wsl --shutdown
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ros2 launch slam_toolbox online_async_launch.py
-rviz2 # subscribe to map
-ros2 run turtlebot3_controller_pkg turtlebot_brain
+ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=METR4202/maps/turtlebot3_world_map.yaml
+cd metr4202_ws
+ros2 run tb3_controller turtlebot_brain
 
 
 
