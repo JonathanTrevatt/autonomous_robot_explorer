@@ -1,0 +1,147 @@
+CONFIGURE ENVIRONMENT:
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+#echo "export ROS_DOMAIN_ID=<your_domain_id>" >> ~/.bashrc
+#echo "export ROS_LOCALHOST_ONLY=1" >> ~/.bashrcv
+
+sudo apt update
+sudo apt install ros-humble-turtlesim
+sudo apt install ~nros-humble-rqt*
+
+sudo apt install python3-colcon-common-extensions
+echo "source /usr/share/colcon_cd/function/colcon_cd.sh" >> ~/.bashrc
+echo "export _colcon_cd_root=/opt/ros/humble/" >> ~/.bashrc
+echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc
+export GAZEBO_MODEL_PATH=~/.gazebo/models:$GAZEBO_MODEL_PATH
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/path/to/turtlebot3_simulations/turtlebot3_gazebo/models
+export TURTLEBOT3_MODEL=waffle_pi
+
+OTHER COMMON COMMANDS:
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+ros2 launch slam_toolbox online_async_launch.py
+ros2 run turtlebot3_teleop teleop_keyboard
+rviz2
+Save map:
+cd && mkdir maps
+ros2 run nav2_map_server map_saver_cli -f ~/turtlebot3_ws/maps/turtlebot3_world_map
+Open map:
+ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=$HOME/turtlebot3_ws/maps/turtlebot3_world_map.yaml
+
+
+REMAPPING EXAMPLES:
+ros2 run turtlesim turtle_teleop_key --ros-args --remap turtle1/cmd_vel:=turtle2/cmd_vel
+ros2 run turtlesim turtlesim_node --ros-args --remap __node:=my_turtle
+
+NODES:
+ros2 run <package_name> <executable_name>
+ros2 node list
+ros2 node info <node_name>
+
+TOPICS:
+rqt
+rqt_graph
+ros2 topic list -t
+ros2 topic echo <topic_name>
+ros2 topic info <topic_name>
+ros2 interface show <msg type>
+ros2 topic pub <topic_name> <msg_type> '<args>'
+ros2 topic hz <topic_name>
+
+SERVICES:
+ros2 service type <service_name>
+ros2 service list -t
+ros2 service find <type_name>
+ros2 interface show <type_name>
+ros2 service call <service_name> <service_type> <arguments>
+
+e.g.
+ros2 service call /spawn turtlesim/srv/Spawn "{x: 2, y: 2, theta: 0.2, name: ''}"
+
+PARAMETERS:
+ros2 param list
+ros2 param get <node_name> <parameter_name>
+ros2 param set <node_name> <parameter_name> <value>
+ros2 param dump <node_name> > <filename>
+ros2 param load <node_name> <filename>
+ros2 run <package_name> <executable_name> --ros-args --params-file <file_name>
+
+ACTIONS (combination of goal service, feedback topic, and result service):
+ros2 action list -t
+ros2 action info <action_name>
+ros2 interface show <action_name>ros2 action send_goal <action_name> <action_type> <values> --feedback
+
+VIEW LOGS:
+ros2 run rqt_console rqt_console
+ros2 run turtlesim turtlesim_node --ros-args --log-level [Fatal\Error\Warn\Info\Debug]
+
+RECOR/PLAYBACK data (from published messages in topics)
+mkdir bag_files
+cd bag_files
+ros2 topic list
+ros2 topic echo <topic_name>
+ros2 bag record <topic_name> # saves into dir it is run in, called rosbag2_year_month_day-hour_minute_second
+ros2 bag record -o <bag_file_name><topic_name1> <topic_name2> 
+ros2 bag info <bag_file_name>
+ros2 bag play <bag_file_name>
+
+BUILD PACKAGES WITH COLCON:
+# from workspace directory
+rosdep install -i --from-path src --rosdistro humble -y
+
+colcon build --symlink-install
+colcon test
+colcon build --packages-select my_package
+colcon test --packages-select YOUR_PKG_NAME --ctest-args -R YOUR_TEST_IN_PKG
+
+source install/setup.bash
+source /opt/ros/humble/setup.bash # source underlay
+cd /your-workspace
+source install/local_setup.bash # source overlay
+
+PACKAGES:
+ros2 pkg create
+ros2 pkg create --build-type ament_python <package_name>
+ros2 pkg create --build-type ament_python --node-name my_node my_package
+ros2 run my_package my_node
+
+
+Python Package Required Contents:
+package.xml file containing meta information about the package
+resource/<package_name> marker file for the package
+setup.cfg is required when a package has executables, so ros2 run can find them
+setup.py containing instructions for how to install the package
+<package_name> - a directory with the same name as your package, used by ROS 2 tools to find your package, contains __init__.py
+
+Writing a simple publisher and subscriber (Python):
+ros2 pkg create --build-type ament_python py_pubsub
+rosdep install -i --from-path src --rosdistro humble -y
+Each node needs an 'entrypoint'
+
+
+Writing a simple service and client (Python):
+ros2 pkg create --build-type ament_python py_srvcli --dependencies rclpy example_interfaces
+rosdep install -i --from-path src --rosdistro humble -y
+colcon build --packages-select py_srvcli
+
+Creating custom msg and srv files:
+ros2 pkg create --build-type ament_cmake tutorial_interfaces
+
+Using parameters in a class (Python):
+ros2 run python_parameters minimal_param_node
+ros2 param list
+ros2 param set /minimal_param_node my_parameter earth
+ros2 launch python_parameters python_parameters_launch.py
+
+Using ros2doctor to identify issues:
+ros2 doctor
+ros2 doctor --report
+
+Managing Dependencies with rosdep:
+rosdep install --from-paths src -y --ignore-src
+
+tf2:
+ros2 launch turtle_tf2_py turtle_tf2_demo.launch.py
+ros2 run tf2_tools view_frames
+ros2 run tf2_ros tf2_echo [source_frame] [target_frame]
+look at turtle frames with rviz
+ros2 run rviz2 rviz2 -d $(ros2 pkg prefix --share turtle_tf2_py)/rviz/turtle_rviz.rviz
+
