@@ -49,7 +49,7 @@ class Brain(Node):
 
         print("NOTE - turtlebot_brain.Brain: Initialising navigator")
         self.first = True
-        self.ready_to_move = False
+        self.ready_to_move = True
         self.nav = BasicNavigator() # Initialise navigator
         self.nav.lifecycleStartup() #init_pose = self.cur_pos
 
@@ -69,8 +69,8 @@ class Brain(Node):
     Converts x,y map pixel coords to global coords in m.
     """
     def coord_mapPxl2m(self, mapPos_x, mapPos_y):
-        pos_x = int((mapPos_x * self.mapInfo.resolution) + self.mapInfo.origin.position.x)
-        pos_y = int((mapPos_y * self.mapInfo.resolution) + self.mapInfo.origin.position.y)
+        pos_x = (mapPos_x * self.mapInfo.resolution) + self.mapInfo.origin.position.x
+        pos_y = (mapPos_y * self.mapInfo.resolution) + self.mapInfo.origin.position.y
         return pos_x, pos_y
     
     """
@@ -93,7 +93,9 @@ class Brain(Node):
     def mark_mapPxl_unreachable(self, x, y):
         x = int(x)
         y = int(y)
-        self.unreachable_positions.append([x,y])
+        for i in range(0, 5):
+            for j in range(0, 5):
+                self.unreachable_positions.append([x + i, y + j])
         return
     
     """
@@ -108,7 +110,14 @@ class Brain(Node):
     Attempts to generate a path to a waypoint. On failure, returns False, else, True.
     """
     def try_generate_path(self, x, y):
-        return True
+        #waypoint = PoseStamped()
+        #waypoint.pose.position.x = float(x)
+        #waypoint.pose.position.y = float(y)
+        #waypoint.pose.orientation.w = 0.0
+        #path = self.nav.getPath(self.cur_pos, waypoint)
+        #if path != None:
+            return True
+        #return False
 
     #TODO Subscribe to error for unreachable path (in planner_server node)
 
@@ -127,7 +136,6 @@ class Brain(Node):
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapArray2d = np.reshape(msg.data, (-1, msg.info.width))
         self.mapInfo = msg.info
-        self.domap(msg)
 
     # If idle, calculate for another waypoint from lab code
     def bt_log_callback(self, msg:BehaviorTreeLog):
@@ -135,7 +143,7 @@ class Brain(Node):
         for event in msg.event_log:
             if event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE':
-                self.ready_to_move = True
+                self.domap(self.mapInfo)
 
     # TODO - Detect and react when navigation fails to find a valid path
     # TODO - Implement strategy for not re-sending bad waypoints
@@ -167,16 +175,20 @@ class Brain(Node):
     def move_to_waypoint(self, x, y, w):
         #Use nav2 or custom planning algorithm to move robot to waypoint
         #This requires sending initial pose and a first waypoint through command line
-        if self.ready_to_move: # Check if the robot is ready to move
-            self.ready_to_move = False
-            print('NOTE - turtlebot_brain.move_to_waypoint: Setting waypoint {position: {x: %s, y: %s}, orientation: {w: %s}}'  % (x, y, w))
-            os.system("ros2 topic pub -1 /goal_pose geometry_msgs/PoseStamped '{header: {frame_id: 'map'}, pose: {position: {x: %s, y: %s}, orientation: {w: %s}}}'" % (x, y, w))
-    
+        waypoint = PoseStamped()
+        waypoint.pose.position.x = float(x)
+        waypoint.pose.position.y = float(y)
+        waypoint.pose.orientation.w = float(w)
+        print('NOTE - turtlebot_brain.move_to_waypoint: Setting waypoint {position: {x: %s, y: %s}, orientation: {w: %s}}'  % (x, y, w))
+        os.prr
+        while not self.nav.isTaskComplete():
+            feedback = self.nav.getFeedback()
 
     def map_get_unexplored_in_range(self, mapx, mapy, radius):
         print("Getting unexplored pixels in range.")
         unexplored_in_range = []
         xmin = max(mapx-radius, 0)
+        print(mapx, mapy, radius)
         xmax = min(mapx+radius, self.mapInfo.width)
         ymin = max(mapy-radius, 0)
         ymax = min(mapy+radius, self.mapInfo.height)
@@ -198,8 +210,11 @@ class Brain(Node):
             mapx, mapy = unexplored_list.pop() 
             if not self.is_mapPxl_unreachable(mapx,mapy):   # if pixel is possibly reachable
                 x, y = self.coord_mapPxl2m(mapx, mapy)
+                print(x, y)
                 if self.try_generate_path(x, y):    # and attempt to generate a path succeeds
-                    if self.move_to_waypoint(x, y, 0): # and waypoint is reached (within time limit)
+                    self.move_to_waypoint(x, y, 0) # and waypoint is reached (within time limit)
+                    result = self.nav.getResult() 
+                    if result == result.SUCCEEDED:
                         return True # job done
                 # If we find pixel to be unreachable
                 self.mark_mapPxl_unreachable(mapx,mapy)
@@ -222,7 +237,7 @@ class Brain(Node):
         """
         mapx, mapy = self.get_coords_asMapPxl()
         min_search_radius = 10
-        max_search_radius = 30
+        max_search_radius = 50
         search_radius = min_search_radius
         # search radius for reachable, unexplored pixels and set goal to go there
         while search_radius < max_search_radius:
