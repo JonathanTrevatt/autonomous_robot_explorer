@@ -143,7 +143,7 @@ class Brain(Node):
         for event in msg.event_log:
             if event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE':
-                self.domap(self.mapInfo)
+                self.domap()
 
     # TODO - Detect and react when navigation fails to find a valid path
     # TODO - Implement strategy for not re-sending bad waypoints
@@ -180,7 +180,7 @@ class Brain(Node):
         waypoint.pose.position.y = float(y)
         waypoint.pose.orientation.w = float(w)
         print('NOTE - turtlebot_brain.move_to_waypoint: Setting waypoint {position: {x: %s, y: %s}, orientation: {w: %s}}'  % (x, y, w))
-        os.prr
+        os.system("ros2 topic pub -1 /goal_pose geometry_msgs/PoseStamped '{header: {frame_id: 'map'}, pose: {position: {x: %s, y: %s}, orientation: {w: %s}}}'" % (x, y, w))
         while not self.nav.isTaskComplete():
             feedback = self.nav.getFeedback()
 
@@ -199,6 +199,7 @@ class Brain(Node):
             for mapy in np.linspace(ymin, ymax, ymax-ymin):
                 mapx=int(mapx)
                 mapy=int(mapy)
+                print('NOTE - printing map array:', self.mapArray2d)
                 if self.mapArray2d[mapx][mapy] == -1: # if pixel is unexplored
                     unexplored_in_range.append([mapx,mapy])
         return unexplored_in_range
@@ -223,7 +224,7 @@ class Brain(Node):
         # If every element of the list is unreachable
         return False
 
-    def domap(self, msg:OccupancyGrid):
+    def domap(self):
         """
         self.pos_x:  (position of robot in global coords in m)
         map resolution: each pixel of the map represents 0.05m
