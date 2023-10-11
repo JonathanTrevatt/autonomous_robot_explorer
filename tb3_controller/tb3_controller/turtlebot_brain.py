@@ -33,9 +33,9 @@ class Brain(Node):
 
         print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
         # Subscriber example code:
+        self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                 self.odom_callback,     10)
         self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                  self.map_callback,      10)
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',    self.bt_log_callback,   10)
-        self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                 self.odom_callback,     10)
         self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
         
         print("NOTE - turtlebot_brain.Brain: defining qos_profile")
@@ -49,6 +49,7 @@ class Brain(Node):
 
         print("NOTE - turtlebot_brain.Brain: Initialising navigator")
         self.first = True
+        self.ready_to_move = False
         self.nav = BasicNavigator() # Initialise navigator
         self.nav.lifecycleStartup() #init_pose = self.cur_pos
 
@@ -63,11 +64,6 @@ class Brain(Node):
         self.cur_pos.pose.position.x = self.pos_x
         self.cur_pos.pose.position.y = self.pos_y
         self.cur_pos.pose.orientation.w = self.pos_w
-        if self.first:  
-            self.first = False
-            self.move_to_waypoint(1.0, -0.5, 1)
-            
-    
     
     """
     Converts x,y map pixel coords to global coords in m.
@@ -139,8 +135,7 @@ class Brain(Node):
         for event in msg.event_log:
             if event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE':
-                waypoint = self.waypoint_compute(map)
-                self.move_to_waypoint(0.5, 0.5, 1)
+                self.ready_to_move = True
 
     # TODO - Detect and react when navigation fails to find a valid path
     # TODO - Implement strategy for not re-sending bad waypoints
@@ -172,8 +167,10 @@ class Brain(Node):
     def move_to_waypoint(self, x, y, w):
         #Use nav2 or custom planning algorithm to move robot to waypoint
         #This requires sending initial pose and a first waypoint through command line
-        print('NOTE - turtlebot_brain.move_to_waypoint: Setting waypoint {position: {x: %s, y: %s}, orientation: {w: %s}}'  % (x, y, w))
-        os.system("ros2 topic pub -1 /goal_pose geometry_msgs/PoseStamped '{header: {frame_id: 'map'}, pose: {position: {x: %s, y: %s}, orientation: {w: %s}}}'" % (x, y, w))
+        if self.ready_to_move: # Check if the robot is ready to move
+            self.ready_to_move = False
+            print('NOTE - turtlebot_brain.move_to_waypoint: Setting waypoint {position: {x: %s, y: %s}, orientation: {w: %s}}'  % (x, y, w))
+            os.system("ros2 topic pub -1 /goal_pose geometry_msgs/PoseStamped '{header: {frame_id: 'map'}, pose: {position: {x: %s, y: %s}, orientation: {w: %s}}}'" % (x, y, w))
     
 
     def map_get_unexplored_in_range(self, mapx, mapy, radius):
@@ -228,7 +225,7 @@ class Brain(Node):
         max_search_radius = 30
         search_radius = min_search_radius
         # search radius for reachable, unexplored pixels and set goal to go there
-        while search_radius <= max_search_radius:
+        while search_radius < max_search_radius:
             print("domap - Searching for unexplored pixels in radius: ", search_radius)
             # generate list of unexplored pixels within search radius
             unexplored_list = self.map_get_unexplored_in_range(mapx, mapy, search_radius)
