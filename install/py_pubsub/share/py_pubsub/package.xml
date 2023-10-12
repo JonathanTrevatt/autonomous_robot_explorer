@@ -3,11 +3,13 @@
 <package format="3">
   <name>py_pubsub</name>
   <version>0.0.0</version>
-  <description>Package to test</description>
-  <maintainer email="p.tsai@uqconnect.edu.au">johnson</maintainer>
-  <license>Apache Licence 2.0</license>
+  <description>Example publisher and subscriber nodes</description>
+  <maintainer email="jonathan@trevatt.net">jonno</maintainer>
+  <license>TODO: License declaration</license>
+
   <exec_depend>rclpy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
+  <exec_depend>tutorial_interfaces</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
