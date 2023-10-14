@@ -1,0 +1,47 @@
+# Powershell:
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+wsl --set-default-version 2
+wsl --install Ubuntu-22.04
+
+# Ubuntu
+sudo apt update
+sudo apt upgrade
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+sudo apt update && sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+sudo apt update
+sudo apt upgrade
+sudo apt install ros-humble-desktop
+sudo apt install ros-dev-tools
+sudo apt install nautilus
+sudo apt install ros-humble-gazebo-*
+sudo apt install ros-humble-cartographer
+sudo apt install ros-humble-cartographer-ros
+sudo apt install ros-humble-navigation2
+sudo apt install ros-humble-nav2-bringup
+source ~/.bashrc
+sudo apt install ros-humble-dynamixel-sdk
+sudo apt install ros-humble-turtlebot3-msgs
+sudo apt install ros-humble-turtlebot3
+echo 'export ROS_DOMAIN_ID=30 #TURTLEBOT3' >> ~/.bashrc
+source ~/.bashrc
+source /opt/ros/humble/setup.bash
+echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
+sudo mkdir metr4202_ws
+echo 'source ~/metr4202_ws/install/setup.bash' >> ~/.bashrc
+cd metr4202_ws
+git config --global user.name "Darkspore52"
+git config --global user.email "jonathan@trevatt.net"
+git config --global core.autocrlf true
+git config --global core.safecrlf warn
+git clone https://github.com/Darkspore52/METR4202.git
+mv METR4202 ./src
+colcon build
+source install/setup.bash
+
+export GAZEBO_MODEL_PATH=~/.gazebo/models:$GAZEBO_MODEL_PATH
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/path/to/turtlebot3_simulations/turtlebot3_gazebo/models
+

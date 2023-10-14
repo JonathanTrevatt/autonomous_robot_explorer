@@ -1,9 +1,15 @@
 wsl --shutdown
+
+source /opt/ros/humble/setup.bash
+
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ros2 launch slam_toolbox online_async_launch.py
 ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=METR4202/maps/turtlebot3_world_map.yaml
 cd metr4202_ws
+<<<<<<< HEAD
 colcon build 
+=======
+>>>>>>> 257e4701896fc0886977e423da91f3b18aa728de
 source install/setup.bash
 ros2 run tb3_controller turtlebot_brain
 
@@ -18,4 +24,6 @@ ros2 topic pub
 pose: {position: {x: 0.2, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}
 "
 
+
+echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
 
