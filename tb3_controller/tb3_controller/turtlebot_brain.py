@@ -88,7 +88,7 @@ class Brain(Node):
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
-            self.map_reachable_publisher.publish(self.map_reachable)
+            self.map_reachable_publisher.publish(self.map_unreachable)
 
         self.ready_map = True
         self.map_reachable_publisher.publish(self.map_unreachable)
@@ -102,17 +102,7 @@ class Brain(Node):
         self.map_unreachable.info = msg.info
         size = np.array(msg.data).size
         map_unreachable_data = array('b', [int(xv) if c else 101*int(yv) for c, xv, yv in zip(np.array(msg.data) > 80, np.zeros(size), np.ones(size))])
-        
-        """
-        map_unreachable_data = msg.data
-        ix, iy = 0, 0
-        for x in map_unreachable_data:
-            ix += 1
-            for y in x:
-                iy += 1
-                if map_unreachable_data[ix-1][iy-1] >  80:
-                    map_unreachable_data[ix-1][iy-1] = True*100
-                    """
+
         self.map_unreachable.data = map_unreachable_data
         return
 
@@ -170,7 +160,7 @@ class Brain(Node):
             for yPxl in np.linspace(ymin, ymax, ymax-ymin):
                 pxl = (int(xPxl), int(yPxl))
                 self.mark_waypointPxl_unreachable(pxl)
-        self.map_reachable_publisher.publish(self.map_reachable)
+        self.map_reachable_publisher.publish(self.map_unreachable)
 
     def mark_waypointPxl_unreachable(self, waypointPxl):
         """
@@ -194,7 +184,17 @@ class Brain(Node):
         """
         Attempts to generate a path to a waypoint. On failure, returns False, else, True.
         """
-        return True
+        
+        new_pose = PoseStamped()
+        waypoint = self.coord_m2pxl(waypoint)
+        new_pose.pose.position.x = float(waypoint[0])
+        new_pose.pose.position.y = float(waypoint[1])
+        new_pose.pose.orientation.w = float(waypoint[2])
+        print(waypoint)
+        path = self.nav.getPath(self.cur_pos, new_pose)
+        if path is not None:
+            return True
+        return False
     
     def waypoint_compute_trivial(self):
         waypoint = (0.5, 0.5, 1)
@@ -256,6 +256,7 @@ class Brain(Node):
         x_posPxl, y_posPxl = current_posPxl
         print("Getting unexplored pixels in range.")
         unexplored_in_range = []
+        print(self.mapInfo.width, self.mapInfo.height)
         xmin = max(x_posPxl-radius, 0)
         xmax = min(x_posPxl+radius, self.mapInfo.width)
         ymin = max(y_posPxl-radius, 0)
