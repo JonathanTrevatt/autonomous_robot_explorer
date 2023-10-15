@@ -15,11 +15,12 @@ Go to waypoint (detect if navigation fails)
 """
 
 import rclpy
+from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, QoSDurabilityPolicy
 from nav2_simple_commander.robot_navigator import BasicNavigator
 from nav2_msgs.msg import BehaviorTreeLog
-from nav_msgs.msg import OccupancyGrid, Odometry
+from nav_msgs.msg import OccupancyGrid, Odometry, Path
 import os
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 import numpy as np
@@ -35,7 +36,7 @@ class Brain(Node):
         self.ready_map = False
         self.ready_log = False
         self.first_waypoint_sent = False
-        
+        self.nav_canceled = False
         self.map_unreachable_initFlag = False
 
         print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
@@ -43,6 +44,7 @@ class Brain(Node):
         self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                  self.map_callback,      10)
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',    self.bt_log_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                 self.odom_callback,     10)
+        self.path_subscription      = self.create_subscription  (Path,                      'local_plan',           self.path_callback,     10)
         self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
         self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'map_reachable',    10)
 
@@ -63,6 +65,7 @@ class Brain(Node):
         self.pos_y = msg.pose.pose.position.y
         self.pos_w = msg.pose.pose.orientation.w
         self.cur_pos = PoseStamped()
+        self.cur_pos.header.frame_id = 'map'
         self.cur_pos.pose.position.x = self.pos_x
         self.cur_pos.pose.position.y = self.pos_y
         self.cur_pos.pose.orientation.w = self.pos_w
@@ -94,6 +97,9 @@ class Brain(Node):
         self.map_reachable_publisher.publish(self.map_unreachable)
         return
     
+    def path_callback(self, msg:Path):
+        self.path = msg
+    
     def init_map_unreachable(self, msg:OccupancyGrid):
         self.map_unreachable_initFlag = True
 
@@ -109,8 +115,9 @@ class Brain(Node):
     
     def bt_log_callback(self, msg:BehaviorTreeLog):
         for event in msg.event_log:
-            if event.node_name == 'NavigateRecovery' and \
-                event.current_status == 'IDLE':
+            if (event.node_name == 'NavigateRecovery' and \
+                event.current_status == 'IDLE') or self.nav_canceled:
+                self.nav_canceled = False
                 if self.ready_odom and self.ready_map:
                     waypointPxl = self.waypointPxl_compute()
                     print("waypointPxl: ", waypointPxl)
@@ -151,9 +158,9 @@ class Brain(Node):
     def mark_range_unreachable(self, pxl, radius):
         x_posPxl, y_posPxl = pxl
         xmin = max(x_posPxl-radius, 0)
-        xmax = min(x_posPxl+radius, self.mapInfo.width)
+        xmax = min(x_posPxl+radius, self.mapInfo.width - 1)
         ymin = max(y_posPxl-radius, 0)
-        ymax = min(y_posPxl+radius, self.mapInfo.height)
+        ymax = min(y_posPxl+radius, self.mapInfo.height - 1)
 
         print("mapArray2d.shape:", self.mapArray2d.shape)
         for xPxl in np.linspace(xmin, xmax, xmax-xmin):
@@ -171,6 +178,26 @@ class Brain(Node):
         self.unreachable_positions[xPxl][yPxl] = True
         return
 
+    def mark_area_unreachable(self, waypointPxl):
+        print("Marking waypoint as unreachable.")
+        xPxl, yPxl = waypointPxl
+        i = 0
+        j = 0
+        while self.mapArray2d[xPxl + i][yPxl] == -1 and xPxl + i < self.mapMsg.info.width:
+            while self.mapArray2d[xPxl + i][yPxl + j] == -1 and yPxl + j < self.mapMsg.info.height:
+                self.unreachable_positions[xPxl + i][yPxl + j] = True
+                j += 1
+            j = 0
+            i += 1
+        while self.mapArray2d[xPxl - i][yPxl] == -1 and xPxl - i >= 0:
+            while self.mapArray2d[xPxl - i][yPxl - j] == -1 and yPxl + j >= 0:
+                self.unreachable_positions[xPxl + i][yPxl + j] = True
+                j += 1
+            j = 0
+            i += 1 
+        self.unreachable_positions[xPxl][yPxl] = True
+        return
+
 
     def is_waypointPxl_unreachable(self, waypointPxl):
         """
@@ -184,14 +211,22 @@ class Brain(Node):
         """
         Attempts to generate a path to a waypoint. On failure, returns False, else, True.
         """
-        
+
         new_pose = PoseStamped()
-        waypoint = self.coord_m2pxl(waypoint)
         new_pose.pose.position.x = float(waypoint[0])
         new_pose.pose.position.y = float(waypoint[1])
         new_pose.pose.orientation.w = float(waypoint[2])
-        print(waypoint)
-        path = self.nav.getPath(self.cur_pos, new_pose)
+        new_pose.header.frame_id = 'map'
+        cur_pose = PoseStamped()
+        cur_pose.pose.position.x = self.pos_x
+        cur_pose.pose.position.y = self.pos_y
+        cur_pose.pose.position.z = 0.0
+        cur_pose.pose.orientation.x = 0.0
+        cur_pose.pose.orientation.y = 0.0
+        cur_pose.pose.orientation.z = 0.0
+        cur_pose.pose.orientation.w = 0.0
+        cur_pose.header.frame_id = 'map'
+        path = self.nav.getPath(cur_pose, new_pose)
         if path is not None:
             return True
         return False
@@ -239,7 +274,20 @@ class Brain(Node):
         x, y, w = waypoint
         print("Moving to waypoint: ", waypoint)
         self.IDLE = False
-        os.system("ros2 topic pub -1 /goal_pose geometry_msgs/PoseStamped '{header: {frame_id: 'map'}, pose: {position: {x: %s, y: %s}, orientation: {w: %s}}}'" % (x, y, w))
+        pose = PoseStamped()
+        pose.header.frame_id = 'map'
+        pose.pose.position.x = waypoint[0]
+        pose.pose.position.y = waypoint[1]
+        pose.pose.orientation.w = float(waypoint[2])
+        self.nav.goToPose(pose)
+        while not self.nav.isTaskComplete():
+            feedback = self.nav.getFeedback()
+            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=10.0):
+                self.nav_canceled = True
+                self.nav.cancelTask()
+        result = self.nav.getResult()
+        if result == result.CANCELED or result == result.FAILED:
+            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
     
     def move_to_waypointPxl(self, waypointPxl):
         """
@@ -258,9 +306,9 @@ class Brain(Node):
         unexplored_in_range = []
         print(self.mapInfo.width, self.mapInfo.height)
         xmin = max(x_posPxl-radius, 0)
-        xmax = min(x_posPxl+radius, self.mapInfo.width)
+        xmax = min(x_posPxl+radius, self.mapInfo.width - 1)
         ymin = max(y_posPxl-radius, 0)
-        ymax = min(y_posPxl+radius, self.mapInfo.height)
+        ymax = min(y_posPxl+radius, self.mapInfo.height - 1)
 
         print("xmin, xmax, ymin, ymax: ", xmin, xmax, ymin, ymax)
         print("mapArray2d.shape:", self.mapArray2d.shape)
@@ -270,7 +318,7 @@ class Brain(Node):
                 yPxl=int(yPxl)
                 pxl = (xPxl, yPxl)
                 if self.mapArray2d[xPxl][yPxl] > 80:
-                    self.mark_range_unreachable(pxl, 5)
+                    self.mark_range_unreachable(pxl, 10)
                 elif self.mapArray2d[xPxl][yPxl] == -1: # if pixel is unexplored
                     unexplored_in_range.append(pxl)
         return unexplored_in_range
