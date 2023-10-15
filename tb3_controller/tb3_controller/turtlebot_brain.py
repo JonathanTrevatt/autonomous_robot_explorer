@@ -24,6 +24,7 @@ import os
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 import numpy as np
 import random
+from array import array
 
 class Brain(Node):
     def __init__(self):
@@ -34,6 +35,8 @@ class Brain(Node):
         self.ready_map = False
         self.ready_log = False
         self.first_waypoint_sent = False
+        
+        self.map_unreachable_initFlag = False
 
         print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
         # Subscriber example code:
@@ -77,12 +80,41 @@ class Brain(Node):
         Values range [-1, 100], where -1 represents an unknown probablility.
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
-        print(msg.data)
+        self.mapMsg = msg
         self.mapArray2d = np.reshape(msg.data, (-1, msg.info.width))
         self.mapInfo = msg.info
         if self.unreachable_positions == []:
             self.unreachable_positions = np.zeros((msg.info.height, msg.info.width), dtype=bool)
+        
+        if not self.map_unreachable_initFlag:
+            self.init_map_unreachable(msg)
+            self.map_reachable_publisher.publish(self.map_reachable)
+
         self.ready_map = True
+        self.map_reachable_publisher.publish(self.map_unreachable)
+        return
+    
+    def init_map_unreachable(self, msg:OccupancyGrid):
+        self.map_unreachable_initFlag = True
+
+        self.map_unreachable = OccupancyGrid()
+        self.map_unreachable.header.frame_id = "map"
+        self.map_unreachable.info = msg.info
+        size = np.array(msg.data).size
+        map_unreachable_data = array('b', [int(xv) if c else 101*int(yv) for c, xv, yv in zip(np.array(msg.data) > 80, np.zeros(size), np.ones(size))])
+        
+        """
+        map_unreachable_data = msg.data
+        ix, iy = 0, 0
+        for x in map_unreachable_data:
+            ix += 1
+            for y in x:
+                iy += 1
+                if map_unreachable_data[ix-1][iy-1] >  80:
+                    map_unreachable_data[ix-1][iy-1] = True*100
+                    """
+        self.map_unreachable.data = map_unreachable_data
+        return
 
     
     def bt_log_callback(self, msg:BehaviorTreeLog):
@@ -138,7 +170,7 @@ class Brain(Node):
             for yPxl in np.linspace(ymin, ymax, ymax-ymin):
                 pxl = (int(xPxl), int(yPxl))
                 self.mark_waypointPxl_unreachable(pxl)
-        self.publish_map_reachable()
+        self.map_reachable_publisher.publish(self.map_reachable)
 
     def mark_waypointPxl_unreachable(self, waypointPxl):
         """
@@ -148,16 +180,6 @@ class Brain(Node):
         xPxl, yPxl = waypointPxl
         self.unreachable_positions[xPxl][yPxl] = True
         return
-    
-    def publish_map_reachable(self):
-        grid = OccupancyGrid()
-        a = []
-        for i in range(0, self.mapInfo.height*self.mapInfo.width):
-            a.append(np.random.randint(-1, 1))
-        print("publish_map_reachable!!!!!!!!!!!")
-        grid.data = a
-        grid.info = self.mapInfo
-        self.map_reachable_publisher.publish(grid)
 
 
     def is_waypointPxl_unreachable(self, waypointPxl):
