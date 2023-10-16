@@ -87,10 +87,10 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (msg.info.height, -1))
+        self.mapArray2d = np.reshape(msg.data, (msg.info.width,-1))
         self.mapInfo = msg.info
         if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.width + 200, msg.info.height + 200), dtype=bool)
+            self.unreachable_positions = np.zeros((msg.info.width+10, msg.info.height+10), dtype=bool)
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
@@ -115,6 +115,11 @@ class Brain(Node):
 
 
     def bt_log_callback(self, msg:BehaviorTreeLog):
+        """_summary_
+
+        Args:
+            msg (BehaviorTreeLog): _description_
+        """
         for event in msg.event_log:
             if (event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE') or self.nav_canceled:
@@ -169,6 +174,7 @@ class Brain(Node):
                 pxl = (int(xPxl), int(yPxl))
                 self.mark_waypointPxl_unreachable(pxl)
         self.map_reachable_publisher.publish(self.map_unreachable)
+
 
     def mark_waypointPxl_unreachable(self, waypointPxl):
         """
@@ -232,9 +238,12 @@ class Brain(Node):
             return True
         return False
     
+    
+    """
     def waypoint_compute_trivial(self):
         waypoint = (0.5, 0.5, 1)
         return waypoint
+    """
 
     def waypointPxl_compute(self):
         """
@@ -283,12 +292,12 @@ class Brain(Node):
         self.nav.goToPose(pose)
         while not self.nav.isTaskComplete():
             feedback = self.nav.getFeedback()
-            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=15.0):
+            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
                 self.nav_canceled = True
                 self.nav.cancelTask()
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
-            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 5)
+            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
     
     def move_to_waypointPxl(self, waypointPxl):
         """
