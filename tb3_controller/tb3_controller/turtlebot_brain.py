@@ -114,6 +114,11 @@ class Brain(Node):
 
     
     def bt_log_callback(self, msg:BehaviorTreeLog):
+        """_summary_
+
+        Args:
+            msg (BehaviorTreeLog): _description_
+        """
         for event in msg.event_log:
             if (event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE') or self.nav_canceled:

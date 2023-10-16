@@ -23,9 +23,7 @@ ros2 launch slam_toolbox online_async_launch.py
 ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=src/maps/turtlebot3_world_map.yaml
 
 # In new window - 
-# cd into workspace containing src (may look different for you)
-cd metr4202_ws
-# Source
-source install/setup.bash
+# Source setup.bash (workspace path may look different for you)
+source metr4202_ws/install/setup.bash
 # Run our controller
 ros2 run tb3_controller turtlebot_brain
