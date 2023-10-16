@@ -33,9 +33,12 @@ def generate_launch_description():
     x_pose = LaunchConfiguration('x_pose', default='-2.0')
     y_pose = LaunchConfiguration('y_pose', default='-0.5')
 
-    world = "../../../METR4202/maps/Test.world" 
+    my_custom_launch_file_dir = os.path.dirname(os.path.realpath(__file__))
+    world = os.path.join(my_custom_launch_file_dir, 'double_lane.world')
 
-    )
+    print(f"Trying to load world from: {world}")
+
+
 
     gzserver_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
