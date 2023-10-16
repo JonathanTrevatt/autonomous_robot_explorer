@@ -72,7 +72,7 @@ class Brain(Node):
         self.cur_pos.pose.position.y = self.pos_y
         self.cur_pos.pose.orientation.w = self.pos_w
         if self.ready_map and not self.first_waypoint_sent:
-            self.nav.setInitialPose(self.cur_pos)
+            # self.nav.setInitialPose(self.cur_pos)
             self.first_waypoint_sent = True
             waypoint = (self.pos_x, self.pos_y, self.pos_w)
             self.move_to_waypoint(waypoint)
@@ -87,10 +87,10 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (msg.info.width, -1))
+        self.mapArray2d = np.reshape(msg.data, (msg.info.height, -1))
         self.mapInfo = msg.info
         if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.width + 1, msg.info.height + 1), dtype=bool)
+            self.unreachable_positions = np.zeros((msg.info.width + 200, msg.info.height + 200), dtype=bool)
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
@@ -119,7 +119,7 @@ class Brain(Node):
             if (event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE') or self.nav_canceled:
                 self.nav_canceled = False
-                if self.ready_odom and self.ready_map:
+                if self.ready_map:
                     waypointPxl = self.waypointPxl_compute()
                     print("waypointPxl: ", waypointPxl)
                     waypoint = self.coord_pxl2m(waypointPxl)
@@ -243,7 +243,7 @@ class Brain(Node):
         print('NOTE - turtlebot_brain.waypoint_compute: reached')
         xPxl, yPxl = self.get_coords_as_Pxl()
         min_search_radius = 20
-        max_search_radius = 101
+        max_search_radius = 200
         search_radius = min_search_radius
         # search radius for reachable, unexplored pixels and set goal to go there
         while search_radius <= max_search_radius:
@@ -288,7 +288,7 @@ class Brain(Node):
                 self.nav.cancelTask()
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
-            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
+            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 5)
     
     def move_to_waypointPxl(self, waypointPxl):
         """
@@ -320,17 +320,17 @@ class Brain(Node):
                 pxl = (xPxl, yPxl)
                 if self.mapArray2d[xPxl][yPxl] > 80:
                     self.mark_waypointPxl_unreachable(pxl)
-                elif self.mapArray2d[xPxl][yPxl] == -1: 
+                elif self.mapArray2d[xPxl][yPxl] == -1:
                     # if pixel is unexplored
                     nearby_explored_pixels = 0
-                    for x in range(-2, 3):
-                        for y in range(-2, 3):
+                    for x in range(-1, 2):
+                        for y in range(-1, 2):
                             if xPxl + x >= 0 and yPxl + y >= 0:
                                 if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
                                     nearby_explored_pixels += 1
                                 if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 100:
                                     nearby_explored_pixels -= 2
-                    if nearby_explored_pixels > 12:
+                    if nearby_explored_pixels >= 4:
                         unexplored_in_range.append(pxl)
         for pixel in unexplored_in_range:
             print("unexplored = ", self.coord_pxl2m(pixel))
