@@ -283,12 +283,12 @@ class Brain(Node):
         self.nav.goToPose(pose)
         while not self.nav.isTaskComplete():
             feedback = self.nav.getFeedback()
-            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=10.0):
+            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=15.0):
                 self.nav_canceled = True
                 self.nav.cancelTask()
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
-            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 3)
+            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
     
     def move_to_waypointPxl(self, waypointPxl):
         """
@@ -323,11 +323,14 @@ class Brain(Node):
                 elif self.mapArray2d[xPxl][yPxl] == -1: 
                     # if pixel is unexplored
                     nearby_explored_pixels = 0
-                    for x in range(-1, 2):
-                        for y in range(-1, 2):
-                            if self.mapArray2d[xPxl + x][yPxl + y] == 0:
-                                nearby_explored_pixels += 1
-                    if nearby_explored_pixels > 2:
+                    for x in range(-2, 3):
+                        for y in range(-2, 3):
+                            if xPxl + x >= 0 and yPxl + y >= 0:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
+                                    nearby_explored_pixels += 1
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 100:
+                                    nearby_explored_pixels -= 2
+                    if nearby_explored_pixels > 12:
                         unexplored_in_range.append(pxl)
         for pixel in unexplored_in_range:
             print("unexplored = ", self.coord_pxl2m(pixel))
