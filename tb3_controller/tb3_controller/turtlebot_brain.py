@@ -72,7 +72,7 @@ class Brain(Node):
         self.cur_pos.pose.position.y = self.pos_y
         self.cur_pos.pose.orientation.w = self.pos_w
         if self.ready_map and not self.first_waypoint_sent:
-            # self.nav.setInitialPose(self.cur_pos)
+            self.nav.setInitialPose(self.cur_pos)
             self.first_waypoint_sent = True
             waypoint = (self.pos_x, self.pos_y, self.pos_w)
             self.move_to_waypoint(waypoint)
