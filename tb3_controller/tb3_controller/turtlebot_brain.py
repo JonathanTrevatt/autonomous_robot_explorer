@@ -84,10 +84,10 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (-1, msg.info.width))
+        self.mapArray2d = np.reshape(msg.data, (-1, msg.info.height))
         self.mapInfo = msg.info
         if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.height, msg.info.width), dtype=bool)
+            self.unreachable_positions = np.zeros((msg.info.width+1, msg.info.height+1), dtype=bool)
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
@@ -169,15 +169,16 @@ class Brain(Node):
                 self.mark_waypointPxl_unreachable(pxl)
         self.map_reachable_publisher.publish(self.map_unreachable)
 
+    """
     def mark_waypointPxl_unreachable(self, waypointPxl):
-        """
+        ""
         Marks a map x,y pixel position as unreachable so that we won't try to pathfind there in future.
-        """
+        ""
         print("Marking waypoint as unreachable.")
         xPxl, yPxl = waypointPxl
         self.unreachable_positions[xPxl][yPxl] = True
         return
-
+    """
     def mark_area_unreachable(self, waypointPxl):
         print("Marking waypoint as unreachable.")
         xPxl, yPxl = waypointPxl
@@ -231,9 +232,12 @@ class Brain(Node):
             return True
         return False
     
+    
+    """
     def waypoint_compute_trivial(self):
         waypoint = (0.5, 0.5, 1)
         return waypoint
+    """
 
     def waypointPxl_compute(self):
         """
@@ -318,7 +322,7 @@ class Brain(Node):
                 yPxl=int(yPxl)
                 pxl = (xPxl, yPxl)
                 if self.mapArray2d[xPxl][yPxl] > 80:
-                    self.mark_range_unreachable(pxl, 10)
+                    self.mark_range_unreachable(pxl, radius)
                 elif self.mapArray2d[xPxl][yPxl] == -1: # if pixel is unexplored
                     unexplored_in_range.append(pxl)
         return unexplored_in_range
