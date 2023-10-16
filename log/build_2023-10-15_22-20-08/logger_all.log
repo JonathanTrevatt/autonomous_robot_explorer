@@ -1,0 +1,468 @@
+[2.375s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--packages-select', 'tb3_controller']
+[2.375s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=8, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['tb3_controller'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x7fe5bf472380>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x7fe5bfc2f880>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x7fe5bfc2f880>>)
+[2.529s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[2.529s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[2.529s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[2.529s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[2.530s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[2.530s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[2.530s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/johnson/METR4202'
+[2.530s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[2.531s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[2.532s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[2.532s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[2.532s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[2.532s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[2.533s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[2.533s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[2.534s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[2.571s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[2.571s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[2.571s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[2.571s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[2.572s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[2.572s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extensions ['ignore', 'ignore_ament_install']
+[2.572s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extension 'ignore'
+[2.572s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extension 'ignore_ament_install'
+[2.573s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extensions ['colcon_pkg']
+[2.573s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extension 'colcon_pkg'
+[2.573s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extensions ['colcon_meta']
+[2.573s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extension 'colcon_meta'
+[2.573s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extensions ['ros']
+[2.573s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extension 'ros'
+[2.574s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extensions ['cmake', 'python']
+[2.574s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extension 'cmake'
+[2.574s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extension 'python'
+[2.574s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extensions ['python_setup_py']
+[2.574s] Level 1:colcon.colcon_core.package_identification:_identify(Instructions) by extension 'python_setup_py'
+[2.575s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[2.575s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[2.576s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[2.576s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[2.576s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[2.576s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[2.577s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[2.578s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[2.578s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[2.578s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extensions ['ignore', 'ignore_ament_install']
+[2.578s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extension 'ignore'
+[2.579s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extension 'ignore_ament_install'
+[2.579s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extensions ['colcon_pkg']
+[2.579s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extension 'colcon_pkg'
+[2.579s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extensions ['colcon_meta']
+[2.579s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extension 'colcon_meta'
+[2.579s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extensions ['ros']
+[2.580s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extension 'ros'
+[2.580s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extensions ['cmake', 'python']
+[2.580s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extension 'cmake'
+[2.580s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extension 'python'
+[2.580s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extensions ['python_setup_py']
+[2.580s] Level 1:colcon.colcon_core.package_identification:_identify(maps) by extension 'python_setup_py'
+[2.581s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[2.581s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[2.581s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[2.581s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[2.582s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[2.582s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[2.582s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[2.582s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[2.582s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[2.583s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[2.583s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[2.583s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[2.583s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[2.583s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[2.584s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) by extensions ['ignore', 'ignore_ament_install']
+[2.584s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) by extension 'ignore'
+[2.584s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) ignored
+[2.585s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extensions ['ignore', 'ignore_ament_install']
+[2.585s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'ignore'
+[2.585s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'ignore_ament_install'
+[2.585s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extensions ['colcon_pkg']
+[2.585s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'colcon_pkg'
+[2.585s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extensions ['colcon_meta']
+[2.585s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'colcon_meta'
+[2.585s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extensions ['ros']
+[2.586s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'ros'
+[2.586s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extensions ['cmake', 'python']
+[2.586s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'cmake'
+[2.586s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'python'
+[2.586s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extensions ['python_setup_py']
+[2.586s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'python_setup_py'
+[2.586s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extensions ['ignore', 'ignore_ament_install']
+[2.587s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extension 'ignore'
+[2.587s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extension 'ignore_ament_install'
+[2.587s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extensions ['colcon_pkg']
+[2.587s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extension 'colcon_pkg'
+[2.587s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extensions ['colcon_meta']
+[2.587s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extension 'colcon_meta'
+[2.587s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extensions ['ros']
+[2.588s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extension 'ros'
+[2.588s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extensions ['cmake', 'python']
+[2.588s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extension 'cmake'
+[2.588s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extension 'python'
+[2.588s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extensions ['python_setup_py']
+[2.588s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander) by extension 'python_setup_py'
+[2.588s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extensions ['ignore', 'ignore_ament_install']
+[2.589s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extension 'ignore'
+[2.589s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extension 'ignore_ament_install'
+[2.589s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extensions ['colcon_pkg']
+[2.589s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extension 'colcon_pkg'
+[2.589s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extensions ['colcon_meta']
+[2.589s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extension 'colcon_meta'
+[2.590s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extensions ['ros']
+[2.590s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extension 'ros'
+[2.590s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extensions ['cmake', 'python']
+[2.591s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extension 'cmake'
+[2.591s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extension 'python'
+[2.591s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extensions ['python_setup_py']
+[2.591s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib) by extension 'python_setup_py'
+[2.592s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extensions ['ignore', 'ignore_ament_install']
+[2.592s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extension 'ignore'
+[2.592s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extension 'ignore_ament_install'
+[2.600s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extensions ['colcon_pkg']
+[2.601s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extension 'colcon_pkg'
+[2.601s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extensions ['colcon_meta']
+[2.601s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extension 'colcon_meta'
+[2.601s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extensions ['ros']
+[2.602s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extension 'ros'
+[2.602s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extensions ['cmake', 'python']
+[2.602s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extension 'cmake'
+[2.602s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extension 'python'
+[2.602s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extensions ['python_setup_py']
+[2.603s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10) by extension 'python_setup_py'
+[2.603s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['ignore', 'ignore_ament_install']
+[2.603s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extension 'ignore'
+[2.604s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extension 'ignore_ament_install'
+[2.604s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['colcon_pkg']
+[2.604s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extension 'colcon_pkg'
+[2.604s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['colcon_meta']
+[2.604s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extension 'colcon_meta'
+[2.604s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['ros']
+[2.604s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extension 'ros'
+[2.604s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['cmake', 'python']
+[2.605s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extension 'cmake'
+[2.605s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extension 'python'
+[2.605s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['python_setup_py']
+[2.605s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/python3.10/site-packages) by extension 'python_setup_py'
+[2.605s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extensions ['ignore', 'ignore_ament_install']
+[2.605s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extension 'ignore'
+[2.606s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extension 'ignore_ament_install'
+[2.606s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extensions ['colcon_pkg']
+[2.606s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extension 'colcon_pkg'
+[2.606s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extensions ['colcon_meta']
+[2.606s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extension 'colcon_meta'
+[2.606s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extensions ['ros']
+[2.606s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extension 'ros'
+[2.606s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extensions ['cmake', 'python']
+[2.607s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extension 'cmake'
+[2.607s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extension 'python'
+[2.607s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extensions ['python_setup_py']
+[2.607s] Level 1:colcon.colcon_core.package_identification:_identify(src/install/waypoint_commander/lib/waypoint_commander) by extension 'python_setup_py'
+[2.607s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extensions ['ignore', 'ignore_ament_install']
+[2.608s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extension 'ignore'
+[2.608s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extension 'ignore_ament_install'
+[2.608s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extensions ['colcon_pkg']
+[2.608s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extension 'colcon_pkg'
+[2.609s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extensions ['colcon_meta']
+[2.609s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extension 'colcon_meta'
+[2.610s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extensions ['ros']
+[2.610s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extension 'ros'
+[2.611s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extensions ['cmake', 'python']
+[2.611s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extension 'cmake'
+[2.611s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extension 'python'
+[2.612s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extensions ['python_setup_py']
+[2.612s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations) by extension 'python_setup_py'
+[2.612s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_fake_node) by extensions ['ignore', 'ignore_ament_install']
+[2.616s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_fake_node) by extension 'ignore'
+[2.617s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_fake_node) by extension 'ignore_ament_install'
+[2.618s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_fake_node) by extensions ['colcon_pkg']
+[2.618s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_fake_node) by extension 'colcon_pkg'
+[2.618s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_fake_node) by extensions ['colcon_meta']
+[2.618s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_fake_node) by extension 'colcon_meta'
+[2.618s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_fake_node) by extensions ['ros']
+[2.619s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_fake_node) by extension 'ros'
+[2.646s] DEBUG:colcon.colcon_core.package_identification:Package 'src/turtlebot3_simulations/turtlebot3_fake_node' with type 'ros.ament_cmake' and name 'turtlebot3_fake_node'
+[2.647s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_gazebo) by extensions ['ignore', 'ignore_ament_install']
+[2.647s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_gazebo) by extension 'ignore'
+[2.647s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_gazebo) by extension 'ignore_ament_install'
+[2.647s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_gazebo) by extensions ['colcon_pkg']
+[2.647s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_gazebo) by extension 'colcon_pkg'
+[2.647s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_gazebo) by extensions ['colcon_meta']
+[2.647s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_gazebo) by extension 'colcon_meta'
+[2.647s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_gazebo) by extensions ['ros']
+[2.648s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_gazebo) by extension 'ros'
+[2.649s] DEBUG:colcon.colcon_core.package_identification:Package 'src/turtlebot3_simulations/turtlebot3_gazebo' with type 'ros.ament_cmake' and name 'turtlebot3_gazebo'
+[2.650s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_simulations) by extensions ['ignore', 'ignore_ament_install']
+[2.650s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_simulations) by extension 'ignore'
+[2.651s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_simulations) by extension 'ignore_ament_install'
+[2.651s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_simulations) by extensions ['colcon_pkg']
+[2.651s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_simulations) by extension 'colcon_pkg'
+[2.651s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_simulations) by extensions ['colcon_meta']
+[2.651s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_simulations) by extension 'colcon_meta'
+[2.651s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_simulations) by extensions ['ros']
+[2.651s] Level 1:colcon.colcon_core.package_identification:_identify(src/turtlebot3_simulations/turtlebot3_simulations) by extension 'ros'
+[2.653s] DEBUG:colcon.colcon_core.package_identification:Package 'src/turtlebot3_simulations/turtlebot3_simulations' with type 'ros.ament_cmake' and name 'turtlebot3_simulations'
+[2.653s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extensions ['ignore', 'ignore_ament_install']
+[2.653s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extension 'ignore'
+[2.653s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extension 'ignore_ament_install'
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extensions ['colcon_pkg']
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extension 'colcon_pkg'
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extensions ['colcon_meta']
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extension 'colcon_meta'
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extensions ['ros']
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extension 'ros'
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extensions ['cmake', 'python']
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extension 'cmake'
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extension 'python'
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extensions ['python_setup_py']
+[2.654s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander) by extension 'python_setup_py'
+[2.655s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/build) by extensions ['ignore', 'ignore_ament_install']
+[2.655s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/build) by extension 'ignore'
+[2.655s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/build) ignored
+[2.655s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extensions ['ignore', 'ignore_ament_install']
+[2.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extension 'ignore'
+[2.665s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extension 'ignore_ament_install'
+[2.666s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extensions ['colcon_pkg']
+[2.666s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extension 'colcon_pkg'
+[2.666s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extensions ['colcon_meta']
+[2.666s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extension 'colcon_meta'
+[2.666s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extensions ['ros']
+[2.667s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extension 'ros'
+[2.667s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extensions ['cmake', 'python']
+[2.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extension 'cmake'
+[2.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extension 'python'
+[2.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extensions ['python_setup_py']
+[2.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install) by extension 'python_setup_py'
+[2.668s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extensions ['ignore', 'ignore_ament_install']
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extension 'ignore'
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extension 'ignore_ament_install'
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extensions ['colcon_pkg']
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extension 'colcon_pkg'
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extensions ['colcon_meta']
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extension 'colcon_meta'
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extensions ['ros']
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extension 'ros'
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extensions ['cmake', 'python']
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extension 'cmake'
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extension 'python'
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extensions ['python_setup_py']
+[2.669s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander) by extension 'python_setup_py'
+[2.671s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extensions ['ignore', 'ignore_ament_install']
+[2.671s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extension 'ignore'
+[2.671s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extension 'ignore_ament_install'
+[2.672s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extensions ['colcon_pkg']
+[2.672s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extension 'colcon_pkg'
+[2.672s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extensions ['colcon_meta']
+[2.672s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extension 'colcon_meta'
+[2.672s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extensions ['ros']
+[2.672s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extension 'ros'
+[2.672s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extensions ['cmake', 'python']
+[2.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extension 'cmake'
+[2.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extension 'python'
+[2.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extensions ['python_setup_py']
+[2.673s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib) by extension 'python_setup_py'
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extensions ['ignore', 'ignore_ament_install']
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extension 'ignore'
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extension 'ignore_ament_install'
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extensions ['colcon_pkg']
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extension 'colcon_pkg'
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extensions ['colcon_meta']
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extension 'colcon_meta'
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extensions ['ros']
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extension 'ros'
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extensions ['cmake', 'python']
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extension 'cmake'
+[2.674s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extension 'python'
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extensions ['python_setup_py']
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10) by extension 'python_setup_py'
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['ignore', 'ignore_ament_install']
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extension 'ignore'
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extension 'ignore_ament_install'
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['colcon_pkg']
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extension 'colcon_pkg'
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['colcon_meta']
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extension 'colcon_meta'
+[2.675s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['ros']
+[2.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extension 'ros'
+[2.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['cmake', 'python']
+[2.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extension 'cmake'
+[2.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extension 'python'
+[2.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extensions ['python_setup_py']
+[2.676s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/python3.10/site-packages) by extension 'python_setup_py'
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extensions ['ignore', 'ignore_ament_install']
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extension 'ignore'
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extension 'ignore_ament_install'
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extensions ['colcon_pkg']
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extension 'colcon_pkg'
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extensions ['colcon_meta']
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extension 'colcon_meta'
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extensions ['ros']
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extension 'ros'
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extensions ['cmake', 'python']
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extension 'cmake'
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extension 'python'
+[2.677s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extensions ['python_setup_py']
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/install/waypoint_commander/lib/waypoint_commander) by extension 'python_setup_py'
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extensions ['ignore', 'ignore_ament_install']
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extension 'ignore'
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extension 'ignore_ament_install'
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extensions ['colcon_pkg']
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extension 'colcon_pkg'
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extensions ['colcon_meta']
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extension 'colcon_meta'
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extensions ['ros']
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extension 'ros'
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extensions ['cmake', 'python']
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extension 'cmake'
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extension 'python'
+[2.678s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extensions ['python_setup_py']
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander) by extension 'python_setup_py'
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extension 'ignore'
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extension 'ignore_ament_install'
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extensions ['colcon_pkg']
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extension 'colcon_pkg'
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extensions ['colcon_meta']
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extension 'colcon_meta'
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extensions ['ros']
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extension 'ros'
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extensions ['cmake', 'python']
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extension 'cmake'
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extension 'python'
+[2.679s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extensions ['python_setup_py']
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(src/waypoint_commander/waypoint_commander/__pycache__) by extension 'python_setup_py'
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(tb3_controller) by extensions ['ignore', 'ignore_ament_install']
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(tb3_controller) by extension 'ignore'
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(tb3_controller) by extension 'ignore_ament_install'
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(tb3_controller) by extensions ['colcon_pkg']
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(tb3_controller) by extension 'colcon_pkg'
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(tb3_controller) by extensions ['colcon_meta']
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(tb3_controller) by extension 'colcon_meta'
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(tb3_controller) by extensions ['ros']
+[2.680s] Level 1:colcon.colcon_core.package_identification:_identify(tb3_controller) by extension 'ros'
+[2.682s] DEBUG:colcon.colcon_core.package_identification:Package 'tb3_controller' with type 'ros.ament_python' and name 'tb3_controller'
+[2.683s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extensions ['ignore', 'ignore_ament_install']
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extension 'ignore'
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extension 'ignore_ament_install'
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extensions ['colcon_pkg']
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extension 'colcon_pkg'
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extensions ['colcon_meta']
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extension 'colcon_meta'
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extensions ['ros']
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extension 'ros'
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extensions ['cmake', 'python']
+[2.684s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extension 'cmake'
+[2.685s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extension 'python'
+[2.685s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extensions ['python_setup_py']
+[2.685s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg) by extension 'python_setup_py'
+[2.685s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extensions ['ignore', 'ignore_ament_install']
+[2.685s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extension 'ignore'
+[2.685s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extension 'ignore_ament_install'
+[2.685s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extensions ['colcon_pkg']
+[2.685s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extension 'colcon_pkg'
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extensions ['colcon_meta']
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extension 'colcon_meta'
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extensions ['ros']
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extension 'ros'
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extensions ['cmake', 'python']
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extension 'cmake'
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extension 'python'
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extensions ['python_setup_py']
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg) by extension 'python_setup_py'
+[2.687s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[2.688s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extension 'ignore'
+[2.688s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extension 'ignore_ament_install'
+[2.688s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extensions ['colcon_pkg']
+[2.688s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extension 'colcon_pkg'
+[2.688s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extensions ['colcon_meta']
+[2.688s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extension 'colcon_meta'
+[2.689s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extensions ['ros']
+[2.689s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extension 'ros'
+[2.689s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extensions ['cmake', 'python']
+[2.689s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extension 'cmake'
+[2.690s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extension 'python'
+[2.690s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extensions ['python_setup_py']
+[2.690s] Level 1:colcon.colcon_core.package_identification:_identify(turtlebot_controller_pkg/turtlebot_controller_pkg/__pycache__) by extension 'python_setup_py'
+[2.690s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[2.690s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[2.690s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[2.690s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[2.690s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[2.759s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'turtlebot3_fake_node' in 'src/turtlebot3_simulations/turtlebot3_fake_node'
+[2.760s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'turtlebot3_gazebo' in 'src/turtlebot3_simulations/turtlebot3_gazebo'
+[2.761s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'turtlebot3_simulations' in 'src/turtlebot3_simulations/turtlebot3_simulations'
+[2.763s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[2.763s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[2.766s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/johnson/METR4202/install/python_parameters' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[2.767s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/johnson/METR4202/install/py_launch_example' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[2.767s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/johnson/METR4202/install/launch_tutorial' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[2.767s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/johnson/METR4202/install/action_tutorials_interfaces' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[2.768s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/johnson/METR4202/install/action_tutorials_interfaces' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[2.771s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 1 installed packages in /home/johnson/METR4202/install
+[2.774s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 3 installed packages in /home/johnson/turtlebot3_ws/install
+[2.777s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 386 installed packages in /opt/ros/humble
+[2.784s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[3.002s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_args' from command line to 'None'
+[3.003s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_target' from command line to 'None'
+[3.003s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[3.003s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_clean_cache' from command line to 'False'
+[3.003s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_clean_first' from command line to 'False'
+[3.004s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_force_configure' from command line to 'False'
+[3.004s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'ament_cmake_args' from command line to 'None'
+[3.004s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'catkin_cmake_args' from command line to 'None'
+[3.004s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'catkin_skip_building_tests' from command line to 'False'
+[3.004s] DEBUG:colcon.colcon_core.verb:Building package 'tb3_controller' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/johnson/METR4202/build/tb3_controller', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/johnson/METR4202/install/tb3_controller', 'merge_install': False, 'path': '/home/johnson/METR4202/tb3_controller', 'symlink_install': False, 'test_result_base': None}
+[3.006s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[3.013s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[3.014s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/johnson/METR4202/tb3_controller' with build type 'ament_python'
+[3.014s] Level 1:colcon.colcon_core.shell:create_environment_hook('tb3_controller', 'ament_prefix_path')
+[3.031s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[3.033s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/hook/ament_prefix_path.ps1'
+[3.035s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/hook/ament_prefix_path.dsv'
+[3.037s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/hook/ament_prefix_path.sh'
+[3.044s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[3.044s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[3.858s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/johnson/METR4202/tb3_controller'
+[3.860s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[3.860s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[5.179s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/johnson/METR4202/tb3_controller': PYTHONPATH=/home/johnson/METR4202/build/tb3_controller/prefix_override:/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../build/tb3_controller build --build-base /home/johnson/METR4202/build/tb3_controller/build install --record /home/johnson/METR4202/build/tb3_controller/install.log --single-version-externally-managed
+[6.109s] Level 1:colcon.colcon_core.environment:checking '/home/johnson/METR4202/install/tb3_controller' for CMake module files
+[6.109s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/johnson/METR4202/tb3_controller' returned '0': PYTHONPATH=/home/johnson/METR4202/build/tb3_controller/prefix_override:/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../build/tb3_controller build --build-base /home/johnson/METR4202/build/tb3_controller/build install --record /home/johnson/METR4202/build/tb3_controller/install.log --single-version-externally-managed
+[6.111s] Level 1:colcon.colcon_core.environment:checking '/home/johnson/METR4202/install/tb3_controller' for CMake config files
+[6.114s] Level 1:colcon.colcon_core.environment:checking '/home/johnson/METR4202/install/tb3_controller/lib'
+[6.114s] Level 1:colcon.colcon_core.environment:checking '/home/johnson/METR4202/install/tb3_controller/bin'
+[6.115s] Level 1:colcon.colcon_core.environment:checking '/home/johnson/METR4202/install/tb3_controller/lib/pkgconfig/tb3_controller.pc'
+[6.115s] Level 1:colcon.colcon_core.environment:checking '/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages'
+[6.116s] Level 1:colcon.colcon_core.shell:create_environment_hook('tb3_controller', 'pythonpath')
+[6.122s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/hook/pythonpath.ps1'
+[6.123s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/hook/pythonpath.dsv'
+[6.123s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/hook/pythonpath.sh'
+[6.124s] Level 1:colcon.colcon_core.environment:checking '/home/johnson/METR4202/install/tb3_controller/bin'
+[6.125s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(tb3_controller)
+[6.128s] INFO:colcon.colcon_core.shell:Creating package script '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/package.ps1'
+[6.136s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/package.dsv'
+[6.138s] INFO:colcon.colcon_core.shell:Creating package script '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/package.sh'
+[6.141s] INFO:colcon.colcon_core.shell:Creating package script '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/package.bash'
+[6.143s] INFO:colcon.colcon_core.shell:Creating package script '/home/johnson/METR4202/install/tb3_controller/share/tb3_controller/package.zsh'
+[6.144s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/johnson/METR4202/install/tb3_controller/share/colcon-core/packages/tb3_controller)
+[6.145s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[6.146s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[6.146s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[6.146s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[6.319s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[6.319s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[6.319s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[6.319s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[6.373s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.Notifications was not provided by any .service files
+[6.373s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[6.377s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/johnson/METR4202/install/local_setup.ps1'
+[6.379s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/johnson/METR4202/install/_local_setup_util_ps1.py'
+[6.382s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/johnson/METR4202/install/setup.ps1'
+[6.385s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/johnson/METR4202/install/local_setup.sh'
+[6.400s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/johnson/METR4202/install/_local_setup_util_sh.py'
+[6.402s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/johnson/METR4202/install/setup.sh'
+[6.417s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/johnson/METR4202/install/local_setup.bash'
+[6.428s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/johnson/METR4202/install/setup.bash'
+[6.433s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/johnson/METR4202/install/local_setup.zsh'
+[6.437s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/johnson/METR4202/install/setup.zsh'
