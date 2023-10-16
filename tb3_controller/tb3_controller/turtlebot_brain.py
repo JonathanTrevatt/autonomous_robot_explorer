@@ -1,19 +1,3 @@
-"""
-System Demonstration Checklist:
-□ Uses SLAM to create a map (I.e. launch file opens slam, this node subscribes to map)
-
-Use slam to create map
-subscribe to map
-Detect unexplored area
-    Suggestion: use watershedding method
-    Fill region (with model of robot) from robot location (going around obstacles)
-    explore first unexplored region that is filled
-    I.e., goes to the closest unexplored area
-generate suggested waypoint based on unexplored area of map
-test if waypoint is reachable (if not, list it as a bad waypoint and pick a new one)
-Go to waypoint (detect if navigation fails)
-"""
-
 import rclpy
 from rclpy.duration import Duration
 from rclpy.node import Node
@@ -29,6 +13,10 @@ from array import array
 
 class Brain(Node):
     def __init__(self):
+        """
+        Initialization function for the Brain class, which sets up various
+        subscriptions and publishers, as well as initializes flags and variables.
+        """
         super().__init__('brain')
         self.unreachable_positions = [] # set to np.zeros((msg.info.height, msg.info.width), dtype=bool) once in map callback
         # flags that determine if basic data has been instantiated by callbacks yet
@@ -40,7 +28,6 @@ class Brain(Node):
         self.map_unreachable_initFlag = False
 
         print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
-        # Subscriber example code:
         self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                  self.map_callback,      10)
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',    self.bt_log_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                 self.odom_callback,     10)
@@ -61,6 +48,15 @@ class Brain(Node):
 
     # DEFINING CALLBACK FUNCTIONS
     def odom_callback(self, msg:Odometry):
+        """
+        Called whenever a new odometry message is published to the 'odom' topic.
+        Updates global variables with the current position of the robot and 
+        sends the first waypoint to move to if the map is ready.
+        
+        Args:
+          msg (Odometry): Message object that contains information about the 
+          robot's odometry, such as its position and orientation.
+        """
         self.pos_x = msg.pose.pose.position.x
         self.pos_y = msg.pose.pose.position.y
         self.pos_w = msg.pose.pose.orientation.w
@@ -69,6 +65,7 @@ class Brain(Node):
         self.cur_pos.pose.position.x = self.pos_x
         self.cur_pos.pose.position.y = self.pos_y
         self.cur_pos.pose.orientation.w = self.pos_w
+        
         if self.ready_map and not self.first_waypoint_sent:  
             self.first_waypoint_sent = True
             waypoint = (self.pos_x, self.pos_y, self.pos_w)
@@ -77,10 +74,21 @@ class Brain(Node):
         
     def map_callback(self, msg:OccupancyGrid):
         """
-        map callback to assign map data to variables
-        Represents a 2-D grid map, in which each cell represents the 
-        probability of occupancy.
+        Called whenever a new OccupancyGrid message is published to the 'map' topic.
+        Updates global variables with the new map data, after converting to a 2D array.
+        Initializes an array for unreachable positions if necessary. 
+        Initializes and publishes the map of known unreachable pixels.
+        Sets the ready_map flag to True.
+        
         Values range [-1, 100], where -1 represents an unknown probablility.
+        
+        Args:
+          msg (OccupancyGrid): The parameter `msg` is of type `OccupancyGrid`, which represents a 2-D 
+          grid map, in which each cell represents the probability of occupancy. Each cell can take 
+          values of -1 (unknown), or [0-100] (the % probability that the cell is occupied).
+
+        Returns:
+          nothing (None).
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
@@ -98,9 +106,28 @@ class Brain(Node):
         return
     
     def path_callback(self, msg:Path):
+        """
+        Called whenever a new Path message is published to the 'local_plan' topic.
+        Saves the path as the global variable self.path.
+        
+        Args:
+          msg (Path): The parameter `msg` is of type `Path`.
+        """
         self.path = msg
     
     def init_map_unreachable(self, msg:OccupancyGrid):
+        """
+        The function initializes a new OccupancyGrid called "map_unreachable" with the same header and info
+        as the subscribed map, and sets the data values to either 0 or 100 based on whether the in the subscribed
+        map is >80 (% chance that it is occupied).
+        
+        Args:
+          msg (OccupancyGrid): The parameter `msg` is of type `OccupancyGrid`. It is used to initialize the
+        `map_unreachable` attribute of the class.
+        
+        Returns:
+          `map_unreachable` object.
+        """
         self.map_unreachable_initFlag = True
 
         self.map_unreachable = OccupancyGrid()
@@ -114,10 +141,16 @@ class Brain(Node):
 
     
     def bt_log_callback(self, msg:BehaviorTreeLog):
-        """_summary_
-
-        Args:
-            msg (BehaviorTreeLog): _description_
+        """
+        Called whenever a new BehaviorTreeLog message is published to the 'behavior_tree_log' topic.
+        This is the start of the logic loop that computes points and commands the robot.
+        Checks the log for the 'IDLE' event. If the robot is not busy, and the odometry and map data 
+        is initialised, it will compute a waypoint and command the robot to move to it.
+        Otherwise it prints "robot busy".
+        
+        :param msg: The parameter `msg` is an instance of the `BehaviorTreeLog` class. It contains
+        information about the behavior tree log, including the event log.
+        :type msg: BehaviorTreeLog
         """
         for event in msg.event_log:
             if (event.node_name == 'NavigateRecovery' and \
@@ -134,18 +167,38 @@ class Brain(Node):
 
     def coord_pxl2m(self, waypointPxl):
         """
-        Converts x,y,w map pixel coords to global coords in m.
+        Converts pixel coordinates (in the map frame) to meter coordinates (in the world frame)
+        using the map resolution and origin position.
+        
+        Args:
+          waypointPxl (tuple(int, int)): The coordinates of a waypoint as a pixel coordinate. 
+          Represented as a tuple of integer x and y coordinates of the waypoint on the map.
+        
+        Returns:
+          waypoint (tuple(float, float, float)): The coordinates of a waypoint as coordinates in meters in the world frame. 
+          Represented as a tuple of 3 floats: the x and y coordinates in meters, and w,
+          the bearing (as a quaternion) which is arbitrarily set to 0.
         """
         mapPos_x, mapPos_y = waypointPxl
         pos_x = (mapPos_x * self.mapInfo.resolution) + self.mapInfo.origin.position.x
         pos_y = (mapPos_y * self.mapInfo.resolution) + self.mapInfo.origin.position.y
-        pos_w = 0
+        pos_w = 0 # Arbitrary quaternion bearing
         waypoint = (pos_x, pos_y, pos_w)
         return waypoint
 
     def coord_m2pxl(self, waypoint):
         """
-        Converts global x,y coords in m to pixel coords on the map.
+        Converts a waypoint's coordinates from meters (in the world frame) to pixels 
+        (in the map frame) based on the map's resolution and origin position.
+        
+        Args:
+          waypoint (tuple(float, float, float)): The coordinates of a waypoint as coordinates in meters in the world frame. 
+          Represented as a tuple of 3 floats: the pos_x and pos_y coordinates in meters, and pos_w, 
+          the bearing (as a quaternion).
+        
+        Returns:
+          waypointPxl (tuple(in, int)): The coordinates of a waypoint as a pixel coordinate. 
+            Represented as a tuple of integer x and y coordinates of the waypoint on the map.
         """
         pos_x, pos_y, pos_w = waypoint
         mapPos_x = int((pos_x - self.mapInfo.origin.position.x)/self.mapInfo.resolution)
@@ -156,11 +209,23 @@ class Brain(Node):
     def get_coords_as_Pxl(self):
         """
         Returns the current position as the x,y pixel position on the map.
+        Returns:
+          coord_m2pxl (tuple(in, int)): the coordinates of the waypoint in pixels.
         """
         waypoint = (self.pos_x, self.pos_y, self.pos_w)
         return self.coord_m2pxl(waypoint)
     
+    # TODO - needs testing, may not work
     def mark_range_unreachable(self, pxl, radius):
+        """
+        Marks a given pixel, along with a given range around that pixel, as known unreachable.
+        I.e., the robot cannot or should not attempt to pathfind to them.
+        
+        Args:
+          pxl (tuple(int, int)): A pixel position on a map, around which to mark unreachable.
+          radius: The radius parameter represents the distance from the center pixel (pxl) within which
+                    we want to mark the range as unreachable.
+        """
         x_posPxl, y_posPxl = pxl
         xmin = max(x_posPxl-radius, 0)
         xmax = min(x_posPxl+radius, self.mapInfo.width - 1)
@@ -176,7 +241,14 @@ class Brain(Node):
 
     def mark_waypointPxl_unreachable(self, waypointPxl):
         """
-        Marks a map x,y pixel position as unreachable so that we won't try to pathfind there in future.
+        Marks a given waypoint pixel as unreachable.
+        I.e., the robot cannot or should not attempt to pathfind there.
+        
+        Args:
+          waypointPxl (tuple(int, int)): The pixel coordinates of a waypoint to mark as unreachable.
+        
+        Returns:
+          nothing (None).
         """
         print("Marking waypoint as unreachable.")
         xPxl, yPxl = waypointPxl
@@ -184,6 +256,17 @@ class Brain(Node):
         return
 
     def mark_area_unreachable(self, waypointPxl):
+        """
+        Marks a specified waypoint as unreachable by setting the corresponding positions in the
+        `unreachable_positions` array to `True`.
+        Similar to `mark_range_unreachable`.
+        
+        Args:
+          waypointPxl (tuple(int, int)): The x, y pixel coordinates of a waypoint on a map.
+        
+        Returns:
+          nothing (None).
+        """
         print("Marking waypoint as unreachable.")
         xPxl, yPxl = waypointPxl
         i = 0
@@ -206,17 +289,30 @@ class Brain(Node):
 
     def is_waypointPxl_unreachable(self, waypointPxl):
         """
-        Returns a bool: true if given x,y map pixel coords have been previously marked as unreachable - else false.
+        Checks if a given waypoint pixel has been marked as unreachable based on a 2D array of unreachable positions.
+
+        Args:
+          waypointPxl (tuple(int, int)): The coordinates (x, y) of a waypoint in pixel units.
+        
+        Returns:
+          self.unreachable_positions[xPxl][yPxl] (bool): 
+          The value at the position (xPxl, yPxl) in the 2D list self.unreachable_positions.
         """
         xPxl, yPxl = waypointPxl
         return self.unreachable_positions[xPxl][yPxl]
 
-    # TODO - implement
     def try_generate_path(self, waypoint):
         """
-        Attempts to generate a path to a waypoint. On failure, returns False, else, True.
+        Tries to generate a path between the current pose and a given waypoint using the
+        navigation module. 
+        On failure, returns False, otherwise, returns True.
+        
+        Args:
+          waypoint (tuple(float, float, float)): The (x, y, w) waypoint tuple to try to generate a path to.
+        
+        Returns:
+          (bool): If the path is successfully generated, it returns True. Otherwise, it returns False.
         """
-
         new_pose = PoseStamped()
         new_pose.pose.position.x = float(waypoint[0])
         new_pose.pose.position.y = float(waypoint[1])
@@ -237,12 +333,23 @@ class Brain(Node):
         return False
     
     def waypoint_compute_trivial(self):
+        """
+        Returns a waypoint with coordinates (0.5, 0.5, 1).
+        Used as a trivial case for testing and marking purposes.
+        
+        Returns:
+          waypoint (tuple(float,float,float)): a n (x,y,w) waypoint tuple (0.5, 0.5, 1).
+        """
         waypoint = (0.5, 0.5, 1)
         return waypoint
 
     def waypointPxl_compute(self):
         """
-        Returns a goal waypoint to pathfind to unexplored areas of the map.
+        Searches for unexplored pixels within a radius around the current robot position and returns
+        the first reachable unexplored pixel, or None if no valid points are found.
+
+        Returns:
+          reachable_waypoint_pxl (tuple(int,int)|None): The (x,y) pixel coordinates of a valid point (if found), otherwise None.
         """
         print('NOTE - turtlebot_brain.waypoint_compute: reached')
         xPxl, yPxl = self.get_coords_as_Pxl()
@@ -271,10 +378,12 @@ class Brain(Node):
         print("waypoint_compute - Stopping.")
         return None # If no valid points are found, return None
 
-    # TODO - Low priority - Use python function instead of terminal command to implement
     def move_to_waypoint(self, waypoint):
         """
-        Publishes waypoint for nav2 to guide robot, using terminal commands.
+        Moves the robot to a specified waypoint (in meters in the global frame) and handles cancellation or failure cases.
+        
+        Args:
+          waypoint (tuple(float,float,float)): The waypoint (x,y,w) tuple to move to.
         """
         x, y, w = waypoint
         print("Moving to waypoint: ", waypoint)
@@ -296,14 +405,24 @@ class Brain(Node):
     
     def move_to_waypointPxl(self, waypointPxl):
         """
-        Does the same as move_to_waypoint(self, waypoint), but accepts map pixel coordinates.
+        Moves the robot to a specified waypoint (in integer map pixel coordinates) and handles cancellation or failure cases.
+        
+        Args:
+          waypoint (tuple(int,int)): The map pixel waypoint (x,y) tuple to move to.
         """
         waypoint = self.coord_pxl2m(waypointPxl)
         self.move_to_waypoint(waypoint)
 
     def map_get_unexplored_in_range(self, radius):
         """
-        Searches a range of map pixels and returns a list of unexplored pixels in that range.
+        Returns a list of unexplored pixels within a given radius from the current position.
+        
+        Args:
+          radius (int): The distance from the current position in pixels. It defines the range 
+          within which the function will search for unexplored pixels.
+        
+        Returns:
+          unexplored_in_range (list(tuple(int,int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range.
         """
         current_posPxl = self.get_coords_as_Pxl()
         x_posPxl, y_posPxl = current_posPxl
@@ -330,8 +449,18 @@ class Brain(Node):
     
     def waypoint_check_reachable(self, unexplored_list):
         """
-        Checks a list of unexplored map pxls for a pxl that is not in the list of known unreachable pixels
-        and that a path can be generated to, and returns the coordinates of that pixel.
+        Checks if a randomly selected pixel from the unexplored_list is reachable and 
+        returns the pixel coordinates if it is, otherwise marks the pixel as unreachable
+        and tries another random pixel until all pixels in the list have been checked.
+        
+        Args:
+          unexplored_list (list(tuple(int,int))): The `unexplored_list` parameter is a 
+          list of pixels that have not been explored yet. 
+          Each pixel in the list represents a location that the code needs to check for reachability.
+        
+        Returns:
+          waypointPxl (tuple(int,int)|None): the (x,y) tuple pixel coordinates of a reachable waypoint 
+          (if one is found), otherwise returns None.
         """
         print("waypoint_check_reachable - Getting unexplored pixel from unexplored_list.")
         #print("waypoint_check_reachable - unexplored_list: \n", unexplored_list)
@@ -348,6 +477,16 @@ class Brain(Node):
         return None
 
 def main(args=None):
+    """
+    Entrypoint for the ROS node.
+    Initializes the rclpy library, creates an instance of the Brain class, spins the
+    brain node, destroys the brain node, and shuts down rclpy.
+    
+    Args:
+      args: Passes command-line arguments to the `main` function. 
+      Optional parameter that defaults to `None`. 
+      Can be used to configure or customize the behavior of the program.
+    """
     print('NOTE - turtlebot_brain.main: Starting main')
     print('NOTE - turtlebot_brain.main: instantiating rclpy')
     rclpy.init(args=args)
@@ -361,5 +500,6 @@ def main(args=None):
     print('NOTE - turtlebot_brain.main: shutting down rclpy')
     rclpy.shutdown()
 
+# If the current module is being run as the main program, call the `main()` function.
 if __name__ == '__main__':
     main()
