@@ -84,7 +84,7 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (-1, msg.info.height))
+        self.mapArray2d = np.reshape(msg.data, (msg.info.width,-1))
         self.mapInfo = msg.info
         if self.unreachable_positions == []:
             self.unreachable_positions = np.zeros((msg.info.width+1, msg.info.height+1), dtype=bool)
