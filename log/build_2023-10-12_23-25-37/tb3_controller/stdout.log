@@ -1,0 +1,35 @@
+running egg_info
+creating ../build/tb3_controller/tb3_controller.egg-info
+writing ../build/tb3_controller/tb3_controller.egg-info/PKG-INFO
+writing dependency_links to ../build/tb3_controller/tb3_controller.egg-info/dependency_links.txt
+writing entry points to ../build/tb3_controller/tb3_controller.egg-info/entry_points.txt
+writing requirements to ../build/tb3_controller/tb3_controller.egg-info/requires.txt
+writing top-level names to ../build/tb3_controller/tb3_controller.egg-info/top_level.txt
+writing manifest file '../build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+reading manifest file '../build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+writing manifest file '../build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/tahhhhm/METR4202/build/tb3_controller/build
+creating /home/tahhhhm/METR4202/build/tb3_controller/build/lib
+creating /home/tahhhhm/METR4202/build/tb3_controller/build/lib/tb3_controller
+copying tb3_controller/turtlebot_brain.py -> /home/tahhhhm/METR4202/build/tb3_controller/build/lib/tb3_controller
+copying tb3_controller/__init__.py -> /home/tahhhhm/METR4202/build/tb3_controller/build/lib/tb3_controller
+running install
+running install_lib
+creating /home/tahhhhm/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller
+copying /home/tahhhhm/METR4202/build/tb3_controller/build/lib/tb3_controller/turtlebot_brain.py -> /home/tahhhhm/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller
+copying /home/tahhhhm/METR4202/build/tb3_controller/build/lib/tb3_controller/__init__.py -> /home/tahhhhm/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller
+byte-compiling /home/tahhhhm/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller/turtlebot_brain.py to turtlebot_brain.cpython-310.pyc
+byte-compiling /home/tahhhhm/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller/__init__.py to __init__.cpython-310.pyc
+running install_data
+creating /home/tahhhhm/METR4202/install/tb3_controller/share/ament_index
+creating /home/tahhhhm/METR4202/install/tb3_controller/share/ament_index/resource_index
+creating /home/tahhhhm/METR4202/install/tb3_controller/share/ament_index/resource_index/packages
+copying resource/tb3_controller -> /home/tahhhhm/METR4202/install/tb3_controller/share/ament_index/resource_index/packages
+copying package.xml -> /home/tahhhhm/METR4202/install/tb3_controller/share/tb3_controller
+running install_egg_info
+Copying ../build/tb3_controller/tb3_controller.egg-info to /home/tahhhhm/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info
+running install_scripts
+Installing turtlebot_brain script to /home/tahhhhm/METR4202/install/tb3_controller/lib/tb3_controller
+writing list of installed files to '/home/tahhhhm/METR4202/build/tb3_controller/install.log'

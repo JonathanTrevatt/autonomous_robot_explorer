@@ -41,12 +41,14 @@ class Brain(Node):
 
         print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
         # Subscriber example code:
+        self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                 self.odom_callback,     10)
         self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                  self.map_callback,      10)
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',    self.bt_log_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                 self.odom_callback,     10)
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',           self.path_callback,     10)
         self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
         self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'map_reachable',    10)
+        self.init_pose_publisher    = self.create_publisher     (PoseWithCovarianceStamped, 'initialpose',      10)
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
@@ -69,7 +71,8 @@ class Brain(Node):
         self.cur_pos.pose.position.x = self.pos_x
         self.cur_pos.pose.position.y = self.pos_y
         self.cur_pos.pose.orientation.w = self.pos_w
-        if self.ready_map and not self.first_waypoint_sent:  
+        if self.ready_map and not self.first_waypoint_sent:
+            self.nav.setInitialPose(self.cur_pos)
             self.first_waypoint_sent = True
             waypoint = (self.pos_x, self.pos_y, self.pos_w)
             self.move_to_waypoint(waypoint)
@@ -84,10 +87,10 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (-1, msg.info.width))
+        self.mapArray2d = np.reshape(msg.data, (msg.info.width, -1))
         self.mapInfo = msg.info
         if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.height, msg.info.width), dtype=bool)
+            self.unreachable_positions = np.zeros((msg.info.width + 1, msg.info.height + 1), dtype=bool)
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
@@ -95,7 +98,6 @@ class Brain(Node):
 
         self.ready_map = True
         self.map_reachable_publisher.publish(self.map_unreachable)
-        return
     
     def path_callback(self, msg:Path):
         self.path = msg
@@ -110,9 +112,8 @@ class Brain(Node):
         map_unreachable_data = array('b', [int(xv) if c else 101*int(yv) for c, xv, yv in zip(np.array(msg.data) > 80, np.zeros(size), np.ones(size))])
 
         self.map_unreachable.data = map_unreachable_data
-        return
 
-    
+
     def bt_log_callback(self, msg:BehaviorTreeLog):
         for event in msg.event_log:
             if (event.node_name == 'NavigateRecovery' and \
@@ -241,8 +242,8 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.waypoint_compute: reached')
         xPxl, yPxl = self.get_coords_as_Pxl()
-        min_search_radius = 10
-        max_search_radius = 30
+        min_search_radius = 20
+        max_search_radius = 101
         search_radius = min_search_radius
         # search radius for reachable, unexplored pixels and set goal to go there
         while search_radius <= max_search_radius:
@@ -282,7 +283,7 @@ class Brain(Node):
         self.nav.goToPose(pose)
         while not self.nav.isTaskComplete():
             feedback = self.nav.getFeedback()
-            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=10.0):
+            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=15.0):
                 self.nav_canceled = True
                 self.nav.cancelTask()
         result = self.nav.getResult()
@@ -318,9 +319,21 @@ class Brain(Node):
                 yPxl=int(yPxl)
                 pxl = (xPxl, yPxl)
                 if self.mapArray2d[xPxl][yPxl] > 80:
-                    self.mark_range_unreachable(pxl, 10)
-                elif self.mapArray2d[xPxl][yPxl] == -1: # if pixel is unexplored
-                    unexplored_in_range.append(pxl)
+                    self.mark_waypointPxl_unreachable(pxl)
+                elif self.mapArray2d[xPxl][yPxl] == -1: 
+                    # if pixel is unexplored
+                    nearby_explored_pixels = 0
+                    for x in range(-2, 3):
+                        for y in range(-2, 3):
+                            if xPxl + x >= 0 and yPxl + y >= 0:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
+                                    nearby_explored_pixels += 1
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 100:
+                                    nearby_explored_pixels -= 2
+                    if nearby_explored_pixels > 12:
+                        unexplored_in_range.append(pxl)
+        for pixel in unexplored_in_range:
+            print("unexplored = ", self.coord_pxl2m(pixel))
         return unexplored_in_range
     
     def waypoint_check_reachable(self, unexplored_list):
