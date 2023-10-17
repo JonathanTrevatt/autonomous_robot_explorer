@@ -9,36 +9,40 @@ Tom (Chun Yu) NG - chun.y.ng@uqconnect.edu.au - 45685211\
 Isaiah Stook - isaiahstook@gmx.com - 44539120\
 Pei-Jer Tsai - p.tsai@uqconnect.edu.au - 46411172
 
-If your ROS environment is already set up, here are the instructions to build and run this project:
+# Build and run instructions:
 ------------------
-# Clean start wsl - run in powershell
+## Powershell
+* Start from clean environment: *
 wsl --shutdown
 
-# In WSL ubuntu environment:
-# Download repository into src folder
+## In WSL ubuntu environment:
+* Download repository into src folder: *
 git clone https://github.com/Darkspore52/METR4202.git src
 
-# Build and source files
+* Build and source files: *
 source /opt/ros/humble/setup.bash
 cd src
 colcon build
 source install/setup.bash
 
-# Launch gazebo map
+## Launch gazebo map
 ros2 launch worlds/Test_world.launch.py
-# OR
+### OR
 #ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 
-# In new window - Launch SLAM
+## In new window
+* Launch SLAM: *
 ros2 launch slam_toolbox online_async_launch.py
 
-# In new window - Launch navigation toolbox
+## In new window
+* Launch navigation toolbox: *
 ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=src/maps/turtlebot3_world_map.yaml
 
-# In new window - 
-# Source setup.bash (workspace path may look different for you)
+## In new window
+* Source setup.bash (workspace path may look different for you): *
 source metr4202_ws/install/setup.bash
-# Run our controller
+
+* Run our controller: *
 ros2 run tb3_controller turtlebot_brain
 
 ------------------
