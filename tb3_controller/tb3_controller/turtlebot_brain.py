@@ -86,11 +86,13 @@ class Brain(Node):
         Values range [-1, 100], where -1 represents an unknown probablility.
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
+        # If the map has changed its dimensions, re-initialize the internal representations
+        if not hasattr(self, 'mapArray2d') or self.mapArray2d.shape != (msg.info.width, msg.info.height):
+            self.unreachable_positions = np.zeros((msg.info.width, msg.info.height), dtype=bool)
+        
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (msg.info.width, -1))
+        self.mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height))
         self.mapInfo = msg.info
-        if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.width + 1, msg.info.height + 1), dtype=bool)
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
@@ -313,24 +315,25 @@ class Brain(Node):
 
         print("xmin, xmax, ymin, ymax: ", xmin, xmax, ymin, ymax)
         print("mapArray2d.shape:", self.mapArray2d.shape)
-        for xPxl in np.linspace(xmin, xmax, xmax-xmin):
-            for yPxl in np.linspace(ymin, ymax, ymax-ymin):
+        for xPxl in range(xmin, xmax + 1):
+            for yPxl in range(ymin, ymax + 1):
                 xPxl=int(xPxl)
                 yPxl=int(yPxl)
                 pxl = (xPxl, yPxl)
-                if self.mapArray2d[xPxl][yPxl] > 80:
+                if self.mapArray2d[xPxl][yPxl] > 60:
                     self.mark_waypointPxl_unreachable(pxl)
                 elif self.mapArray2d[xPxl][yPxl] == -1: 
                     # if pixel is unexplored
                     nearby_explored_pixels = 0
+                    nearby_obstacle_pixels = 0
                     for x in range(-2, 3):
                         for y in range(-2, 3):
                             if xPxl + x >= 0 and yPxl + y >= 0:
                                 if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
                                     nearby_explored_pixels += 1
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 100:
-                                    nearby_explored_pixels -= 2
-                    if nearby_explored_pixels > 12:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] > 60:
+                                    nearby_obstacle_pixels += 1
+                    if nearby_explored_pixels > 12 and nearby_obstacle_pixels < 5:
                         unexplored_in_range.append(pxl)
         for pixel in unexplored_in_range:
             print("unexplored = ", self.coord_pxl2m(pixel))
