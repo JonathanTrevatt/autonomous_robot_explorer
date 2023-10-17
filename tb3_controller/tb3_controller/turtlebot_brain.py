@@ -43,7 +43,8 @@ class Brain(Node):
             depth=1)
 
         self.nav = BasicNavigator() # Initialise navigator
-        self.nav.lifecycleStartup() #init_pose = self.cur_pos
+        #self.nav.lifecycleStartup() #init_pose = self.cur_pos
+        print("----------------------------------------------------------------")
 
     # USING NAV2 FOR AUTOMATIC PATH PLANNING
 
