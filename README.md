@@ -11,12 +11,12 @@ Pei-Jer Tsai - p.tsai@uqconnect.edu.au - 46411172
 
 # Build and run instructions:
 ## In powershell
-*Start from clean environment:*
+**Start from clean environment:**
 
 wsl --shutdown
 
 ## In WSL ubuntu environment:
-*Download repository into src folder:*
+**Download repository into src folder:**\
 git clone https://github.com/Darkspore52/METR4202.git src
 
 *Build and source files:*\
@@ -31,18 +31,18 @@ ros2 launch worlds/Test_world.launch.py
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 
 ## In new window
-*Launch SLAM:*
+**Launch SLAM:**
 ros2 launch slam_toolbox online_async_launch.py
 
 ## In new window
-*Launch navigation toolbox:*\
+**Launch navigation toolbox:**\
 ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=src/maps/turtlebot3_world_map.yaml
 
 ## In new window
-*Source setup.bash (workspace path may look different for you):*\
+**Source setup.bash (workspace path may look different for you):**\
 source metr4202_ws/install/setup.bash
 
-*Run our controller:*\
+**Run our controller:**\
 ros2 run tb3_controller turtlebot_brain
 
 ------------------
