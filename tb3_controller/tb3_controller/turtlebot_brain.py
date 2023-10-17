@@ -41,6 +41,10 @@ class Brain(Node):
             durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
             depth=1)
 
+        self.nav = BasicNavigator() # Initialise navigator
+        #self.nav.lifecycleStartup() #init_pose = self.cur_pos
+        print("----------------------------------------------------------------")
+
     # USING NAV2 FOR AUTOMATIC PATH PLANNING
 
     # DEFINING CALLBACK FUNCTIONS
@@ -92,7 +96,7 @@ class Brain(Node):
         self.mapArray2d = np.reshape(msg.data, (msg.info.width,-1))
         self.mapInfo = msg.info
         if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.width+1, msg.info.height+1), dtype=bool)
+            self.unreachable_positions = np.zeros((msg.info.width+200, msg.info.height+200), dtype=bool)
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
@@ -322,6 +326,7 @@ class Brain(Node):
         cur_pose.pose.orientation.z = 0.0
         cur_pose.pose.orientation.w = 0.0
         cur_pose.header.frame_id = 'map'
+        path = self.nav.getPath(cur_pose, new_pose)
         if path is not None:
             return True
         return False
@@ -357,8 +362,8 @@ class Brain(Node):
             # generate list of unexplored pixels within search radius
             unexplored_list = self.map_get_unexplored_in_range(search_radius)
             print("waypoint_compute - unexplored_list: ", unexplored_list)
-            if unexplored_list is not None:
-                print("waypoint_compute - unexplored_list is not None - unexplored_list = \n", unexplored_list)
+            if len(unexplored_list) != 0:
+                print("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_list)
                 print("randomly shuffling unexplored_list to remove preference for exploring in a certain direction.")
                 random.shuffle(unexplored_list)
                 print("Shuffled list = \n", unexplored_list)
@@ -388,8 +393,15 @@ class Brain(Node):
         pose.pose.position.x = waypoint[0]
         pose.pose.position.y = waypoint[1]
         pose.pose.orientation.w = float(waypoint[2])
-        self.waypoint_publisher.publish(pose)
-        self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
+        self.nav.goToPose(pose)
+        while not self.nav.isTaskComplete():
+          feedback = self.nav.getFeedback()
+          if Duration.from_msg(feedback.navigation_time) > Duration(seconds=20.0):
+            self.nav_canceled = True
+            self.nav.cancelTask()
+        result = self.nav.getResult()
+        if result == result.CANCELED or result == result.FAILED:
+          self.mark_range_unreachable(self.coord_m2pxl(waypoint), 3)
     
     def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
         """
@@ -431,17 +443,24 @@ class Brain(Node):
                 pxl = (xPxl, yPxl)
                 if self.mapArray2d[xPxl][yPxl] > 80:
                     self.mark_waypointPxl_unreachable(pxl)
-                elif self.mapArray2d[xPxl][yPxl] == -1:
-                    # if pixel is unexplored
-                    nearby_explored_pixels = 0
-                    for x in range(-1, 2):
+                explore = True
+                for x in range(-1, 2):
                         for y in range(-1, 2):
                             if xPxl + x >= 0 and yPxl + y >= 0:
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] != -1:
+                                    explore = False
+                if explore:
+                    # if pixel is unexplored
+                    nearby_explored_pixels = 0
+                    for x in range(-3, 4):
+                        for y in range(-3, 4):
+                            if xPxl + x >= 0 and yPxl + y >= 0:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] <= 5 and \
+                                  self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] != -1:
                                     nearby_explored_pixels += 1
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 100:
-                                    nearby_explored_pixels -= 2
-                    if nearby_explored_pixels >= 4:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] >= 80:
+                                    nearby_explored_pixels -= 100
+                    if nearby_explored_pixels >= 17:
                         unexplored_in_range.append(pxl)
         for pixel in unexplored_in_range:
             print("unexplored = ", self.coord_pxl2m(pixel))
@@ -464,7 +483,7 @@ class Brain(Node):
         """
         print("waypoint_check_reachable - Getting unexplored pixel from unexplored_list.")
         #print("waypoint_check_reachable - unexplored_list: \n", unexplored_list)
-        for i in range(len(unexplored_list)):
+        for _ in range(len(unexplored_list)):
             waypointPxl = unexplored_list.pop()                    # Choose a pixel at random
             if not self.is_waypointPxl_unreachable(waypointPxl):   # if pixel is not in list of known unreachable pixels
                 waypoint = self.coord_pxl2m(waypointPxl)            

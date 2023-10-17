@@ -36,7 +36,7 @@ ros2 launch slam_toolbox online_async_launch.py
 
 ### In a new ubuntu terminal
 **Launch navigation toolbox:**\
-ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=src/maps/turtlebot3_world_map.yaml
+ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=src/maps/turtlebot3_world_map.yaml slam = true
 
 ### In a new ubuntu terminal
 **Source setup.bash (workspace path may look different for you):**\
