@@ -17,7 +17,7 @@ wsl --shutdown
 
 ### In WSL ubuntu environment:
 **Download repository into src folder:**\
-git clone https://github.com/Darkspore52/METR4202.git src
+git clone https://github.com/Darkspore52/tb3_controller.git
 
 **Build and source files:**\
 source /opt/ros/humble/setup.bash\
