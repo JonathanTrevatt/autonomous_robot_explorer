@@ -62,7 +62,7 @@ git config --global core.autocrlf true
 
 git config --global core.safecrlf warn
 
-git clone https://github.com/Darkspore52/METR4202.git
+git clone https://github.com/Darkspore52/tb3_controller.git
 
 Instructions to commit changes (for reference):
 ----------------------
