@@ -152,18 +152,18 @@ class Brain(Node):
         msg (BehaviorTreeLog): The parameter `msg` is an instance of the `BehaviorTreeLog` class. It
       contains information about the behavior tree log, including the event log.
       """
-        for event in msg.event_log:
-            if (event.node_name == 'NavigateRecovery' and \
-                event.current_status == 'IDLE') or self.nav_canceled:
-                self.nav_canceled = False
-                if self.ready_odom and self.ready_map:
-                    waypointPxl = self.waypointPxl_compute()
-                    print("waypointPxl: ", waypointPxl)
-                    waypoint = self.coord_pxl2m(waypointPxl)
-                    print("waypoint: ", waypoint)
-                    self.move_to_waypoint(waypoint)
-            else: print("robot busy")
-        self.ready_log = True
+      for event in msg.event_log:
+          if (event.node_name == 'NavigateRecovery' and \
+              event.current_status == 'IDLE') or self.nav_canceled:
+              self.nav_canceled = False
+              if self.ready_odom and self.ready_map:
+                  waypointPxl = self.waypointPxl_compute()
+                  print("waypointPxl: ", waypointPxl)
+                  waypoint = self.coord_pxl2m(waypointPxl)
+                  print("waypoint: ", waypoint)
+                  self.move_to_waypoint(waypoint)
+          else: print("robot busy")
+      self.ready_log = True
 
     def coord_pxl2m(self, waypointPxl: tuple[int, int]) -> tuple[float, float, float]:
         """
