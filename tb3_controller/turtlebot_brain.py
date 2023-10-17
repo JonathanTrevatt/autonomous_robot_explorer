@@ -25,21 +25,23 @@ class Brain(Node):
         self.ready_log = False
         self.first_waypoint_sent = False
         self.nav_canceled = False
-        self.map_unreachable_initFlag = False
-
-        print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
-        self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                  self.map_callback,      10)
-        self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',    self.bt_log_callback,   10)
-        self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                 self.odom_callback,     10)
-        self.path_subscription      = self.create_subscription  (Path,                      'local_plan',           self.path_callback,     10)
-        self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
-        self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'map_reachable',    10)
+        self.init_valid_waypoint_map_flag = False
+        self.init_costmap_flag = False
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
             history=QoSHistoryPolicy.KEEP_LAST,
             durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
             depth=1)
+        
+        print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
+        self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
+        self.costmap_subscription   = self.create_subscription  (OccupancyGrid,             'global_costmap/costmap',   self.costmap_callback,      10)
+        self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
+        self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
+        self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
+        self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
+        self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'valid_waypoint_map', qos_profile)
 
         self.nav = BasicNavigator() # Initialise navigator
         #self.nav.lifecycleStartup() #init_pose = self.cur_pos
@@ -93,19 +95,31 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (msg.info.width,-1))
+        self.mapArray2d = np.reshape(msg.data, (-1, msg.info.width))
         self.mapInfo = msg.info
-        if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.width+200, msg.info.height+200), dtype=bool)
-        
-        if not self.map_unreachable_initFlag:
-            self.init_map_unreachable(msg)
-            self.map_reachable_publisher.publish(self.map_unreachable)
-
         self.ready_map = True
-        self.map_reachable_publisher.publish(self.map_unreachable)
         return
-    
+
+    def costmap_callback(self, msg:OccupancyGrid) -> None:
+      """self.costmapMsg = msg
+      self.costmapArray2d = np.reshape(msg.data, (-1, msg.info.width))
+      self.costmapInfo = msg.info
+      if self.unreachable_positions == []:
+        self.unreachable_positions = np.zeros((msg.info.height, msg.info.width), dtype=bool)
+      self.init_costmap_flag = True
+      if not self.init_valid_waypoint_map_flag:
+            self.init_valid_waypoint_map(msg)"""
+      valid_waypoint_map = msg
+      data_array = array('b')
+      for i in valid_waypoint_map.data:
+        if (i == -1) or (i >80):
+          data_array.append(100)
+        else: data_array.append(0)
+      
+      valid_waypoint_map.data = data_array
+      self.map_reachable_publisher.publish(valid_waypoint_map)
+      return
+
     def path_callback(self, msg:Path) -> None:
         """
         Called whenever a new Path message is published to the 'local_plan' topic.
@@ -116,7 +130,7 @@ class Brain(Node):
         """
         self.path = msg
     
-    def init_map_unreachable(self, msg:OccupancyGrid) -> None:
+    def init_valid_waypoint_map(self, msg:OccupancyGrid) -> None:
         """
         The function initializes a new OccupancyGrid called "map_unreachable" with the same header and info
         as the subscribed map, and sets the data values to either 0 or 100 based on whether the in the subscribed
@@ -129,16 +143,28 @@ class Brain(Node):
         Returns:
           `map_unreachable` object.
         """
-        self.map_unreachable_initFlag = True
-
-        self.map_unreachable = OccupancyGrid()
-        self.map_unreachable.header.frame_id = "map"
-        self.map_unreachable.info = msg.info
-        size = np.array(msg.data).size
-        map_unreachable_data = array('b', [int(xv) if c else 101*int(yv) for c, xv, yv in zip(np.array(msg.data) > 80, np.zeros(size), np.ones(size))])
-
-        self.map_unreachable.data = map_unreachable_data
+        if self.init_costmap_flag:
+          self.valid_waypointPxl_grid = Costmap()
+          self.valid_waypointPxl_grid.info = msg.info
+          self.valid_waypointPxl_grid.header.frame_id = 'valid_waypoint_map'
+          self.update_valid_waypoint_map()
         return
+
+    def update_valid_waypoint_map(self):
+      if self.init_costmap_flag:
+        valid_waypointPxl_data = array('b')
+        for i in self.costmapMsg.data:
+          if ((i == -1) or (i > 85)):
+            valid_waypointPxl_data.append(100)
+          else:
+            valid_waypointPxl_data.append(0)
+
+        self.valid_waypointPxl_grid.data = valid_waypointPxl_data
+        self.valid_waypointPxl_grid.header.stamp = self.get_clock().now().to_msg()
+        self.valid_waypointPxl_grid.info = self.costmapMsg.info
+        self.valid_waypointPxl_grid.info.map_load_time = self.get_clock().now().to_msg()
+        self.map_reachable_publisher.publish(self.valid_waypointPxl_grid)
+      return
 
     def bt_log_callback(self, msg:BehaviorTreeLog) -> None:
       """
@@ -342,7 +368,6 @@ class Brain(Node):
         waypoint = (0.5, 0.5, 1)
         return waypoint
     
-
     def waypointPxl_compute(self) -> tuple[int, int]:
         """
         Searches for unexplored pixels within a radius around the current robot position and returns
