@@ -1,0 +1,31 @@
+[11.214s] Invoking command in '/home/isaiah/metr4202_ws/src/METR4202/tutorials/launch_tutorial': PYTHONPATH=/home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/prefix_override:/home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/launch_tutorial build --build-base /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build install --record /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/install.log --single-version-externally-managed
+[13.348s] running egg_info
+[13.348s] creating ../../build/launch_tutorial/launch_tutorial.egg-info
+[13.348s] writing ../../build/launch_tutorial/launch_tutorial.egg-info/PKG-INFO
+[13.349s] writing dependency_links to ../../build/launch_tutorial/launch_tutorial.egg-info/dependency_links.txt
+[13.350s] writing entry points to ../../build/launch_tutorial/launch_tutorial.egg-info/entry_points.txt
+[13.351s] writing requirements to ../../build/launch_tutorial/launch_tutorial.egg-info/requires.txt
+[13.351s] writing top-level names to ../../build/launch_tutorial/launch_tutorial.egg-info/top_level.txt
+[13.352s] writing manifest file '../../build/launch_tutorial/launch_tutorial.egg-info/SOURCES.txt'
+[13.362s] reading manifest file '../../build/launch_tutorial/launch_tutorial.egg-info/SOURCES.txt'
+[13.363s] writing manifest file '../../build/launch_tutorial/launch_tutorial.egg-info/SOURCES.txt'
+[13.363s] running build
+[13.364s] running build_py
+[13.364s] creating /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build
+[13.364s] creating /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib
+[13.365s] creating /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial
+[13.365s] copying launch_tutorial/broadcaster_listener.launch.py -> /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial
+[13.366s] copying launch_tutorial/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial
+[13.376s] running install
+[13.380s] running install_lib
+[13.380s] creating /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial
+[13.381s] copying /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial/broadcaster_listener.launch.py -> /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial
+[13.381s] copying /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial
+[13.382s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial/broadcaster_listener.launch.py to broadcaster_listener.launch.cpython-310.pyc
+[13.382s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial/__init__.py to __init__.cpython-310.pyc
+[13.389s] running install_data
+[13.390s] running install_egg_info
+[13.390s] Copying ../../build/launch_tutorial/launch_tutorial.egg-info to /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial-0.0.0-py3.10.egg-info
+[13.391s] running install_scripts
+[13.513s] writing list of installed files to '/home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/install.log'
+[13.732s] Invoked command in '/home/isaiah/metr4202_ws/src/METR4202/tutorials/launch_tutorial' returned '0': PYTHONPATH=/home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/prefix_override:/home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/launch_tutorial build --build-base /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build install --record /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/install.log --single-version-externally-managed

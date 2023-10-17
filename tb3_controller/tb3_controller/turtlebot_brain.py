@@ -34,6 +34,7 @@ class Brain(Node):
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',           self.path_callback,     10)
         self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
         self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'map_reachable',    10)
+        self.init_pose_publisher    = self.create_publisher     (PoseWithCovarianceStamped, 'initialpose',      10)
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
@@ -91,11 +92,13 @@ class Brain(Node):
           nothing (None).
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
+        # If the map has changed its dimensions, re-initialize the internal representations
+        if not hasattr(self, 'mapArray2d') or self.mapArray2d.shape != (msg.info.width, msg.info.height):
+            self.unreachable_positions = np.zeros((msg.info.width, msg.info.height), dtype=bool)
+        
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (-1, msg.info.width))
+        self.mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height))
         self.mapInfo = msg.info
-        if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.height, msg.info.width), dtype=bool)
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
@@ -103,7 +106,6 @@ class Brain(Node):
 
         self.ready_map = True
         self.map_reachable_publisher.publish(self.map_unreachable)
-        return
     
     def path_callback(self, msg:Path):
         """
@@ -137,9 +139,8 @@ class Brain(Node):
         map_unreachable_data = array('b', [int(xv) if c else 101*int(yv) for c, xv, yv in zip(np.array(msg.data) > 80, np.zeros(size), np.ones(size))])
 
         self.map_unreachable.data = map_unreachable_data
-        return
 
-    
+
     def bt_log_callback(self, msg:BehaviorTreeLog):
         """
         Called whenever a new BehaviorTreeLog message is published to the 'behavior_tree_log' topic.
@@ -353,8 +354,8 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.waypoint_compute: reached')
         xPxl, yPxl = self.get_coords_as_Pxl()
-        min_search_radius = 10
-        max_search_radius = 30
+        min_search_radius = 20
+        max_search_radius = 101
         search_radius = min_search_radius
         # search radius for reachable, unexplored pixels and set goal to go there
         while search_radius <= max_search_radius:
@@ -396,7 +397,7 @@ class Brain(Node):
         self.nav.goToPose(pose)
         while not self.nav.isTaskComplete():
             feedback = self.nav.getFeedback()
-            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=10.0):
+            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=15.0):
                 self.nav_canceled = True
                 self.nav.cancelTask()
         result = self.nav.getResult()
@@ -436,15 +437,28 @@ class Brain(Node):
 
         print("xmin, xmax, ymin, ymax: ", xmin, xmax, ymin, ymax)
         print("mapArray2d.shape:", self.mapArray2d.shape)
-        for xPxl in np.linspace(xmin, xmax, xmax-xmin):
-            for yPxl in np.linspace(ymin, ymax, ymax-ymin):
+        for xPxl in range(xmin, xmax + 1):
+            for yPxl in range(ymin, ymax + 1):
                 xPxl=int(xPxl)
                 yPxl=int(yPxl)
                 pxl = (xPxl, yPxl)
-                if self.mapArray2d[xPxl][yPxl] > 80:
-                    self.mark_range_unreachable(pxl, 10)
-                elif self.mapArray2d[xPxl][yPxl] == -1: # if pixel is unexplored
-                    unexplored_in_range.append(pxl)
+                if self.mapArray2d[xPxl][yPxl] > 60:
+                    self.mark_waypointPxl_unreachable(pxl)
+                elif self.mapArray2d[xPxl][yPxl] == -1: 
+                    # if pixel is unexplored
+                    nearby_explored_pixels = 0
+                    nearby_obstacle_pixels = 0
+                    for x in range(-2, 3):
+                        for y in range(-2, 3):
+                            if xPxl + x >= 0 and yPxl + y >= 0:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
+                                    nearby_explored_pixels += 1
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] > 60:
+                                    nearby_obstacle_pixels += 1
+                    if nearby_explored_pixels > 12 and nearby_obstacle_pixels < 5:
+                        unexplored_in_range.append(pxl)
+        for pixel in unexplored_in_range:
+            print("unexplored = ", self.coord_pxl2m(pixel))
         return unexplored_in_range
     
     def waypoint_check_reachable(self, unexplored_list):

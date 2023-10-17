@@ -1,0 +1,234 @@
+[0.000000] (-) TimerEvent: {}
+[0.025365] (-) JobUnselected: {'identifier': 'action_tutorials_interfaces'}
+[0.029539] (-) JobUnselected: {'identifier': 'launch_tutorial'}
+[0.031827] (-) JobUnselected: {'identifier': 'my_first_package'}
+[0.034067] (-) JobUnselected: {'identifier': 'py_launch_example'}
+[0.034182] (-) JobUnselected: {'identifier': 'py_pubsub'}
+[0.034227] (-) JobUnselected: {'identifier': 'py_srvcli'}
+[0.034415] (-) JobUnselected: {'identifier': 'python_parameters'}
+[0.034467] (-) JobUnselected: {'identifier': 'turtlebot3_fake_node'}
+[0.034516] (-) JobUnselected: {'identifier': 'turtlebot3_gazebo'}
+[0.034551] (-) JobUnselected: {'identifier': 'turtlebot3_simulations'}
+[0.034582] (-) JobUnselected: {'identifier': 'turtlebot_controller_pkg'}
+[0.034627] (-) JobUnselected: {'identifier': 'tutorial_interfaces'}
+[0.034718] (tb3_controller) JobQueued: {'identifier': 'tb3_controller', 'dependencies': OrderedDict()}
+[0.034930] (tb3_controller) JobStarted: {'identifier': 'tb3_controller'}
+[0.084544] (-) TimerEvent: {}
+[0.193818] (-) TimerEvent: {}
+[0.301192] (-) TimerEvent: {}
+[0.416325] (-) TimerEvent: {}
+[0.519214] (-) TimerEvent: {}
+[0.620139] (-) TimerEvent: {}
+[0.720923] (-) TimerEvent: {}
+[0.826659] (-) TimerEvent: {}
+[0.952403] (-) TimerEvent: {}
+[1.063751] (-) TimerEvent: {}
+[1.190914] (-) TimerEvent: {}
+[1.295804] (-) TimerEvent: {}
+[1.404302] (-) TimerEvent: {}
+[1.522101] (-) TimerEvent: {}
+[1.629857] (-) TimerEvent: {}
+[1.738234] (-) TimerEvent: {}
+[1.848383] (-) TimerEvent: {}
+[1.957103] (-) TimerEvent: {}
+[2.068362] (-) TimerEvent: {}
+[2.181505] (-) TimerEvent: {}
+[2.295114] (-) TimerEvent: {}
+[2.417201] (-) TimerEvent: {}
+[2.535938] (-) TimerEvent: {}
+[2.657455] (-) TimerEvent: {}
+[2.778263] (-) TimerEvent: {}
+[2.904223] (-) TimerEvent: {}
+[3.026257] (-) TimerEvent: {}
+[3.146476] (-) TimerEvent: {}
+[3.260769] (-) TimerEvent: {}
+[3.381868] (-) TimerEvent: {}
+[3.513549] (-) TimerEvent: {}
+[3.637148] (-) TimerEvent: {}
+[3.749137] (-) TimerEvent: {}
+[3.875110] (-) TimerEvent: {}
+[3.987259] (-) TimerEvent: {}
+[4.101206] (-) TimerEvent: {}
+[4.227832] (-) TimerEvent: {}
+[4.341282] (-) TimerEvent: {}
+[4.450801] (-) TimerEvent: {}
+[4.564091] (-) TimerEvent: {}
+[4.672168] (-) TimerEvent: {}
+[4.779959] (-) TimerEvent: {}
+[4.902534] (-) TimerEvent: {}
+[5.008773] (-) TimerEvent: {}
+[5.122602] (-) TimerEvent: {}
+[5.231574] (-) TimerEvent: {}
+[5.346082] (-) TimerEvent: {}
+[5.467342] (-) TimerEvent: {}
+[5.590285] (-) TimerEvent: {}
+[5.724546] (-) TimerEvent: {}
+[5.835441] (-) TimerEvent: {}
+[5.946885] (-) TimerEvent: {}
+[6.057209] (-) TimerEvent: {}
+[6.174192] (-) TimerEvent: {}
+[6.291808] (-) TimerEvent: {}
+[6.393569] (-) TimerEvent: {}
+[6.494255] (-) TimerEvent: {}
+[6.595039] (-) TimerEvent: {}
+[6.696748] (-) TimerEvent: {}
+[6.797537] (-) TimerEvent: {}
+[6.899877] (-) TimerEvent: {}
+[7.001872] (-) TimerEvent: {}
+[7.113663] (-) TimerEvent: {}
+[7.214179] (-) TimerEvent: {}
+[7.315155] (-) TimerEvent: {}
+[7.421417] (-) TimerEvent: {}
+[7.541050] (-) TimerEvent: {}
+[7.641724] (-) TimerEvent: {}
+[7.743799] (-) TimerEvent: {}
+[7.851724] (-) TimerEvent: {}
+[7.962096] (-) TimerEvent: {}
+[8.081843] (-) TimerEvent: {}
+[8.194371] (-) TimerEvent: {}
+[8.304739] (-) TimerEvent: {}
+[8.416686] (-) TimerEvent: {}
+[8.520021] (-) TimerEvent: {}
+[8.620553] (-) TimerEvent: {}
+[8.722378] (-) TimerEvent: {}
+[8.825077] (-) TimerEvent: {}
+[8.967923] (-) TimerEvent: {}
+[9.079519] (-) TimerEvent: {}
+[9.194150] (-) TimerEvent: {}
+[9.321879] (-) TimerEvent: {}
+[9.454715] (-) TimerEvent: {}
+[9.577105] (-) TimerEvent: {}
+[9.684695] (-) TimerEvent: {}
+[9.802973] (-) TimerEvent: {}
+[9.913711] (-) TimerEvent: {}
+[10.039175] (-) TimerEvent: {}
+[10.168458] (-) TimerEvent: {}
+[10.284947] (-) TimerEvent: {}
+[10.386727] (-) TimerEvent: {}
+[10.519911] (-) TimerEvent: {}
+[10.631658] (-) TimerEvent: {}
+[10.781498] (-) TimerEvent: {}
+[10.902377] (-) TimerEvent: {}
+[11.019877] (-) TimerEvent: {}
+[11.125526] (-) TimerEvent: {}
+[11.238976] (-) TimerEvent: {}
+[11.357689] (-) TimerEvent: {}
+[11.508082] (-) TimerEvent: {}
+[11.628304] (-) TimerEvent: {}
+[11.746357] (-) TimerEvent: {}
+[11.871047] (-) TimerEvent: {}
+[11.980421] (-) TimerEvent: {}
+[12.088308] (-) TimerEvent: {}
+[12.193343] (-) TimerEvent: {}
+[12.307152] (-) TimerEvent: {}
+[12.408443] (-) TimerEvent: {}
+[12.525178] (-) TimerEvent: {}
+[12.645147] (-) TimerEvent: {}
+[12.755114] (-) TimerEvent: {}
+[12.862436] (-) TimerEvent: {}
+[12.975835] (-) TimerEvent: {}
+[13.086160] (-) TimerEvent: {}
+[13.217826] (-) TimerEvent: {}
+[13.332576] (-) TimerEvent: {}
+[13.452032] (-) TimerEvent: {}
+[13.565650] (-) TimerEvent: {}
+[13.675489] (-) TimerEvent: {}
+[13.796499] (-) TimerEvent: {}
+[13.922782] (-) TimerEvent: {}
+[14.032565] (-) TimerEvent: {}
+[14.146996] (-) TimerEvent: {}
+[14.258487] (-) TimerEvent: {}
+[14.378853] (-) TimerEvent: {}
+[14.490938] (-) TimerEvent: {}
+[14.572862] (tb3_controller) Command: {'cmd': ['/usr/bin/python3', 'setup.py', 'egg_info', '--egg-base', '../build/tb3_controller', 'build', '--build-base', '/home/johnson/METR4202/build/tb3_controller/build', 'install', '--record', '/home/johnson/METR4202/build/tb3_controller/install.log', '--single-version-externally-managed'], 'cwd': '/home/johnson/METR4202/tb3_controller', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'johnson', 'SHLVL': '1', 'LIBGL_ALWAYS_SOFTWARE': '1', 'LD_LIBRARY_PATH': '/home/johnson/METR4202/install/tutorial_interfaces/lib:/home/johnson/METR4202/install/action_tutorials_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib', 'WT_PROFILE_ID': '{51855cb2-8cce-5362-8f54-464b92b32386}', 'HOME': '/home/johnson', 'OLDPWD': '/home/johnson', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/johnson/METR4202/install:/home/johnson/turtlebot3_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'johnson', 'NAME': 'LAPTOP-U25S854H', 'WSL_INTEROP': '/run/WSL/2707_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'GAZEBO_MODEL_PATH': '/home/johnson/.gazebo/models::/home/johnson/turtlebot3_ws/src/turtlebot3_simulations/turtlebot3_gazebo/models', 'LIBGL_ALWAYS_INDIRECT': '0', 'ROS_LOCALHOST_ONLY': '1', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/Eclipse Adoptium/jdk-17.0.4.8-hotspot/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/MATLAB/R2021b/bin:/mnt/c/Program Files/Wolfram Research/WolframScript/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/laptr/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/laptr/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'WT_SESSION': '4a8389f8-aa67-483c-9721-77d89c7b84e3', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'ROS_DOMAIN_ID': '30', 'AMENT_PREFIX_PATH': '/home/johnson/METR4202/install/py_srvcli:/home/johnson/METR4202/install/py_pubsub:/home/johnson/METR4202/install/tutorial_interfaces:/home/johnson/METR4202/install/turtlebot_controller_pkg:/home/johnson/METR4202/install/tb3_controller:/home/johnson/METR4202/install/python_parameters:/home/johnson/METR4202/install/py_launch_example:/home/johnson/METR4202/install/my_first_package:/home/johnson/METR4202/install/launch_tutorial:/home/johnson/METR4202/install/action_tutorials_interfaces:/home/johnson/turtlebot3_ws/install/turtlebot3_simulations:/home/johnson/turtlebot3_ws/install/turtlebot3_gazebo:/home/johnson/turtlebot3_ws/install/turtlebot3_fake_node:/opt/ros/humble', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'PWD': '/home/johnson/METR4202/build/tb3_controller', 'TURTLEBOT3_MODEL': 'waffle_pi', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'LDS_MODEL': 'LDS-02', 'PYTHONPATH': '/home/johnson/METR4202/build/tb3_controller/prefix_override:/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages:/home/johnson/METR4202/install/py_srvcli/lib/python3.10/site-packages:/home/johnson/METR4202/install/py_pubsub/lib/python3.10/site-packages:/home/johnson/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages:/home/johnson/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages:/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages:/home/johnson/METR4202/install/python_parameters/lib/python3.10/site-packages:/home/johnson/METR4202/install/py_launch_example/lib/python3.10/site-packages:/home/johnson/METR4202/install/my_first_package/lib/python3.10/site-packages:/home/johnson/METR4202/install/launch_tutorial/lib/python3.10/site-packages:/home/johnson/METR4202/install/action_tutorials_interfaces/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/johnson/METR4202/install/tutorial_interfaces:/home/johnson/METR4202/install/action_tutorials_interfaces:/home/johnson/turtlebot3_ws/install/turtlebot3_simulations:/home/johnson/turtlebot3_ws/install/turtlebot3_gazebo:/home/johnson/turtlebot3_ws/install/turtlebot3_fake_node', 'WSLENV': 'WT_SESSION::WT_PROFILE_ID'}, 'shell': False}
+[14.590397] (-) TimerEvent: {}
+[14.690898] (-) TimerEvent: {}
+[14.796640] (-) TimerEvent: {}
+[14.897643] (-) TimerEvent: {}
+[15.012845] (-) TimerEvent: {}
+[15.113404] (-) TimerEvent: {}
+[15.214966] (-) TimerEvent: {}
+[15.322204] (-) TimerEvent: {}
+[15.424569] (-) TimerEvent: {}
+[15.528314] (-) TimerEvent: {}
+[15.629898] (-) TimerEvent: {}
+[15.735566] (-) TimerEvent: {}
+[15.869836] (-) TimerEvent: {}
+[15.973591] (-) TimerEvent: {}
+[16.079463] (-) TimerEvent: {}
+[16.192058] (-) TimerEvent: {}
+[16.311517] (-) TimerEvent: {}
+[16.433137] (-) TimerEvent: {}
+[16.556020] (-) TimerEvent: {}
+[16.673824] (-) TimerEvent: {}
+[16.792271] (-) TimerEvent: {}
+[16.903838] (-) TimerEvent: {}
+[17.025098] (-) TimerEvent: {}
+[17.134025] (-) TimerEvent: {}
+[17.246801] (-) TimerEvent: {}
+[17.370289] (-) TimerEvent: {}
+[17.488378] (-) TimerEvent: {}
+[17.606643] (-) TimerEvent: {}
+[17.720058] (-) TimerEvent: {}
+[17.836713] (-) TimerEvent: {}
+[17.952178] (-) TimerEvent: {}
+[18.072313] (-) TimerEvent: {}
+[18.189133] (-) TimerEvent: {}
+[18.304227] (-) TimerEvent: {}
+[18.422762] (-) TimerEvent: {}
+[18.532707] (-) TimerEvent: {}
+[18.633406] (-) TimerEvent: {}
+[18.747691] (-) TimerEvent: {}
+[18.872083] (-) TimerEvent: {}
+[18.980049] (-) TimerEvent: {}
+[19.087982] (-) TimerEvent: {}
+[19.195627] (-) TimerEvent: {}
+[19.307091] (-) TimerEvent: {}
+[19.418811] (-) TimerEvent: {}
+[19.529152] (-) TimerEvent: {}
+[19.641854] (-) TimerEvent: {}
+[19.760680] (-) TimerEvent: {}
+[19.872179] (-) TimerEvent: {}
+[20.000407] (-) TimerEvent: {}
+[20.110993] (-) TimerEvent: {}
+[20.214097] (-) TimerEvent: {}
+[20.325046] (-) TimerEvent: {}
+[20.337189] (tb3_controller) StdoutLine: {'line': b'running egg_info\n'}
+[20.344364] (tb3_controller) StdoutLine: {'line': b'writing ../build/tb3_controller/tb3_controller.egg-info/PKG-INFO\n'}
+[20.345672] (tb3_controller) StdoutLine: {'line': b'writing dependency_links to ../build/tb3_controller/tb3_controller.egg-info/dependency_links.txt\n'}
+[20.345896] (tb3_controller) StdoutLine: {'line': b'writing entry points to ../build/tb3_controller/tb3_controller.egg-info/entry_points.txt\n'}
+[20.345997] (tb3_controller) StdoutLine: {'line': b'writing requirements to ../build/tb3_controller/tb3_controller.egg-info/requires.txt\n'}
+[20.346093] (tb3_controller) StdoutLine: {'line': b'writing top-level names to ../build/tb3_controller/tb3_controller.egg-info/top_level.txt\n'}
+[20.366952] (tb3_controller) StdoutLine: {'line': b"reading manifest file '../build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'\n"}
+[20.368431] (tb3_controller) StdoutLine: {'line': b"writing manifest file '../build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'\n"}
+[20.368749] (tb3_controller) StdoutLine: {'line': b'running build\n'}
+[20.368863] (tb3_controller) StdoutLine: {'line': b'running build_py\n'}
+[20.371432] (tb3_controller) StdoutLine: {'line': b'copying tb3_controller/turtlebot_brain.py -> /home/johnson/METR4202/build/tb3_controller/build/lib/tb3_controller\n'}
+[20.374950] (tb3_controller) StdoutLine: {'line': b'running install\n'}
+[20.379967] (tb3_controller) StderrLine: {'line': b'/usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.\n'}
+[20.380367] (tb3_controller) StderrLine: {'line': b'  warnings.warn(\n'}
+[20.384499] (tb3_controller) StdoutLine: {'line': b'running install_lib\n'}
+[20.390960] (tb3_controller) StdoutLine: {'line': b'copying /home/johnson/METR4202/build/tb3_controller/build/lib/tb3_controller/turtlebot_brain.py -> /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller\n'}
+[20.424553] (-) TimerEvent: {}
+[20.446251] (tb3_controller) StdoutLine: {'line': b'byte-compiling /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller/turtlebot_brain.py to turtlebot_brain.cpython-310.pyc\n'}
+[20.471955] (tb3_controller) StdoutLine: {'line': b'running install_data\n'}
+[20.493825] (tb3_controller) StdoutLine: {'line': b'running install_egg_info\n'}
+[20.526441] (-) TimerEvent: {}
+[20.536356] (tb3_controller) StdoutLine: {'line': b"removing '/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info' (and everything under it)\n"}
+[20.542461] (tb3_controller) StdoutLine: {'line': b'Copying ../build/tb3_controller/tb3_controller.egg-info to /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info\n'}
+[20.575186] (tb3_controller) StdoutLine: {'line': b'running install_scripts\n'}
+[20.628532] (-) TimerEvent: {}
+[20.744745] (-) TimerEvent: {}
+[20.870986] (-) TimerEvent: {}
+[21.003404] (-) TimerEvent: {}
+[21.100800] (tb3_controller) StdoutLine: {'line': b'Installing turtlebot_brain script to /home/johnson/METR4202/install/tb3_controller/lib/tb3_controller\n'}
+[21.103500] (-) TimerEvent: {}
+[21.141335] (tb3_controller) StdoutLine: {'line': b"writing list of installed files to '/home/johnson/METR4202/build/tb3_controller/install.log'\n"}
+[21.209400] (-) TimerEvent: {}
+[21.342193] (-) TimerEvent: {}
+[21.399716] (tb3_controller) CommandEnded: {'returncode': 0}
+[21.439869] (-) TimerEvent: {}
+[21.545017] (-) TimerEvent: {}
+[21.658253] (-) TimerEvent: {}
+[21.711757] (tb3_controller) JobEnded: {'identifier': 'tb3_controller', 'rc': 0}
+[21.715468] (-) EventReactorShutdown: {}
