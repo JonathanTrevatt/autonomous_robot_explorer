@@ -9,7 +9,50 @@ Tom (Chun Yu) NG - chun.y.ng@uqconnect.edu.au - 45685211\
 Isaiah Stook - isaiahstook@gmx.com - 44539120\
 Pei-Jer Tsai - p.tsai@uqconnect.edu.au - 46411172
 
+<<<<<<< HEAD
 Instructions to download code to ROS workspace:
+=======
+## Build and run instructions:
+### In powershell
+**Start from clean environment:**
+
+wsl --shutdown
+
+### In WSL ubuntu environment:
+**Download repository into src folder:**\
+git clone https://github.com/Darkspore52/METR4202.git src
+
+**Build and source files:**\
+source /opt/ros/humble/setup.bash\
+cd src\
+colcon build\
+source install/setup.bash
+
+### Launch gazebo map
+ros2 launch worlds/Test_world.launch.py
+#### OR, for a different world file:
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+
+### In a new ubuntu terminal
+**Launch SLAM:**
+ros2 launch slam_toolbox online_async_launch.py
+
+### In a new ubuntu terminal
+**Launch navigation toolbox:**\
+ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=src/maps/turtlebot3_world_map.yaml slam = true
+
+### In a new ubuntu terminal
+**Source setup.bash (workspace path may look different for you):**\
+source metr4202_ws/install/setup.bash
+
+**Run our controller:**\
+ros2 run tb3_controller turtlebot_brain
+
+------------------
+------------------
+
+Instructions to collaborate:
+>>>>>>> main
 ------------------
 First time:
 Github account settings -> developer settings -> personal access tokens -> Tokens (classic) -> generate new token (classic)\
