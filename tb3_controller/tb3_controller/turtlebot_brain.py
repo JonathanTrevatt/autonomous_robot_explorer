@@ -41,9 +41,6 @@ class Brain(Node):
             durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
             depth=1)
 
-        self.nav = BasicNavigator() # Initialise navigator
-        self.nav.lifecycleStartup() #init_pose = self.cur_pos
-
     # USING NAV2 FOR AUTOMATIC PATH PLANNING
 
     # DEFINING CALLBACK FUNCTIONS
@@ -95,7 +92,7 @@ class Brain(Node):
         self.mapArray2d = np.reshape(msg.data, (msg.info.width,-1))
         self.mapInfo = msg.info
         if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.width+10, msg.info.height+10), dtype=bool)
+            self.unreachable_positions = np.zeros((msg.info.width+1, msg.info.height+1), dtype=bool)
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
@@ -325,7 +322,6 @@ class Brain(Node):
         cur_pose.pose.orientation.z = 0.0
         cur_pose.pose.orientation.w = 0.0
         cur_pose.header.frame_id = 'map'
-        path = self.nav.getPath(cur_pose, new_pose)
         if path is not None:
             return True
         return False
@@ -340,7 +336,7 @@ class Brain(Node):
         """
         waypoint = (0.5, 0.5, 1)
         return waypoint
-    """
+    
 
     def waypointPxl_compute(self) -> tuple[int, int]:
         """
@@ -392,15 +388,8 @@ class Brain(Node):
         pose.pose.position.x = waypoint[0]
         pose.pose.position.y = waypoint[1]
         pose.pose.orientation.w = float(waypoint[2])
-        self.nav.goToPose(pose)
-        while not self.nav.isTaskComplete():
-            feedback = self.nav.getFeedback()
-            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=10.0):
-                self.nav_canceled = True
-                self.nav.cancelTask()
-        result = self.nav.getResult()
-        if result == result.CANCELED or result == result.FAILED:
-            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
+        self.waypoint_publisher.publish(pose)
+        self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
     
     def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
         """
