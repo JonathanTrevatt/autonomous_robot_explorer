@@ -81,7 +81,7 @@ class Brain(Node):
         Initializes and publishes the map of known unreachable pixels.
         Sets the ready_map flag to True.
         
-        Values range [-1, 100], where -1 represents an unknown probablility.
+        Values range [-1, 100], where -1 represents an unknown probability.
         
         Args:
           msg (OccupancyGrid): The parameter `msg` is of type `OccupancyGrid`, which represents a 2-D 
@@ -219,7 +219,7 @@ class Brain(Node):
     def mark_range_unreachable(self, pxl: tuple[int, int], radius: int) -> None:
         """
         Marks a given pixel, along with a given range around that pixel, as known unreachable.
-        I.e., the robot cannot or should not attempt to pathfind to them.
+        I.e., the robot cannot or should not attempt to path-find to them.
         
         Args:
           pxl (tuple[int, int]): A pixel position on a map, around which to mark unreachable.
@@ -242,7 +242,7 @@ class Brain(Node):
     def mark_waypointPxl_unreachable(self, waypointPxl: tuple[int, int]) -> None:
         """
         Marks a given waypoint pixel as unreachable.
-        I.e., the robot cannot or should not attempt to pathfind there.
+        I.e., the robot cannot or should not attempt to path-find there.
         
         Args:
           waypointPxl (tuple[int, int]): The pixel coordinates of a waypoint to mark as unreachable.
