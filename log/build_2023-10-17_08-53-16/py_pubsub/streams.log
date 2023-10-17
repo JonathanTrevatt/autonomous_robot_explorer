@@ -1,0 +1,44 @@
+[4.357s] Invoking command in '/home/isaiah/metr4202_ws/src/METR4202/tutorials/py_pubsub': AMENT_PREFIX_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/prefix_override:/home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/py_pubsub build --build-base /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build install --record /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/install.log --single-version-externally-managed
+[5.655s] running egg_info
+[5.656s] creating ../../build/py_pubsub/py_pubsub.egg-info
+[5.656s] writing ../../build/py_pubsub/py_pubsub.egg-info/PKG-INFO
+[5.656s] writing dependency_links to ../../build/py_pubsub/py_pubsub.egg-info/dependency_links.txt
+[5.656s] writing entry points to ../../build/py_pubsub/py_pubsub.egg-info/entry_points.txt
+[5.657s] writing requirements to ../../build/py_pubsub/py_pubsub.egg-info/requires.txt
+[5.659s] writing top-level names to ../../build/py_pubsub/py_pubsub.egg-info/top_level.txt
+[5.659s] writing manifest file '../../build/py_pubsub/py_pubsub.egg-info/SOURCES.txt'
+[5.700s] reading manifest file '../../build/py_pubsub/py_pubsub.egg-info/SOURCES.txt'
+[5.700s] writing manifest file '../../build/py_pubsub/py_pubsub.egg-info/SOURCES.txt'
+[5.701s] running build
+[5.701s] running build_py
+[5.705s] creating /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build
+[5.705s] creating /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib
+[5.706s] creating /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub
+[5.706s] copying py_pubsub/subscriber_member_function.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub
+[5.707s] copying py_pubsub/subscriber_member_function_custom_interface.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub
+[5.707s] copying py_pubsub/publisher_member_function.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub
+[5.707s] copying py_pubsub/publisher_member_function_custom_interface.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub
+[5.708s] copying py_pubsub/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub
+[5.708s] running install
+[5.709s] running install_lib
+[5.709s] creating /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub
+[5.709s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub/subscriber_member_function.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub
+[5.710s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub/subscriber_member_function_custom_interface.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub
+[5.710s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub/publisher_member_function.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub
+[5.711s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub/publisher_member_function_custom_interface.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub
+[5.711s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build/lib/py_pubsub/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub
+[5.713s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub/subscriber_member_function.py to subscriber_member_function.cpython-310.pyc
+[5.713s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub/subscriber_member_function_custom_interface.py to subscriber_member_function_custom_interface.cpython-310.pyc
+[5.717s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub/publisher_member_function.py to publisher_member_function.cpython-310.pyc
+[5.717s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub/publisher_member_function_custom_interface.py to publisher_member_function_custom_interface.cpython-310.pyc
+[5.718s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub/__init__.py to __init__.cpython-310.pyc
+[5.723s] running install_data
+[5.723s] running install_egg_info
+[5.730s] Copying ../../build/py_pubsub/py_pubsub.egg-info to /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages/py_pubsub-0.0.0-py3.10.egg-info
+[5.733s] running install_scripts
+[5.856s] Installing listener script to /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/py_pubsub
+[5.857s] Installing listener_cint script to /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/py_pubsub
+[5.858s] Installing talker script to /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/py_pubsub
+[5.858s] Installing talker_cint script to /home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/py_pubsub
+[5.860s] writing list of installed files to '/home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/install.log'
+[5.958s] Invoked command in '/home/isaiah/metr4202_ws/src/METR4202/tutorials/py_pubsub' returned '0': AMENT_PREFIX_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/prefix_override:/home/isaiah/metr4202_ws/src/METR4202/install/py_pubsub/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/py_pubsub build --build-base /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/build install --record /home/isaiah/metr4202_ws/src/METR4202/build/py_pubsub/install.log --single-version-externally-managed

@@ -1,0 +1,29 @@
+running egg_info
+creating ../../build/launch_tutorial/launch_tutorial.egg-info
+writing ../../build/launch_tutorial/launch_tutorial.egg-info/PKG-INFO
+writing dependency_links to ../../build/launch_tutorial/launch_tutorial.egg-info/dependency_links.txt
+writing entry points to ../../build/launch_tutorial/launch_tutorial.egg-info/entry_points.txt
+writing requirements to ../../build/launch_tutorial/launch_tutorial.egg-info/requires.txt
+writing top-level names to ../../build/launch_tutorial/launch_tutorial.egg-info/top_level.txt
+writing manifest file '../../build/launch_tutorial/launch_tutorial.egg-info/SOURCES.txt'
+reading manifest file '../../build/launch_tutorial/launch_tutorial.egg-info/SOURCES.txt'
+writing manifest file '../../build/launch_tutorial/launch_tutorial.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build
+creating /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib
+creating /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial
+copying launch_tutorial/broadcaster_listener.launch.py -> /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial
+copying launch_tutorial/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial
+running install
+running install_lib
+creating /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial
+copying /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial/broadcaster_listener.launch.py -> /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial
+copying /home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/build/lib/launch_tutorial/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial
+byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial/broadcaster_listener.launch.py to broadcaster_listener.launch.cpython-310.pyc
+byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial/__init__.py to __init__.cpython-310.pyc
+running install_data
+running install_egg_info
+Copying ../../build/launch_tutorial/launch_tutorial.egg-info to /home/isaiah/metr4202_ws/src/METR4202/install/launch_tutorial/lib/python3.10/site-packages/launch_tutorial-0.0.0-py3.10.egg-info
+running install_scripts
+writing list of installed files to '/home/isaiah/metr4202_ws/src/METR4202/build/launch_tutorial/install.log'

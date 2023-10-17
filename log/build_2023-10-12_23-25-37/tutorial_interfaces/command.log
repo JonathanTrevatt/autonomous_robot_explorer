@@ -1,0 +1,6 @@
+Invoking command in '/home/tahhhhm/METR4202/build/tutorial_interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/tahhhhm/METR4202/tutorials/tutorial_interfaces -DCMAKE_INSTALL_PREFIX=/home/tahhhhm/METR4202/install/tutorial_interfaces
+Invoked command in '/home/tahhhhm/METR4202/build/tutorial_interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/tahhhhm/METR4202/tutorials/tutorial_interfaces -DCMAKE_INSTALL_PREFIX=/home/tahhhhm/METR4202/install/tutorial_interfaces
+Invoking command in '/home/tahhhhm/METR4202/build/tutorial_interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/tahhhhm/METR4202/build/tutorial_interfaces -- -j24 -l24
+Invoked command in '/home/tahhhhm/METR4202/build/tutorial_interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/tahhhhm/METR4202/build/tutorial_interfaces -- -j24 -l24
+Invoking command in '/home/tahhhhm/METR4202/build/tutorial_interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/tahhhhm/METR4202/build/tutorial_interfaces
+Invoked command in '/home/tahhhhm/METR4202/build/tutorial_interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/tahhhhm/METR4202/build/tutorial_interfaces

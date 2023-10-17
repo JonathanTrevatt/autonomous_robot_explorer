@@ -1,0 +1,27 @@
+[11.513s] Invoking command in '/home/isaiah/metr4202_ws/src/METR4202/turtlebot_controller_pkg': PYTHONPATH=/home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/prefix_override:/home/isaiah/metr4202_ws/src/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../build/turtlebot_controller_pkg build --build-base /home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/build install --record /home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/install.log --single-version-externally-managed
+[13.364s] running egg_info
+[13.365s] writing ../build/turtlebot_controller_pkg/turtlebot_controller_pkg.egg-info/PKG-INFO
+[13.366s] writing dependency_links to ../build/turtlebot_controller_pkg/turtlebot_controller_pkg.egg-info/dependency_links.txt
+[13.367s] writing entry points to ../build/turtlebot_controller_pkg/turtlebot_controller_pkg.egg-info/entry_points.txt
+[13.368s] writing requirements to ../build/turtlebot_controller_pkg/turtlebot_controller_pkg.egg-info/requires.txt
+[13.368s] writing top-level names to ../build/turtlebot_controller_pkg/turtlebot_controller_pkg.egg-info/top_level.txt
+[13.368s] reading manifest file '../build/turtlebot_controller_pkg/turtlebot_controller_pkg.egg-info/SOURCES.txt'
+[13.369s] writing manifest file '../build/turtlebot_controller_pkg/turtlebot_controller_pkg.egg-info/SOURCES.txt'
+[13.369s] running build
+[13.369s] running build_py
+[13.369s] copying turtlebot_controller_pkg/turtlebot_brain.py -> /home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/build/lib/turtlebot_controller_pkg
+[13.370s] copying turtlebot_controller_pkg/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/build/lib/turtlebot_controller_pkg
+[13.370s] running install
+[13.370s] running install_lib
+[13.370s] copying /home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/build/lib/turtlebot_controller_pkg/turtlebot_brain.py -> /home/isaiah/metr4202_ws/src/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages/turtlebot_controller_pkg
+[13.371s] copying /home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/build/lib/turtlebot_controller_pkg/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages/turtlebot_controller_pkg
+[13.371s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages/turtlebot_controller_pkg/turtlebot_brain.py to turtlebot_brain.cpython-310.pyc
+[13.371s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages/turtlebot_controller_pkg/__init__.py to __init__.cpython-310.pyc
+[13.372s] running install_data
+[13.372s] running install_egg_info
+[13.372s] removing '/home/isaiah/metr4202_ws/src/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages/turtlebot_controller_pkg-0.0.0-py3.10.egg-info' (and everything under it)
+[13.372s] Copying ../build/turtlebot_controller_pkg/turtlebot_controller_pkg.egg-info to /home/isaiah/metr4202_ws/src/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages/turtlebot_controller_pkg-0.0.0-py3.10.egg-info
+[13.373s] running install_scripts
+[13.404s] Installing turtlebot_brain script to /home/isaiah/metr4202_ws/src/METR4202/install/turtlebot_controller_pkg/lib/turtlebot_controller_pkg
+[13.404s] writing list of installed files to '/home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/install.log'
+[13.653s] Invoked command in '/home/isaiah/metr4202_ws/src/METR4202/turtlebot_controller_pkg' returned '0': PYTHONPATH=/home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/prefix_override:/home/isaiah/metr4202_ws/src/METR4202/install/turtlebot_controller_pkg/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../build/turtlebot_controller_pkg build --build-base /home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/build install --record /home/isaiah/metr4202_ws/src/METR4202/build/turtlebot_controller_pkg/install.log --single-version-externally-managed
