@@ -1,5 +1,5 @@
 # METR4202
-Group project for metr4202 course
+Group project for metr4202 course.
 This code will autonomously operate a turtlebot robot in using ROS and gazebo, and using SLAM for mapping and navigation.
 
 Team members:
@@ -9,7 +9,42 @@ Tom (Chun Yu) NG - chun.y.ng@uqconnect.edu.au - 45685211\
 Isaiah Stook - isaiahstook@gmx.com - 44539120\
 Pei-Jer Tsai - p.tsai@uqconnect.edu.au - 46411172
 
-Instructions to download code to ROS workspace:
+If your ROS environment is already set up, here are the instructions to build and run this project:
+------------------
+# Clean start wsl - run in powershell
+wsl --shutdown
+
+# In WSL ubuntu environment:
+# Download repository into src folder
+git clone https://github.com/Darkspore52/METR4202.git src
+
+# Build and source files
+source /opt/ros/humble/setup.bash
+cd src
+colcon build
+source install/setup.bash
+
+# Launch gazebo map
+ros2 launch worlds/Test_world.launch.py
+# OR
+#ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+
+# In new window - Launch SLAM
+ros2 launch slam_toolbox online_async_launch.py
+
+# In new window - Launch navigation toolbox
+ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=src/maps/turtlebot3_world_map.yaml
+
+# In new window - 
+# Source setup.bash (workspace path may look different for you)
+source metr4202_ws/install/setup.bash
+# Run our controller
+ros2 run tb3_controller turtlebot_brain
+
+------------------
+------------------
+
+Instructions to collaborate:
 ------------------
 First time:
 Github account settings -> developer settings -> personal access tokens -> Tokens (classic) -> generate new token (classic)\
