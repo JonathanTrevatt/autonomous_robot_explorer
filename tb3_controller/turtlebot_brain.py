@@ -244,15 +244,20 @@ class Brain(Node):
     # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
     # of the surrounding pixels
     def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int]:
-      pixel_vals = []
+      pixel_vals = np.array([[],[],[]])
       if type(ocgrid) is OccupancyGrid:
         data_array_2d = np.reshape(ocgrid.data, (-1, ocgrid.info.width))
       else:
         data_array_2d = ocgrid
       x, y = pixel
-      for i in range(-1, 2):
-        for j in range(-1, 2):
-          pixel_vals.append(data_array_2d[x+i][y+j]) # Assumed to be x,y and not y,x. Might be wrong!
+      print("map shape = height, width = y,x: ", np.shape(data_array_2d)) # map shape:  (102, 99)
+      pixel_vals = np.array(
+        [
+          [data_array_2d[max(x-1, 0)][min(y+1, ocgrid.info.height)],  data_array_2d[x][min(y+1, ocgrid.info.height)], data_array_2d[min(x+1, ocgrid.info.width)][min(y+1, ocgrid.info.height)]],
+          [data_array_2d[max(x-1, 0)][y],                             data_array_2d[x][y],                            data_array_2d[min(x+1, ocgrid.info.width)][y]],
+          [data_array_2d[max(x-1, 0)][max(y-1, 0)],                   data_array_2d[x][max(y-1, 0)],                  data_array_2d[min(x+1, ocgrid.info.width)][max(y-1, 0)]]
+          ])
+
       return pixel_vals
     
 
@@ -393,7 +398,16 @@ class Brain(Node):
           reachable_waypoint_pxl (tuple(int,int)|None): The (x,y) pixel coordinates of a valid point (if found), otherwise None.
         """
         print("---------------------")
-        print(self.get_surrounding_pixel_values(self.mapMsg, (0,0)))
+        print(self.get_surrounding_pixel_values(self.mapMsg, (100, 97))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (99, 96)))
+        print(self.get_surrounding_pixel_values(self.mapMsg, (98, 95)))
+        print(self.get_surrounding_pixel_values(self.mapMsg, (97, 94)))
+        print(self.get_surrounding_pixel_values(self.mapMsg, (0, 0)))
+        print(self.get_surrounding_pixel_values(self.mapMsg, (100, 97))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (99, 97)))
+        print(self.get_surrounding_pixel_values(self.mapMsg, (98, 97)))
+        print(self.get_surrounding_pixel_values(self.mapMsg, (97, 97)))
+
         print("---------------------")
         
         print('NOTE - turtlebot_brain.waypoint_compute: reached')

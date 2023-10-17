@@ -39,7 +39,7 @@ ros2 launch turtlebot3_navigation2 navigation2.launch.py slam:=True
 
 ### In a new ubuntu terminal
 **Source setup.bash (workspace path may look different for you):**\
-source metr4202_ws/install/setup.bash
+source metr4202_ws/src/install/setup.bash
 
 **Run our controller:**\
 ros2 run tb3_controller turtlebot_brain

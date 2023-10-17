@@ -1,0 +1,109 @@
+[0.821s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.821s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=12, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x7f9ec9f4bd60>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x7f9ec9f4b7f0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x7f9ec9f4b7f0>>)
+[0.847s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.848s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.848s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.848s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.848s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.848s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.848s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/jonno/metr4202_ws/src/tb3_controller'
+[0.848s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.848s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.848s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.848s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.849s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.849s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.849s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.849s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.849s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.869s] DEBUG:colcon.colcon_core.package_identification:Package '.' with type 'ros.ament_python' and name 'tb3_controller'
+[0.869s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.869s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.870s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.870s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.870s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.900s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.901s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.902s] WARNING:colcon.colcon_core.prefix_path.colcon:The path '/home/jonno/metr4202_ws/install' in the environment variable COLCON_PREFIX_PATH doesn't exist
+[0.903s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/py_srvcli' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.903s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/py_pubsub' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.903s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/tutorial_interfaces' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.903s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/turtlebot_controller_pkg' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.903s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/tb3_controller' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.903s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/python_parameters' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.904s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/py_launch_example' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.904s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/my_first_package' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.904s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/launch_tutorial' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.904s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/jonno/metr4202_ws/install/action_tutorials_interfaces' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.905s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/jonno/metr4202_ws/install/tutorial_interfaces' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[0.905s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/jonno/metr4202_ws/install/action_tutorials_interfaces' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[0.906s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 1 installed packages in /home/jonno/metr4202_ws/src/tb3_controller/install
+[0.909s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 1 installed packages in /home/jonno/metr4202_ws/src/install
+[0.912s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 2 installed packages in /home/jonno/ros2_ws/install
+[0.913s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 3 installed packages in /home/jonno/turtlebot3_ws/install
+[0.914s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 0 installed packages in /home/jonno/install
+[0.917s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 388 installed packages in /opt/ros/humble
+[0.919s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.994s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_args' from command line to 'None'
+[0.994s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_target' from command line to 'None'
+[0.995s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.995s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_clean_cache' from command line to 'False'
+[0.995s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_clean_first' from command line to 'False'
+[0.995s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'cmake_force_configure' from command line to 'False'
+[0.995s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'ament_cmake_args' from command line to 'None'
+[0.995s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'catkin_cmake_args' from command line to 'None'
+[0.995s] Level 5:colcon.colcon_core.verb:set package 'tb3_controller' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.995s] DEBUG:colcon.colcon_core.verb:Building package 'tb3_controller' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/jonno/metr4202_ws/src/tb3_controller/build/tb3_controller', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller', 'merge_install': False, 'path': '/home/jonno/metr4202_ws/src/tb3_controller', 'symlink_install': False, 'test_result_base': None}
+[0.996s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[1.002s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[1.003s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/jonno/metr4202_ws/src/tb3_controller' with build type 'ament_python'
+[1.003s] Level 1:colcon.colcon_core.shell:create_environment_hook('tb3_controller', 'ament_prefix_path')
+[1.011s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[1.011s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/hook/ament_prefix_path.ps1'
+[1.012s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/hook/ament_prefix_path.dsv'
+[1.012s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/hook/ament_prefix_path.sh'
+[1.014s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.015s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.378s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/jonno/metr4202_ws/src/tb3_controller'
+[1.380s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.380s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.915s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/jonno/metr4202_ws/src/tb3_controller': PYTHONPATH=/home/jonno/metr4202_ws/src/tb3_controller/build/tb3_controller/prefix_override:/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/tb3_controller build --build-base /home/jonno/metr4202_ws/src/tb3_controller/build/tb3_controller/build install --record /home/jonno/metr4202_ws/src/tb3_controller/build/tb3_controller/install.log --single-version-externally-managed
+[2.289s] Level 1:colcon.colcon_core.environment:checking '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller' for CMake module files
+[2.290s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/jonno/metr4202_ws/src/tb3_controller' returned '0': PYTHONPATH=/home/jonno/metr4202_ws/src/tb3_controller/build/tb3_controller/prefix_override:/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/tb3_controller build --build-base /home/jonno/metr4202_ws/src/tb3_controller/build/tb3_controller/build install --record /home/jonno/metr4202_ws/src/tb3_controller/build/tb3_controller/install.log --single-version-externally-managed
+[2.291s] Level 1:colcon.colcon_core.environment:checking '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller' for CMake config files
+[2.291s] Level 1:colcon.colcon_core.environment:checking '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/lib'
+[2.292s] Level 1:colcon.colcon_core.environment:checking '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/bin'
+[2.292s] Level 1:colcon.colcon_core.environment:checking '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/pkgconfig/tb3_controller.pc'
+[2.292s] Level 1:colcon.colcon_core.environment:checking '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages'
+[2.292s] Level 1:colcon.colcon_core.shell:create_environment_hook('tb3_controller', 'pythonpath')
+[2.294s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/hook/pythonpath.ps1'
+[2.295s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/hook/pythonpath.dsv'
+[2.296s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/hook/pythonpath.sh'
+[2.297s] Level 1:colcon.colcon_core.environment:checking '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/bin'
+[2.297s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(tb3_controller)
+[2.298s] INFO:colcon.colcon_core.shell:Creating package script '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/package.ps1'
+[2.299s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/package.dsv'
+[2.299s] INFO:colcon.colcon_core.shell:Creating package script '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/package.sh'
+[2.300s] INFO:colcon.colcon_core.shell:Creating package script '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/package.bash'
+[2.301s] INFO:colcon.colcon_core.shell:Creating package script '/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/tb3_controller/package.zsh'
+[2.301s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/jonno/metr4202_ws/src/tb3_controller/install/tb3_controller/share/colcon-core/packages/tb3_controller)
+[2.302s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[2.303s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[2.303s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[2.303s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[2.488s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[2.489s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[2.489s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[2.489s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[2.489s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.FileNotFound: Failed to connect to socket /run/user/1000/bus: No such file or directory
+[2.489s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[2.491s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/jonno/metr4202_ws/src/tb3_controller/install/local_setup.ps1'
+[2.492s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/jonno/metr4202_ws/src/tb3_controller/install/_local_setup_util_ps1.py'
+[2.493s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/jonno/metr4202_ws/src/tb3_controller/install/setup.ps1'
+[2.495s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/jonno/metr4202_ws/src/tb3_controller/install/local_setup.sh'
+[2.495s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/jonno/metr4202_ws/src/tb3_controller/install/_local_setup_util_sh.py'
+[2.495s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/jonno/metr4202_ws/src/tb3_controller/install/setup.sh'
+[2.504s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/jonno/metr4202_ws/src/tb3_controller/install/local_setup.bash'
+[2.505s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/jonno/metr4202_ws/src/tb3_controller/install/setup.bash'
+[2.508s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/jonno/metr4202_ws/src/tb3_controller/install/local_setup.zsh'
+[2.509s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/jonno/metr4202_ws/src/tb3_controller/install/setup.zsh'
