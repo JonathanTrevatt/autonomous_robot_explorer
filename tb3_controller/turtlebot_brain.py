@@ -251,12 +251,35 @@ class Brain(Node):
         data_array_2d = ocgrid
       x, y = pixel
       print("map shape = height, width = y,x: ", np.shape(data_array_2d)) # map shape:  (102, 99)
+      if x<=0                 or  y>=ocgrid.info.height: a = None 
+      else: a = data_array_2d[x-1][y+1]
+      
+      if                          y>=ocgrid.info.height: b = None 
+      else: b = data_array_2d[x][y+1]
+      
+      if x>=ocgrid.info.width or  y>=ocgrid.info.height: c = None 
+      else: c = data_array_2d[x+1][y+1]
+      
+      if x<=0                 or  y>=ocgrid.info.height: d = None 
+      else: d = data_array_2d[x-1][y]
+      
+      if                          y>=ocgrid.info.height: e = None 
+      else: e = data_array_2d[x][y]
+      
+      if x>=ocgrid.info.width or  y>=ocgrid.info.height: f = None 
+      else: f = data_array_2d[x+1][y]
+      
+      if x<=0                 or  y<=0: h = None 
+      else: h = data_array_2d[x-1][y-1]
+      
+      if                          y>=0: i = None 
+      else: i = data_array_2d[x][y-1]
+      
+      if x>=ocgrid.info.width or y>=0: j = None 
+      else: j = data_array_2d[x+1][y-1]
+      
       pixel_vals = np.array(
-        [
-          [data_array_2d[max(x-1, 0)][min(y+1, ocgrid.info.height)],  data_array_2d[x][min(y+1, ocgrid.info.height)], data_array_2d[min(x+1, ocgrid.info.width)][min(y+1, ocgrid.info.height)]],
-          [data_array_2d[max(x-1, 0)][y],                             data_array_2d[x][y],                            data_array_2d[min(x+1, ocgrid.info.width)][y]],
-          [data_array_2d[max(x-1, 0)][max(y-1, 0)],                   data_array_2d[x][max(y-1, 0)],                  data_array_2d[min(x+1, ocgrid.info.width)][max(y-1, 0)]]
-          ])
+        [[a,b,c],[d,e,f],[h,i,j]])
 
       return pixel_vals
     
@@ -398,15 +421,11 @@ class Brain(Node):
           reachable_waypoint_pxl (tuple(int,int)|None): The (x,y) pixel coordinates of a valid point (if found), otherwise None.
         """
         print("---------------------")
-        print(self.get_surrounding_pixel_values(self.mapMsg, (100, 97))) # (x leftward, y upward from bottom right)
-        print(self.get_surrounding_pixel_values(self.mapMsg, (99, 96)))
-        print(self.get_surrounding_pixel_values(self.mapMsg, (98, 95)))
-        print(self.get_surrounding_pixel_values(self.mapMsg, (97, 94)))
-        print(self.get_surrounding_pixel_values(self.mapMsg, (0, 0)))
-        print(self.get_surrounding_pixel_values(self.mapMsg, (100, 97))) # (x leftward, y upward from bottom right)
-        print(self.get_surrounding_pixel_values(self.mapMsg, (99, 97)))
-        print(self.get_surrounding_pixel_values(self.mapMsg, (98, 97)))
-        print(self.get_surrounding_pixel_values(self.mapMsg, (97, 97)))
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 99))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 98))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 97))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 96))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 95))) # (x leftward, y upward from bottom right)
 
         print("---------------------")
         
