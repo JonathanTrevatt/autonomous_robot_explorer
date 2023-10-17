@@ -19,9 +19,8 @@ from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, QoSDurabilityPolicy
 from nav2_simple_commander.robot_navigator import BasicNavigator
-from nav2_msgs.msg import BehaviorTreeLog
+from nav2_msgs.msg import BehaviorTreeLog, Costmap
 from nav_msgs.msg import OccupancyGrid, Odometry, Path
-import os
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 import numpy as np
 import random
