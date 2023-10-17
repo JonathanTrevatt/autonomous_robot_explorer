@@ -31,7 +31,7 @@ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 or
 
 cd worlds
-ros2 run world_name.launch.py
+ros2 launch world_name.launch.py
 
 ### In a new ubuntu terminal
 **Launch rviz/nav2 with SLAM:**
