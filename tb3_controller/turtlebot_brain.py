@@ -13,7 +13,7 @@ from array import array
 import typing
 
 class Brain(Node):
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialization function for the Brain class, which sets up various
         subscriptions and publishers, as well as initializes flags and variables.
