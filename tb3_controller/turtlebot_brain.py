@@ -241,6 +241,22 @@ class Brain(Node):
         waypoint = (self.pos_x, self.pos_y, self.pos_w)
         return self.coord_m2pxl(waypoint)
     
+    # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
+    # of the surrounding pixels
+    def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int]:
+      pixel_vals = []
+      if type(ocgrid) is OccupancyGrid:
+        data_array_2d = np.reshape(ocgrid.data, (-1, ocgrid.info.width))
+      else:
+        data_array_2d = ocgrid
+      x, y = pixel
+      for i in range(-1, 2):
+        for j in range(-1, 2):
+          pixel_vals.append(data_array_2d[x+i][y+j]) # Assumed to be x,y and not y,x. Might be wrong!
+      return pixel_vals
+    
+
+    
     # TODO - needs testing, may not work
     def mark_range_unreachable(self, pxl: tuple[int, int], radius: int) -> None:
         """
@@ -376,6 +392,10 @@ class Brain(Node):
         Returns:
           reachable_waypoint_pxl (tuple(int,int)|None): The (x,y) pixel coordinates of a valid point (if found), otherwise None.
         """
+        print("---------------------")
+        print(self.get_surrounding_pixel_values(self.mapMsg, (0,0)))
+        print("---------------------")
+        
         print('NOTE - turtlebot_brain.waypoint_compute: reached')
         xPxl, yPxl = self.get_coords_as_Pxl()
         min_search_radius = 20
