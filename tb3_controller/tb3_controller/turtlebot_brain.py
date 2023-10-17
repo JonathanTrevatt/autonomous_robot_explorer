@@ -141,10 +141,6 @@ class Brain(Node):
 
         self.map_unreachable.data = map_unreachable_data
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
     def bt_log_callback(self, msg:BehaviorTreeLog):
         """
         Called whenever a new BehaviorTreeLog message is published to the 'behavior_tree_log' topic.
