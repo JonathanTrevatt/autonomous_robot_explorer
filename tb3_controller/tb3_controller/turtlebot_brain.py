@@ -10,6 +10,7 @@ from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 import numpy as np
 import random
 from array import array
+import typing
 
 class Brain(Node):
     def __init__(self):
@@ -139,7 +140,6 @@ class Brain(Node):
         self.map_unreachable.data = map_unreachable_data
         return
 
-    
     def bt_log_callback(self, msg:BehaviorTreeLog):
         """
         Called whenever a new BehaviorTreeLog message is published to the 'behavior_tree_log' topic.
@@ -165,7 +165,7 @@ class Brain(Node):
             else: print("robot busy")
         self.ready_log = True
 
-    def coord_pxl2m(self, waypointPxl):
+    def coord_pxl2m(self, waypointPxl: tuple[int, int]) -> tuple[float, float, float]:
         """
         Converts pixel coordinates (in the map frame) to meter coordinates (in the world frame)
         using the map resolution and origin position.
@@ -186,7 +186,7 @@ class Brain(Node):
         waypoint = (pos_x, pos_y, pos_w)
         return waypoint
 
-    def coord_m2pxl(self, waypoint):
+    def coord_m2pxl(self, waypoint: tuple[float, float, float]) -> tuple[int, int]:
         """
         Converts a waypoint's coordinates from meters (in the world frame) to pixels 
         (in the map frame) based on the map's resolution and origin position.
@@ -206,7 +206,7 @@ class Brain(Node):
         waypointPxl = (mapPos_x, mapPos_y)
         return waypointPxl
     
-    def get_coords_as_Pxl(self):
+    def get_coords_as_Pxl(self) -> tuple[int, int]:
         """
         Returns the current position as the x,y pixel position on the map.
         Returns:
@@ -216,7 +216,7 @@ class Brain(Node):
         return self.coord_m2pxl(waypoint)
     
     # TODO - needs testing, may not work
-    def mark_range_unreachable(self, pxl, radius):
+    def mark_range_unreachable(self, pxl: tuple[int, int], radius: int) -> None:
         """
         Marks a given pixel, along with a given range around that pixel, as known unreachable.
         I.e., the robot cannot or should not attempt to pathfind to them.
@@ -239,7 +239,7 @@ class Brain(Node):
                 self.mark_waypointPxl_unreachable(pxl)
         self.map_reachable_publisher.publish(self.map_unreachable)
 
-    def mark_waypointPxl_unreachable(self, waypointPxl):
+    def mark_waypointPxl_unreachable(self, waypointPxl: tuple[int, int]) -> None:
         """
         Marks a given waypoint pixel as unreachable.
         I.e., the robot cannot or should not attempt to pathfind there.
@@ -255,7 +255,7 @@ class Brain(Node):
         self.unreachable_positions[xPxl][yPxl] = True
         return
 
-    def mark_area_unreachable(self, waypointPxl):
+    def mark_area_unreachable(self, waypointPxl: tuple[int, int]) -> None:
         """
         Marks a specified waypoint as unreachable by setting the corresponding positions in the
         `unreachable_positions` array to `True`.
@@ -286,8 +286,7 @@ class Brain(Node):
         self.unreachable_positions[xPxl][yPxl] = True
         return
 
-
-    def is_waypointPxl_unreachable(self, waypointPxl):
+    def is_waypointPxl_unreachable(self, waypointPxl: tuple[int, int]) -> bool:
         """
         Checks if a given waypoint pixel has been marked as unreachable based on a 2D array of unreachable positions.
 
@@ -301,7 +300,7 @@ class Brain(Node):
         xPxl, yPxl = waypointPxl
         return self.unreachable_positions[xPxl][yPxl]
 
-    def try_generate_path(self, waypoint):
+    def try_generate_path(self, waypoint: tuple[float, float, float]):
         """
         Tries to generate a path between the current pose and a given waypoint using the
         navigation module. 
@@ -332,7 +331,7 @@ class Brain(Node):
             return True
         return False
     
-    def waypoint_compute_trivial(self):
+    def waypoint_compute_trivial(self) -> tuple[float, float, float]:
         """
         Returns a waypoint with coordinates (0.5, 0.5, 1).
         Used as a trivial case for testing and marking purposes.
@@ -343,7 +342,7 @@ class Brain(Node):
         waypoint = (0.5, 0.5, 1)
         return waypoint
 
-    def waypointPxl_compute(self):
+    def waypointPxl_compute(self) -> tuple[int, int]:
         """
         Searches for unexplored pixels within a radius around the current robot position and returns
         the first reachable unexplored pixel, or None if no valid points are found.
@@ -378,7 +377,7 @@ class Brain(Node):
         print("waypoint_compute - Stopping.")
         return None # If no valid points are found, return None
 
-    def move_to_waypoint(self, waypoint):
+    def move_to_waypoint(self, waypoint: tuple[float, float, float]):
         """
         Moves the robot to a specified waypoint (in meters in the global frame) and handles cancellation or failure cases.
         
@@ -403,7 +402,7 @@ class Brain(Node):
         if result == result.CANCELED or result == result.FAILED:
             self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
     
-    def move_to_waypointPxl(self, waypointPxl):
+    def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
         """
         Moves the robot to a specified waypoint (in integer map pixel coordinates) and handles cancellation or failure cases.
         
@@ -413,7 +412,7 @@ class Brain(Node):
         waypoint = self.coord_pxl2m(waypointPxl)
         self.move_to_waypoint(waypoint)
 
-    def map_get_unexplored_in_range(self, radius):
+    def map_get_unexplored_in_range(self, radius: int):
         """
         Returns a list of unexplored pixels within a given radius from the current position.
         
@@ -447,7 +446,7 @@ class Brain(Node):
                     unexplored_in_range.append(pxl)
         return unexplored_in_range
     
-    def waypoint_check_reachable(self, unexplored_list):
+    def waypoint_check_reachable(self, unexplored_list: list[tuple[int, int]]) -> tuple[int, int] | None:
         """
         Checks if a randomly selected pixel from the unexplored_list is reachable and 
         returns the pixel coordinates if it is, otherwise marks the pixel as unreachable
@@ -476,7 +475,7 @@ class Brain(Node):
         # Every element of the list is unreachable -> return None
         return None
 
-def main(args=None):
+def main(args=None) -> None:
     """
     Entrypoint for the ROS node.
     Initializes the rclpy library, creates an instance of the Brain class, spins the
@@ -499,6 +498,7 @@ def main(args=None):
     brain.destroy_node() # Destroy the node explicitly
     print('NOTE - turtlebot_brain.main: shutting down rclpy')
     rclpy.shutdown()
+    return
 
 # If the current module is being run as the main program, call the `main()` function.
 if __name__ == '__main__':
