@@ -28,6 +28,11 @@ source install/setup.bash
 ### Launch gazebo map
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 
+or
+
+cd worlds
+ros2 launch world_name.launch.py
+
 ### In a new ubuntu terminal
 **Launch rviz/nav2 with SLAM:**
 ros2 launch turtlebot3_navigation2 navigation2.launch.py slam:=True
