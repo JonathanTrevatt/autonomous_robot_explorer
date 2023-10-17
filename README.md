@@ -26,17 +26,11 @@ colcon build\
 source install/setup.bash
 
 ### Launch gazebo map
-ros2 launch worlds/Test_world.launch.py
-#### OR, for a different world file:
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 
 ### In a new ubuntu terminal
-**Launch SLAM:**
-ros2 launch slam_toolbox online_async_launch.py
-
-### In a new ubuntu terminal
-**Launch navigation toolbox:**\
-ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=src/maps/turtlebot3_world_map.yaml slam = true
+**Launch rviz/nav2 with SLAM:**
+ros2 launch turtlebot3_navigation2 navigation2.launch.py slam:=True
 
 ### In a new ubuntu terminal
 **Source setup.bash (workspace path may look different for you):**\
