@@ -48,7 +48,7 @@ class Brain(Node):
     # USING NAV2 FOR AUTOMATIC PATH PLANNING
 
     # DEFINING CALLBACK FUNCTIONS
-    def odom_callback(self, msg:Odometry):
+    def odom_callback(self, msg:Odometry) -> None:
         """
         Called whenever a new odometry message is published to the 'odom' topic.
         Updates global variables with the current position of the robot and 
@@ -73,7 +73,7 @@ class Brain(Node):
             self.move_to_waypoint(waypoint)
         self.ready_odom = True
         
-    def map_callback(self, msg:OccupancyGrid):
+    def map_callback(self, msg:OccupancyGrid) -> None:
         """
         Called whenever a new OccupancyGrid message is published to the 'map' topic.
         Updates global variables with the new map data, after converting to a 2D array.
@@ -106,7 +106,7 @@ class Brain(Node):
         self.map_reachable_publisher.publish(self.map_unreachable)
         return
     
-    def path_callback(self, msg:Path):
+    def path_callback(self, msg:Path) -> None:
         """
         Called whenever a new Path message is published to the 'local_plan' topic.
         Saves the path as the global variable self.path.
@@ -116,7 +116,7 @@ class Brain(Node):
         """
         self.path = msg
     
-    def init_map_unreachable(self, msg:OccupancyGrid):
+    def init_map_unreachable(self, msg:OccupancyGrid) -> None:
         """
         The function initializes a new OccupancyGrid called "map_unreachable" with the same header and info
         as the subscribed map, and sets the data values to either 0 or 100 based on whether the in the subscribed
@@ -140,7 +140,7 @@ class Brain(Node):
         self.map_unreachable.data = map_unreachable_data
         return
 
-    def bt_log_callback(self, msg:BehaviorTreeLog):
+    def bt_log_callback(self, msg:BehaviorTreeLog) -> None:
       """
       Called whenever a new BehaviorTreeLog message is published to the 'behavior_tree_log' topic.
         This is the start of the logic loop that computes points and commands the robot.
