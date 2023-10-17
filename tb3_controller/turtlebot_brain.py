@@ -35,7 +35,6 @@ class Brain(Node):
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',           self.path_callback,     10)
         self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
         self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'map_reachable',    10)
-        self.init_pose_publisher    = self.create_publisher     (PoseWithCovarianceStamped, 'initialpose',      10)
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
@@ -93,13 +92,11 @@ class Brain(Node):
           nothing (None).
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
-        # If the map has changed its dimensions, re-initialize the internal representations
-        if not hasattr(self, 'mapArray2d') or self.mapArray2d.shape != (msg.info.width, msg.info.height):
-            self.unreachable_positions = np.zeros((msg.info.width, msg.info.height), dtype=bool)
-        
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height))
+        self.mapArray2d = np.reshape(msg.data, (-1, msg.info.width))
         self.mapInfo = msg.info
+        if self.unreachable_positions == []:
+            self.unreachable_positions = np.zeros((msg.info.height, msg.info.width), dtype=bool)
         
         if not self.map_unreachable_initFlag:
             self.init_map_unreachable(msg)
@@ -107,6 +104,7 @@ class Brain(Node):
 
         self.ready_map = True
         self.map_reachable_publisher.publish(self.map_unreachable)
+        return
     
     def path_callback(self, msg:Path):
         """
@@ -140,23 +138,20 @@ class Brain(Node):
         map_unreachable_data = array('b', [int(xv) if c else 101*int(yv) for c, xv, yv in zip(np.array(msg.data) > 80, np.zeros(size), np.ones(size))])
 
         self.map_unreachable.data = map_unreachable_data
+        return
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
     def bt_log_callback(self, msg:BehaviorTreeLog):
-        """
-        Called whenever a new BehaviorTreeLog message is published to the 'behavior_tree_log' topic.
+      """
+      Called whenever a new BehaviorTreeLog message is published to the 'behavior_tree_log' topic.
         This is the start of the logic loop that computes points and commands the robot.
         Checks the log for the 'IDLE' event. If the robot is not busy, and the odometry and map data 
         is initialised, it will compute a waypoint and command the robot to move to it.
         Otherwise it prints "robot busy".
-        
-        :param msg: The parameter `msg` is an instance of the `BehaviorTreeLog` class. It contains
-        information about the behavior tree log, including the event log.
-        :type msg: BehaviorTreeLog
-        """
+      
+      Args:
+        msg (BehaviorTreeLog): The parameter `msg` is an instance of the `BehaviorTreeLog` class. It
+      contains information about the behavior tree log, including the event log.
+      """
         for event in msg.event_log:
             if (event.node_name == 'NavigateRecovery' and \
                 event.current_status == 'IDLE') or self.nav_canceled:
@@ -176,11 +171,11 @@ class Brain(Node):
         using the map resolution and origin position.
         
         Args:
-          waypointPxl (tuple(int, int)): The coordinates of a waypoint as a pixel coordinate. 
+          waypointPxl (tuple[int, int]): The coordinates of a waypoint as a pixel coordinate. 
           Represented as a tuple of integer x and y coordinates of the waypoint on the map.
         
         Returns:
-          waypoint (tuple(float, float, float)): The coordinates of a waypoint as coordinates in meters in the world frame. 
+          waypoint (tuple[float, float, float]): The coordinates of a waypoint as coordinates in meters in the world frame. 
           Represented as a tuple of 3 floats: the x and y coordinates in meters, and w,
           the bearing (as a quaternion) which is arbitrarily set to 0.
         """
@@ -197,7 +192,7 @@ class Brain(Node):
         (in the map frame) based on the map's resolution and origin position.
         
         Args:
-          waypoint (tuple(float, float, float)): The coordinates of a waypoint as coordinates in meters in the world frame. 
+          waypoint (tuple[float, float, float]): The coordinates of a waypoint as coordinates in meters in the world frame. 
           Represented as a tuple of 3 floats: the pos_x and pos_y coordinates in meters, and pos_w, 
           the bearing (as a quaternion).
         
@@ -227,7 +222,7 @@ class Brain(Node):
         I.e., the robot cannot or should not attempt to pathfind to them.
         
         Args:
-          pxl (tuple(int, int)): A pixel position on a map, around which to mark unreachable.
+          pxl (tuple[int, int]): A pixel position on a map, around which to mark unreachable.
           radius: The radius parameter represents the distance from the center pixel (pxl) within which
                     we want to mark the range as unreachable.
         """
@@ -250,7 +245,7 @@ class Brain(Node):
         I.e., the robot cannot or should not attempt to pathfind there.
         
         Args:
-          waypointPxl (tuple(int, int)): The pixel coordinates of a waypoint to mark as unreachable.
+          waypointPxl (tuple[int, int]): The pixel coordinates of a waypoint to mark as unreachable.
         
         Returns:
           nothing (None).
@@ -267,7 +262,7 @@ class Brain(Node):
         Similar to `mark_range_unreachable`.
         
         Args:
-          waypointPxl (tuple(int, int)): The x, y pixel coordinates of a waypoint on a map.
+          waypointPxl (tuple[int, int]): The x, y pixel coordinates of a waypoint on a map.
         
         Returns:
           nothing (None).
@@ -296,7 +291,7 @@ class Brain(Node):
         Checks if a given waypoint pixel has been marked as unreachable based on a 2D array of unreachable positions.
 
         Args:
-          waypointPxl (tuple(int, int)): The coordinates (x, y) of a waypoint in pixel units.
+          waypointPxl (tuple[int, int]): The coordinates (x, y) of a waypoint in pixel units.
         
         Returns:
           self.unreachable_positions[xPxl][yPxl] (bool): 
@@ -312,7 +307,7 @@ class Brain(Node):
         On failure, returns False, otherwise, returns True.
         
         Args:
-          waypoint (tuple(float, float, float)): The (x, y, w) waypoint tuple to try to generate a path to.
+          waypoint (tuple[float, float, float]): The (x, y, w) waypoint tuple to try to generate a path to.
         
         Returns:
           (bool): If the path is successfully generated, it returns True. Otherwise, it returns False.
@@ -342,7 +337,7 @@ class Brain(Node):
         Used as a trivial case for testing and marking purposes.
         
         Returns:
-          waypoint (tuple(float,float,float)): a n (x,y,w) waypoint tuple (0.5, 0.5, 1).
+          waypoint (tuple[float, float, float]): a n (x,y,w) waypoint tuple (0.5, 0.5, 1).
         """
         waypoint = (0.5, 0.5, 1)
         return waypoint
@@ -357,8 +352,8 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.waypoint_compute: reached')
         xPxl, yPxl = self.get_coords_as_Pxl()
-        min_search_radius = 20
-        max_search_radius = 101
+        min_search_radius = 10
+        max_search_radius = 30
         search_radius = min_search_radius
         # search radius for reachable, unexplored pixels and set goal to go there
         while search_radius <= max_search_radius:
@@ -387,7 +382,7 @@ class Brain(Node):
         Moves the robot to a specified waypoint (in meters in the global frame) and handles cancellation or failure cases.
         
         Args:
-          waypoint (tuple(float,float,float)): The waypoint (x,y,w) tuple to move to.
+          waypoint (tuple[float, float, float]): The waypoint (x,y,w) tuple to move to.
         """
         x, y, w = waypoint
         print("Moving to waypoint: ", waypoint)
@@ -400,7 +395,7 @@ class Brain(Node):
         self.nav.goToPose(pose)
         while not self.nav.isTaskComplete():
             feedback = self.nav.getFeedback()
-            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=15.0):
+            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=10.0):
                 self.nav_canceled = True
                 self.nav.cancelTask()
         result = self.nav.getResult()
@@ -440,28 +435,15 @@ class Brain(Node):
 
         print("xmin, xmax, ymin, ymax: ", xmin, xmax, ymin, ymax)
         print("mapArray2d.shape:", self.mapArray2d.shape)
-        for xPxl in range(xmin, xmax + 1):
-            for yPxl in range(ymin, ymax + 1):
+        for xPxl in np.linspace(xmin, xmax, xmax-xmin):
+            for yPxl in np.linspace(ymin, ymax, ymax-ymin):
                 xPxl=int(xPxl)
                 yPxl=int(yPxl)
                 pxl = (xPxl, yPxl)
-                if self.mapArray2d[xPxl][yPxl] > 60:
-                    self.mark_waypointPxl_unreachable(pxl)
-                elif self.mapArray2d[xPxl][yPxl] == -1: 
-                    # if pixel is unexplored
-                    nearby_explored_pixels = 0
-                    nearby_obstacle_pixels = 0
-                    for x in range(-2, 3):
-                        for y in range(-2, 3):
-                            if xPxl + x >= 0 and yPxl + y >= 0:
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
-                                    nearby_explored_pixels += 1
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] > 60:
-                                    nearby_obstacle_pixels += 1
-                    if nearby_explored_pixels > 12 and nearby_obstacle_pixels < 5:
-                        unexplored_in_range.append(pxl)
-        for pixel in unexplored_in_range:
-            print("unexplored = ", self.coord_pxl2m(pixel))
+                if self.mapArray2d[xPxl][yPxl] > 80:
+                    self.mark_range_unreachable(pxl, 10)
+                elif self.mapArray2d[xPxl][yPxl] == -1: # if pixel is unexplored
+                    unexplored_in_range.append(pxl)
         return unexplored_in_range
     
     def waypoint_check_reachable(self, unexplored_list: list[tuple[int, int]]) -> tuple[int, int] | None:
