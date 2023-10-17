@@ -1,0 +1,44 @@
+[4.274s] Invoking command in '/home/isaiah/metr4202_ws/src/METR4202/tutorials/py_srvcli': AMENT_PREFIX_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/prefix_override:/home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/py_srvcli build --build-base /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build install --record /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/install.log --single-version-externally-managed
+[5.399s] running egg_info
+[5.400s] creating ../../build/py_srvcli/py_srvcli.egg-info
+[5.400s] writing ../../build/py_srvcli/py_srvcli.egg-info/PKG-INFO
+[5.401s] writing dependency_links to ../../build/py_srvcli/py_srvcli.egg-info/dependency_links.txt
+[5.402s] writing entry points to ../../build/py_srvcli/py_srvcli.egg-info/entry_points.txt
+[5.403s] writing requirements to ../../build/py_srvcli/py_srvcli.egg-info/requires.txt
+[5.403s] writing top-level names to ../../build/py_srvcli/py_srvcli.egg-info/top_level.txt
+[5.404s] writing manifest file '../../build/py_srvcli/py_srvcli.egg-info/SOURCES.txt'
+[5.409s] reading manifest file '../../build/py_srvcli/py_srvcli.egg-info/SOURCES.txt'
+[5.416s] writing manifest file '../../build/py_srvcli/py_srvcli.egg-info/SOURCES.txt'
+[5.416s] running build
+[5.416s] running build_py
+[5.418s] creating /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build
+[5.418s] creating /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib
+[5.419s] creating /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli
+[5.419s] copying py_srvcli/service_member_function.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli
+[5.419s] copying py_srvcli/service_member_function_custom_interface.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli
+[5.420s] copying py_srvcli/client_member_function.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli
+[5.420s] copying py_srvcli/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli
+[5.421s] copying py_srvcli/client_member_function_custom_interface.py -> /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli
+[5.421s] running install
+[5.421s] running install_lib
+[5.423s] creating /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli
+[5.423s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli/service_member_function.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli
+[5.423s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli/service_member_function_custom_interface.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli
+[5.424s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli/client_member_function.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli
+[5.428s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli/__init__.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli
+[5.428s] copying /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build/lib/py_srvcli/client_member_function_custom_interface.py -> /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli
+[5.429s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli/service_member_function.py to service_member_function.cpython-310.pyc
+[5.430s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli/service_member_function_custom_interface.py to service_member_function_custom_interface.cpython-310.pyc
+[5.434s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli/client_member_function.py to client_member_function.cpython-310.pyc
+[5.436s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli/__init__.py to __init__.cpython-310.pyc
+[5.437s] byte-compiling /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli/client_member_function_custom_interface.py to client_member_function_custom_interface.cpython-310.pyc
+[5.437s] running install_data
+[5.437s] running install_egg_info
+[5.450s] Copying ../../build/py_srvcli/py_srvcli.egg-info to /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages/py_srvcli-0.0.0-py3.10.egg-info
+[5.451s] running install_scripts
+[5.528s] Installing client script to /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/py_srvcli
+[5.528s] Installing client_cint script to /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/py_srvcli
+[5.530s] Installing service script to /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/py_srvcli
+[5.531s] Installing service_cint script to /home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/py_srvcli
+[5.531s] writing list of installed files to '/home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/install.log'
+[5.622s] Invoked command in '/home/isaiah/metr4202_ws/src/METR4202/tutorials/py_srvcli' returned '0': AMENT_PREFIX_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/prefix_override:/home/isaiah/metr4202_ws/src/METR4202/install/py_srvcli/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/src/METR4202/install/tutorial_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/py_srvcli build --build-base /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/build install --record /home/isaiah/metr4202_ws/src/METR4202/build/py_srvcli/install.log --single-version-externally-managed
