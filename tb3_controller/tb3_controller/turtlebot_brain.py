@@ -26,6 +26,7 @@ from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 import numpy as np
 import random
 from array import array
+import time
 
 class Brain(Node):
     def __init__(self):
@@ -57,7 +58,7 @@ class Brain(Node):
             depth=1)
 
         self.nav = BasicNavigator() # Initialise navigator
-        self.nav.lifecycleStartup() #init_pose = self.cur_pos
+        #self.nav.lifecycleStartup() #init_pose = self.cur_pos
 
     # USING NAV2 FOR AUTOMATIC PATH PLANNING
 
@@ -249,48 +250,78 @@ class Brain(Node):
         search_radius = min_search_radius
         # search radius for reachable, unexplored pixels and set goal to go there
         while search_radius <= max_search_radius:
-            print("waypoint_compute - Searching for unexplored pixels in radius: ", search_radius)
+            #print("waypoint_compute - Searching for unexplored pixels in radius: ", search_radius)
             # generate list of unexplored pixels within search radius
             unexplored_list = self.map_get_unexplored_in_range(search_radius)
-            print("waypoint_compute - unexplored_list: ", unexplored_list)
+            #print("waypoint_compute - unexplored_list: ", unexplored_list)
             if unexplored_list is not None:
-                print("waypoint_compute - unexplored_list is not None - unexplored_list = \n", unexplored_list)
-                print("randomly shuffling unexplored_list to remove preference for exploring in a certain direction.")
+                #print("waypoint_compute - unexplored_list is not None - unexplored_list = \n", unexplored_list)
+                #print("randomly shuffling unexplored_list to remove preference for exploring in a certain direction.")
                 random.shuffle(unexplored_list)
-                print("Shuffled list = \n", unexplored_list)
-                print("waypoint_compute - calling self.waypoint_check_reachable(unexplored_list)")
+                #print("Shuffled list = \n", unexplored_list)
+                #print("waypoint_compute - calling self.waypoint_check_reachable(unexplored_list)")
                 reachable_waypoint_pxl = self.waypoint_check_reachable(unexplored_list)
                 if reachable_waypoint_pxl is not None:
                     return reachable_waypoint_pxl # Stop searching
-            print("waypoint_compute - unexplored_list is None, or every unexplored element is unreachable.")
-            print("Expanding search radius.")
+            #print("waypoint_compute - unexplored_list is None, or every unexplored element is unreachable.")
+            #print("Expanding search radius.")
             search_radius += 5 # Expand search radius
         print("waypoint_compute - Maximum search radius is reached.")
         print("waypoint_compute - Stopping.")
         return None # If no valid points are found, return None
 
     # TODO - Low priority - Use python function instead of terminal command to implement
-    def move_to_waypoint(self, waypoint):
+    def move_to_waypoint(self, waypoint, max_navigation_time=30.0, sleep_interval=0.1, pose_tolerance=0.5):
         """
         Publishes waypoint for nav2 to guide robot, using terminal commands.
         """
         x, y, w = waypoint
-        print("Moving to waypoint: ", waypoint)
+        print("[INFO] Starting move_to_waypoint function.")
+        print("Moving to waypoint:", waypoint)
         self.IDLE = False
         pose = PoseStamped()
         pose.header.frame_id = 'map'
-        pose.pose.position.x = waypoint[0]
-        pose.pose.position.y = waypoint[1]
-        pose.pose.orientation.w = float(waypoint[2])
-        self.nav.goToPose(pose)
-        while not self.nav.isTaskComplete():
-            feedback = self.nav.getFeedback()
-            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=15.0):
-                self.nav_canceled = True
-                self.nav.cancelTask()
-        result = self.nav.getResult()
-        if result == result.CANCELED or result == result.FAILED:
+        pose.pose.position.x = x
+        pose.pose.position.y = y
+        pose.pose.orientation.w = float(w)
+
+        # Try to send pose and navigate
+        try:
+            print("[INFO] Preparing to send pose to nav system...")
+            self.nav.goToPose(pose)
+            print("[INFO] Pose sent. Waiting for task completion...")
+            
+            start_time = time.time()
+            
+            while not self.nav.isTaskComplete():
+                feedback = self.nav.getFeedback()
+                print("[INFO] Checking feedback navigation time:", Duration.from_msg(feedback.navigation_time))
+
+                # Check duration since start_time
+                elapsed_time = time.time() - start_time
+                if elapsed_time > max_navigation_time:
+                    print("[WARNING] Navigation time exceeded", max_navigation_time, "seconds. Cancelling task.")
+                    self.nav_canceled = True
+                    self.nav.cancelTask()
+                    break  # Break out of the loop once task is cancelled
+                
+                time.sleep(sleep_interval)  # Sleep to prevent high-frequency checks
+                
+        except Exception as e:
+            print("[ERROR] An error occurred while navigating:", str(e))
             self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
+            return
+
+        print("[INFO] Task completed or cancelled. Retrieving result...")
+        result = self.nav.getResult()
+        print("[INFO] Result retrieved:", result)
+
+        if result in [result.CANCELED, result.FAILED]:
+            print("[WARNING] Task was either cancelled or failed. Marking range as unreachable.")
+            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
+
+        print("[INFO] move_to_waypoint function completed.")
+
     
     def move_to_waypointPxl(self, waypointPxl):
         """
@@ -320,20 +351,20 @@ class Brain(Node):
                 xPxl=int(xPxl)
                 yPxl=int(yPxl)
                 pxl = (xPxl, yPxl)
-                if self.mapArray2d[xPxl][yPxl] > 60:
+                if self.mapArray2d[xPxl][yPxl] > 90:
                     self.mark_waypointPxl_unreachable(pxl)
                 elif self.mapArray2d[xPxl][yPxl] == -1: 
                     # if pixel is unexplored
                     nearby_explored_pixels = 0
                     nearby_obstacle_pixels = 0
-                    for x in range(-2, 3):
-                        for y in range(-2, 3):
+                    for x in range(-5, 6):
+                        for y in range(-5, 6):
                             if xPxl + x >= 0 and yPxl + y >= 0:
                                 if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
                                     nearby_explored_pixels += 1
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] > 60:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] > 70:
                                     nearby_obstacle_pixels += 1
-                    if nearby_explored_pixels > 12 and nearby_obstacle_pixels < 5:
+                    if nearby_explored_pixels > 8 and nearby_obstacle_pixels == 0:
                         unexplored_in_range.append(pxl)
         for pixel in unexplored_in_range:
             print("unexplored = ", self.coord_pxl2m(pixel))

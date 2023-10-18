@@ -1,0 +1,24 @@
+[6.896s] Invoking command in '/home/isaiah/metr4202_ws/src/tb3_controller': PYTHONPATH=/home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/prefix_override:/home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/tb3_controller build --build-base /home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/build install --record /home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/install.log --single-version-externally-managed
+[9.661s] running egg_info
+[9.667s] writing build/tb3_controller/tb3_controller.egg-info/PKG-INFO
+[9.681s] writing dependency_links to build/tb3_controller/tb3_controller.egg-info/dependency_links.txt
+[9.683s] writing entry points to build/tb3_controller/tb3_controller.egg-info/entry_points.txt
+[9.684s] writing requirements to build/tb3_controller/tb3_controller.egg-info/requires.txt
+[9.685s] writing top-level names to build/tb3_controller/tb3_controller.egg-info/top_level.txt
+[9.705s] reading manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+[9.706s] writing manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+[9.706s] running build
+[9.707s] running build_py
+[9.708s] copying tb3_controller/turtlebot_brain.py -> /home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/build/lib/tb3_controller
+[9.709s] running install
+[9.710s] running install_lib
+[9.713s] copying /home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/build/lib/tb3_controller/turtlebot_brain.py -> /home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages/tb3_controller
+[9.716s] byte-compiling /home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages/tb3_controller/turtlebot_brain.py to turtlebot_brain.cpython-310.pyc
+[9.741s] running install_data
+[9.745s] running install_egg_info
+[9.759s] removing '/home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info' (and everything under it)
+[9.760s] Copying build/tb3_controller/tb3_controller.egg-info to /home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info
+[9.772s] running install_scripts
+[9.962s] Installing turtlebot_brain script to /home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/tb3_controller
+[9.964s] writing list of installed files to '/home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/install.log'
+[10.127s] Invoked command in '/home/isaiah/metr4202_ws/src/tb3_controller' returned '0': PYTHONPATH=/home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/prefix_override:/home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/tb3_controller build --build-base /home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/build install --record /home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/install.log --single-version-externally-managed

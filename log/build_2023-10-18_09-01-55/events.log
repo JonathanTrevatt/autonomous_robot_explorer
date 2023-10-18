@@ -1,0 +1,105 @@
+[0.000000] (-) TimerEvent: {}
+[0.000499] (tb3_controller) JobQueued: {'identifier': 'tb3_controller', 'dependencies': OrderedDict()}
+[0.000676] (tb3_controller) JobStarted: {'identifier': 'tb3_controller'}
+[0.088675] (-) TimerEvent: {}
+[0.189578] (-) TimerEvent: {}
+[0.290532] (-) TimerEvent: {}
+[0.391514] (-) TimerEvent: {}
+[0.492291] (-) TimerEvent: {}
+[0.593485] (-) TimerEvent: {}
+[0.694668] (-) TimerEvent: {}
+[0.796183] (-) TimerEvent: {}
+[0.897173] (-) TimerEvent: {}
+[0.998264] (-) TimerEvent: {}
+[1.099061] (-) TimerEvent: {}
+[1.200046] (-) TimerEvent: {}
+[1.300894] (-) TimerEvent: {}
+[1.401716] (-) TimerEvent: {}
+[1.502358] (-) TimerEvent: {}
+[1.603357] (-) TimerEvent: {}
+[1.704307] (-) TimerEvent: {}
+[1.804992] (-) TimerEvent: {}
+[1.906010] (-) TimerEvent: {}
+[2.007222] (-) TimerEvent: {}
+[2.108171] (-) TimerEvent: {}
+[2.209926] (-) TimerEvent: {}
+[2.310696] (-) TimerEvent: {}
+[2.411728] (-) TimerEvent: {}
+[2.512806] (-) TimerEvent: {}
+[2.613816] (-) TimerEvent: {}
+[2.714913] (-) TimerEvent: {}
+[2.817467] (-) TimerEvent: {}
+[2.918219] (-) TimerEvent: {}
+[3.019059] (-) TimerEvent: {}
+[3.119982] (-) TimerEvent: {}
+[3.220714] (-) TimerEvent: {}
+[3.321783] (-) TimerEvent: {}
+[3.423222] (-) TimerEvent: {}
+[3.524762] (-) TimerEvent: {}
+[3.625912] (-) TimerEvent: {}
+[3.727105] (-) TimerEvent: {}
+[3.828769] (-) TimerEvent: {}
+[3.929980] (-) TimerEvent: {}
+[4.031417] (-) TimerEvent: {}
+[4.132315] (-) TimerEvent: {}
+[4.233685] (-) TimerEvent: {}
+[4.336177] (-) TimerEvent: {}
+[4.443612] (-) TimerEvent: {}
+[4.551567] (-) TimerEvent: {}
+[4.652633] (-) TimerEvent: {}
+[4.753741] (-) TimerEvent: {}
+[4.855238] (-) TimerEvent: {}
+[4.958441] (-) TimerEvent: {}
+[5.059434] (-) TimerEvent: {}
+[5.160491] (-) TimerEvent: {}
+[5.212521] (tb3_controller) Command: {'cmd': ['/usr/bin/python3', 'setup.py', 'egg_info', '--egg-base', 'build/tb3_controller', 'build', '--build-base', '/home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/build', 'install', '--record', '/home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/install.log', '--single-version-externally-managed'], 'cwd': '/home/isaiah/metr4202_ws/src/tb3_controller', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'LANGUAGE': 'en_AU:en', 'USER': 'isaiah', 'XDG_SESSION_TYPE': 'wayland', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/isaiah/metr4202_ws/install/tutorial_interfaces/lib:/home/isaiah/metr4202_ws/install/action_tutorials_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib', 'HOME': '/home/isaiah', 'OLDPWD': '/home/isaiah/metr4202_ws/src/tb3_controller/tb3_controller', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'SYSTEMD_EXEC_PID': '2724', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/isaiah/metr4202_ws/src/tb3_controller/install:/home/isaiah/metr4202_ws/src/install:/home/isaiah/metr4202_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'isaiah', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'isaiah', 'TERM': 'xterm-256color', 'GAZEBO_MODEL_PATH': '/home/isaiah/.gazebo/models::/opt/ros/humble/share/turtlebot3_gazebo/models', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/isaiah-VirtualBox:@/tmp/.ICE-unix/1338,unix/isaiah-VirtualBox:/tmp/.ICE-unix/1338', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/a4b8d7c0_8cc3_4f60_9b56_5e8bd7589fba', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.9SSLC2', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'GNOME_TERMINAL_SERVICE': ':1.112', 'SSH_AGENT_LAUNCHER': 'gnome-keyring', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'ROS_DOMAIN_ID': '30', 'AMENT_PREFIX_PATH': '/home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller:/home/isaiah/metr4202_ws/src/install/tb3_controller:/home/isaiah/metr4202_ws/install/py_srvcli:/home/isaiah/metr4202_ws/install/py_pubsub:/home/isaiah/metr4202_ws/install/tutorial_interfaces:/home/isaiah/metr4202_ws/install/turtlebot_controller_pkg:/home/isaiah/metr4202_ws/install/tb3_controller:/home/isaiah/metr4202_ws/install/python_parameters:/home/isaiah/metr4202_ws/install/py_launch_example:/home/isaiah/metr4202_ws/install/my_first_package:/home/isaiah/metr4202_ws/install/m4202_py_pkg:/home/isaiah/metr4202_ws/install/launch_tutorial:/home/isaiah/metr4202_ws/install/action_tutorials_interfaces:/opt/ros/humble', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_ALLL': 'en_US.UTF-8', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller', 'TURTLEBOT3_MODEL': 'waffle_pi', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/prefix_override:/home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/src/install/tb3_controller/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/py_srvcli/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/py_pubsub/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/tutorial_interfaces/local/lib/python3.10/dist-packages:/home/isaiah/metr4202_ws/install/turtlebot_controller_pkg/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/tb3_controller/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/python_parameters/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/py_launch_example/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/my_first_package/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/m4202_py_pkg/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/launch_tutorial/lib/python3.10/site-packages:/home/isaiah/metr4202_ws/install/action_tutorials_interfaces/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'VTE_VERSION': '6800', 'CMAKE_PREFIX_PATH': '/home/isaiah/metr4202_ws/install/tutorial_interfaces:/home/isaiah/metr4202_ws/install/action_tutorials_interfaces'}, 'shell': False}
+[5.279038] (-) TimerEvent: {}
+[5.380498] (-) TimerEvent: {}
+[5.481574] (-) TimerEvent: {}
+[5.582669] (-) TimerEvent: {}
+[5.686825] (-) TimerEvent: {}
+[5.787723] (-) TimerEvent: {}
+[5.888807] (-) TimerEvent: {}
+[5.989693] (-) TimerEvent: {}
+[6.090726] (-) TimerEvent: {}
+[6.191708] (-) TimerEvent: {}
+[6.294088] (-) TimerEvent: {}
+[6.395177] (-) TimerEvent: {}
+[6.496049] (-) TimerEvent: {}
+[6.596909] (-) TimerEvent: {}
+[6.697939] (-) TimerEvent: {}
+[6.799396] (-) TimerEvent: {}
+[6.900431] (-) TimerEvent: {}
+[7.001535] (-) TimerEvent: {}
+[7.102537] (-) TimerEvent: {}
+[7.203928] (-) TimerEvent: {}
+[7.304938] (-) TimerEvent: {}
+[7.320886] (tb3_controller) StdoutLine: {'line': b'running egg_info\n'}
+[7.321666] (tb3_controller) StdoutLine: {'line': b'writing build/tb3_controller/tb3_controller.egg-info/PKG-INFO\n'}
+[7.322083] (tb3_controller) StdoutLine: {'line': b'writing dependency_links to build/tb3_controller/tb3_controller.egg-info/dependency_links.txt\n'}
+[7.322521] (tb3_controller) StdoutLine: {'line': b'writing entry points to build/tb3_controller/tb3_controller.egg-info/entry_points.txt\n'}
+[7.323192] (tb3_controller) StdoutLine: {'line': b'writing requirements to build/tb3_controller/tb3_controller.egg-info/requires.txt\n'}
+[7.323721] (tb3_controller) StdoutLine: {'line': b'writing top-level names to build/tb3_controller/tb3_controller.egg-info/top_level.txt\n'}
+[7.328246] (tb3_controller) StdoutLine: {'line': b"reading manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'\n"}
+[7.334172] (tb3_controller) StdoutLine: {'line': b"writing manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'\n"}
+[7.335383] (tb3_controller) StdoutLine: {'line': b'running build\n'}
+[7.335849] (tb3_controller) StdoutLine: {'line': b'running build_py\n'}
+[7.338752] (tb3_controller) StdoutLine: {'line': b'copying tb3_controller/turtlebot_brain.py -> /home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/build/lib/tb3_controller\n'}
+[7.340302] (tb3_controller) StdoutLine: {'line': b'running install\n'}
+[7.341495] (tb3_controller) StdoutLine: {'line': b'running install_lib\n'}
+[7.363351] (tb3_controller) StdoutLine: {'line': b'copying /home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/build/lib/tb3_controller/turtlebot_brain.py -> /home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages/tb3_controller\n'}
+[7.363937] (tb3_controller) StdoutLine: {'line': b'byte-compiling /home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages/tb3_controller/turtlebot_brain.py to turtlebot_brain.cpython-310.pyc\n'}
+[7.368314] (tb3_controller) StdoutLine: {'line': b'running install_data\n'}
+[7.372035] (tb3_controller) StdoutLine: {'line': b'running install_egg_info\n'}
+[7.380797] (tb3_controller) StdoutLine: {'line': b"removing '/home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info' (and everything under it)\n"}
+[7.384282] (tb3_controller) StdoutLine: {'line': b'Copying build/tb3_controller/tb3_controller.egg-info to /home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info\n'}
+[7.389614] (tb3_controller) StdoutLine: {'line': b'running install_scripts\n'}
+[7.405334] (-) TimerEvent: {}
+[7.506469] (-) TimerEvent: {}
+[7.529499] (tb3_controller) StdoutLine: {'line': b'Installing turtlebot_brain script to /home/isaiah/metr4202_ws/src/tb3_controller/install/tb3_controller/lib/tb3_controller\n'}
+[7.531848] (tb3_controller) StdoutLine: {'line': b"writing list of installed files to '/home/isaiah/metr4202_ws/src/tb3_controller/build/tb3_controller/install.log'\n"}
+[7.607253] (-) TimerEvent: {}
+[7.669482] (tb3_controller) CommandEnded: {'returncode': 0}
+[7.708819] (-) TimerEvent: {}
+[7.778456] (tb3_controller) JobEnded: {'identifier': 'tb3_controller', 'rc': 0}
+[7.780807] (-) EventReactorShutdown: {}
