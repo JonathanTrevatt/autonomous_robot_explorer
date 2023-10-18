@@ -52,7 +52,7 @@ ros2 launch turtlebot3_navigation2 navigation2.launch.py slam:=True
 ```bash
 # Source setup.bash and underlay ros evironment
 source /opt/ros/humble/setup.bash
-source metr4202_ws/src/install/setup.bash
+source metr4202_ws/install/setup.bash
 # Run our node
 ros2 run tb3_controller turtlebot_brain
 ```
