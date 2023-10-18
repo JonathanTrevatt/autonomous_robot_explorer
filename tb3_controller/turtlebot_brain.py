@@ -528,11 +528,10 @@ class Brain(Node):
         self.nav.goToPose(pose)
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
-          print(feedback.number_of_recoveries)
           if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
             self.nav_canceled = True
             self.nav.cancelTask()
-          elif feedback.number_of_recoveries > 1:
+          elif feedback.number_of_recoveries >= 1:
             self.nav_canceled = True
             self.nav.cancelTask()
           
