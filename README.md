@@ -60,63 +60,51 @@ ros2 run tb3_controller turtlebot_brain
 
 Instructions to collaborate:
 ------------------
-First time:
-Github account settings -> developer settings -> personal access tokens -> Tokens (classic) -> generate new token (classic)\
-Give name (e.g. "metr4202")\
-Set expiration to 90 days\
-Tick all permissions on\
-Generate\
-This gives you a password to use to access git via commandline
+To gain commandline access to the repository (by setting up a key):
+* Github account settings -> developer settings -> personal access tokens -> Tokens (classic) -> generate new token (classic)
+* Give name for key (e.g. "metr4202")
+* Set expiration to 90 days
+* Tick all permissions 'on'
+* Click 'Generate'
+* This gives you a password to use to access git via commandline
 
-To save credentials (WARNING - in plain text!): git config --global credential.helper store
-
+```bash
+git config --global credential.helper store #To save credentials (WARNING - in plain text!) 
 git config --global user.name "Your Name"
-
 git config --global user.email "your_email@whatever.com"
-
 git config --global core.autocrlf true
-
 git config --global core.safecrlf warn
-
-git clone https://github.com/Darkspore52/tb3_controller.git
+git clone https://github.com/Darkspore52/tb3_controller.git # Clone repository
+```
 
 Instructions to commit changes (for reference):
 ----------------------
+```bash
 git add .
-
 git commit -m "Comment"
-
 git push
+```
 
 Common ros commands:
 --------------
+```bash
 source /opt/ros/humble/setup.bash
-
 source install/setup.bash
-
 export GAZEBO_MODEL_PATH=~/.gazebo/models:$GAZEBO_MODEL_PATH
-
 export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/path/to/turtlebot3_simulations/turtlebot3_gazebo/models
-
 export TURTLEBOT3_MODEL=waffle_pi
-
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
-
 ros2 launch slam_toolbox online_async_launch.py
-
 ros2 run turtlebot3_teleop teleop_keyboard
-
 rviz2
 
-Save map:
-
+# Save map:
 cd && mkdir maps
-
 ros2 run nav2_map_server map_saver_cli -f ~/turtlebot3_ws/maps/turtlebot3_world_map
 
-Open map:
-
+#Open map:
 ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=$HOME/turtlebot3_ws/maps/turtlebot3_world_map.yaml
+```
 
 Resources:
 --------------------
@@ -124,7 +112,7 @@ git tutorial - https://githowto.com/
 Turtlebot3 emanual - https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/
 Nav2 - https://navigation.ros.org/
 
-First task:
+Assignment tasks:
 ------------------
 ![image](https://github.com/Darkspore52/METR4202/assets/53199626/2ed54762-153d-4e1a-82b4-4402c19c313a)
 ![image](https://github.com/Darkspore52/METR4202/assets/53199626/f72eb190-d610-42e2-a826-6b94fcd896db)
