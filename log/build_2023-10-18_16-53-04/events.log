@@ -1,0 +1,5 @@
+[0.000000] (-) TimerEvent: {}
+[0.001212] (tb3_controller) JobQueued: {'identifier': 'tb3_controller', 'dependencies': OrderedDict()}
+[0.001893] (tb3_controller) JobStarted: {'identifier': 'tb3_controller'}
+[0.034387] (tb3_controller) JobEnded: {'identifier': 'tb3_controller', 'rc': 0}
+[0.036920] (-) EventReactorShutdown: {}

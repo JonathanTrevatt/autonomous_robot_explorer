@@ -1,4 +1,5 @@
 import rclpy
+import math
 from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, QoSDurabilityPolicy
@@ -220,8 +221,8 @@ class Brain(Node):
           the bearing (as a quaternion) which is arbitrarily set to 0.
         """
         mapPos_x, mapPos_y = waypointPxl
-        pos_x = (mapPos_x * self.mapInfo.resolution) + self.mapInfo.origin.position.x
-        pos_y = (mapPos_y * self.mapInfo.resolution) + self.mapInfo.origin.position.y
+        pos_x = (mapPos_x + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.x
+        pos_y = (mapPos_y + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.y
         pos_w = 0 # Arbitrary quaternion bearing
         waypoint = (pos_x, pos_y, pos_w)
         return waypoint
@@ -241,8 +242,8 @@ class Brain(Node):
             Represented as a tuple of integer x and y coordinates of the waypoint on the map.
         """
         pos_x, pos_y, _ = waypoint
-        mapPos_x = int((pos_x - self.mapInfo.origin.position.x) * 20)
-        mapPos_y = int((pos_y - self.mapInfo.origin.position.y) * 20)
+        mapPos_x = int((pos_x - self.mapInfo.origin.position.x) / self.mapInfo.resolution)
+        mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
         waypointPxl = (mapPos_x, mapPos_y)
         return waypointPxl
     
@@ -260,7 +261,7 @@ class Brain(Node):
     def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int]:
       pixel_vals = np.array([[],[],[]])
       if type(ocgrid) is OccupancyGrid:
-        data_array_2d = np.reshape(ocgrid.data, (-1, ocgrid.info.width))
+        data_array_2d = np.reshape(ocgrid.data, (ocgrid.info.width, -1))
       else:
         data_array_2d = ocgrid
       x, y = pixel
@@ -488,12 +489,12 @@ class Brain(Node):
         self.nav.goToPose(pose)
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
-          if Duration.from_msg(feedback.navigation_time) > Duration(seconds=20.0):
+          if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
             self.nav_canceled = True
             self.nav.cancelTask()
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
-          self.mark_waypointPxl_unreachable(self.coord_m2pxl(waypoint))
+          self.mark_range_unreachable(self.coord_m2pxl(waypoint), 3)
     
     def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
         """
@@ -528,18 +529,19 @@ class Brain(Node):
 
         print("xmin, xmax, ymin, ymax: ", xmin, xmax, ymin, ymax)
         print("mapArray2d.shape:", self.mapArray2d.shape)
-        for xPxl in np.linspace(xmin, xmax, xmax-xmin):
-            for yPxl in np.linspace(ymin, ymax, ymax-ymin):
+        for xPxl in np.linspace(xmin, xmax, int((xmax-xmin))):
+            for yPxl in np.linspace(ymin, ymax, int((ymax-ymin))):
+                appended = False
                 xPxl=int(xPxl)
                 yPxl=int(yPxl)
                 pxl = (xPxl, yPxl)
                 if self.mapArray2d[xPxl][yPxl] > 80:
-                    self.mark_waypointPxl_unreachable(pxl)
+                    self.mark_range_unreachable(pxl, 3)
                 explore = True
-                for x in range(-1, 2):
-                    for y in range(-1, 2):
+                for x in range(-2, 3):
+                    for y in range(-2, 3):
                         if xPxl + x >= 0 and yPxl + y >= 0:
-                            if not self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] == -1:
+                            if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] != -1:
                                 explore = False
                                 break
                     if not explore:
@@ -547,19 +549,24 @@ class Brain(Node):
                 if explore:
                     # if pixel is unexplored
                     nearby_explored_pixels = 0
-                    for x in range(-2, 3):
-                        for y in range(-2, 3):
+                    for x in range(-3, 4):
+                        for y in range(-3, 4):
                             if xPxl + x >= 0 and yPxl + y >= 0:
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] <= 5 and \
-                                  self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] != -1:
+                                if (self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] <= 90 and \
+                                  self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] != -1):
                                     nearby_explored_pixels += 1
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1)][min(yPxl + y, self.mapMsg.info.height - 1)] >= 80:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] > 90:
                                     explore = False
                                     break
                         if not explore:
                             break
-                    if nearby_explored_pixels > 5:
-                        unexplored_in_range.append(pxl)
+                    if nearby_explored_pixels >= 5:
+                        if math.sqrt((pxl[0] - x_posPxl) ** 2 + (pxl[1] - y_posPxl) ** 2) > 10:
+                            unexplored_in_range.append(pxl)
+                    else:
+                        self.mark_waypointPxl_unreachable(pxl)
+                if not explore:
+                    self.mark_waypointPxl_unreachable(pxl)
         for pixel in unexplored_in_range:
             print("unexplored = ", self.coord_pxl2m(pixel))
         return unexplored_in_range
