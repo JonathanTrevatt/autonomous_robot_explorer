@@ -16,17 +16,17 @@ Pei-Jer Tsai - p.tsai@uqconnect.edu.au - 46411172
 wsl --shutdown
 
 ### In WSL ubuntu environment:
-**Create a new empty workspace directory in the home folder:**\
+```bash
+# **Create a new empty workspace directory in the home folder:**\
 cd ~\
 mkdir metr4202_ws/src\
 cd mkdir metr4202_ws/src
 
-**Download repository into src folder:**\
+# **Download repository into src folder:**\
 git clone https://github.com/Darkspore52/tb3_controller.git
 
-**Build and source files:**\
+# **Build and source files:**
 
-```bash
 source /opt/ros/humble/setup.bash\
 cd .. # To metr4202_ws\
 colcon build\
