@@ -16,32 +16,36 @@ Pei-Jer Tsai - p.tsai@uqconnect.edu.au - 46411172
 wsl --shutdown
 
 ### In WSL ubuntu environment:
+**Create a new empty workspace directory in the home folder:**\
+cd ~\
+mkdir metr4202_ws/src\
+cd mkdir metr4202_ws/src
+
 **Download repository into src folder:**\
 git clone https://github.com/Darkspore52/tb3_controller.git
 
 **Build and source files:**\
 source /opt/ros/humble/setup.bash\
-cd src\
+cd .. # To metr4202_ws\
 colcon build\
 source install/setup.bash
 
 ### Launch gazebo map
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 
-or
+# Or, for other world files:
 
-cd worlds
-ros2 launch world_name.launch.py
+ros2 launch worlds/world_name.launch.py
 
 ### In a new ubuntu terminal
 **Launch rviz/nav2 with SLAM:**
+source /opt/ros/humble/setup.bash\
 ros2 launch turtlebot3_navigation2 navigation2.launch.py slam:=True
 
 ### In a new ubuntu terminal
-**Source setup.bash (workspace path may look different for you):**\
-source metr4202_ws/src/install/setup.bash
-
-**Run our controller:**\
+**Source setup.bash and run the controller node:**\
+source /opt/ros/humble/setup.bash\
+source metr4202_ws/src/install/setup.bash\
 ros2 run tb3_controller turtlebot_brain
 
 ------------------
