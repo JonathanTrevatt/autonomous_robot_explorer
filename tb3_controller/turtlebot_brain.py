@@ -245,11 +245,15 @@ class Brain(Node):
           waypointPxl (tuple(in, int)): The coordinates of a waypoint as a pixel coordinate. 
             Represented as a tuple of integer x and y coordinates of the waypoint on the map.
         """
-        pos_x, pos_y, _ = waypoint
-        mapPos_x = int((pos_x - self.mapInfo.origin.position.x) / self.mapInfo.resolution)
-        mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
-        waypointPxl = (mapPos_x, mapPos_y)
-        return waypointPxl
+        if waypointPxl != None:
+          pos_x, pos_y, _ = waypoint
+          mapPos_x = int((pos_x - self.mapInfo.origin.position.x) / self.mapInfo.resolution)
+          mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
+          waypointPxl = (mapPos_x, mapPos_y)
+          return waypointPxl
+        else:
+          print("map is done")
+          exit()
     
     def get_coords_as_Pxl(self) -> tuple[int, int]:
         """
