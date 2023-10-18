@@ -524,9 +524,14 @@ class Brain(Node):
         self.nav.goToPose(pose)
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
+          print(feedback.number_of_recoveries)
           if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
             self.nav_canceled = True
             self.nav.cancelTask()
+          elif feedback.number_of_recoveries > 1:
+            self.nav_canceled = True
+            self.nav.cancelTask()
+          
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
           self.mark_range_unreachable(self.coord_m2pxl(waypoint), 3)
