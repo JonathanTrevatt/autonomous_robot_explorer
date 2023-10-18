@@ -19,8 +19,8 @@ wsl --shutdown
 ```bash
 # Create a new empty workspace directory in the home folder:
 cd ~
-mkdir metr4202_ws/src
-cd mkdir metr4202_ws/src
+mkdir --p metr4202_ws/src
+cd metr4202_ws/src
 
 # Download repository into src folder:
 git clone https://github.com/Darkspore52/tb3_controller.git
