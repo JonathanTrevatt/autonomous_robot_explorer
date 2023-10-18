@@ -1,4 +1,4 @@
-# METR4202
+note# METR4202
 Group project for metr4202 course.
 This code will autonomously operate a turtlebot robot in using ROS and gazebo, and using SLAM for mapping and navigation.
 
@@ -32,26 +32,27 @@ colcon build
 source install/setup.bash
 ```
 
-### Launch gazebo map
+### In a fresh ubuntu terminal - Launch gazebo map
 ```bash
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
-
+```
+```bash
 # Or, for other world files:
 ros2 launch worlds/world_name.launch.py
 ```
 
-### In a new ubuntu terminal
+### In a fresh ubuntu terminal - Launch rviz/nav2 with SLAM:
 ```bash
-# Launch rviz/nav2 with SLAM:
-source /opt/ros/humble/setup.bash\
+source /opt/ros/humble/setup.bash
 ros2 launch turtlebot3_navigation2 navigation2.launch.py slam:=True
 ```
 
-### In a new ubuntu terminal
+### In a fresh ubuntu terminal - Run the controller node:
 ```bash
-# Source setup.bash and run the controller node:
-source /opt/ros/humble/setup.bash\
-source metr4202_ws/src/install/setup.bash\
+# Source setup.bash and underlay ros evironment
+source /opt/ros/humble/setup.bash
+source metr4202_ws/src/install/setup.bash
+# Run our node
 ros2 run tb3_controller turtlebot_brain
 ```
 ------------------
