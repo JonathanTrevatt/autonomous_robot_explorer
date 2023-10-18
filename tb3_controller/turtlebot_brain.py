@@ -426,6 +426,41 @@ class Brain(Node):
         waypoint = (0.5, 0.5, 1)
         return waypoint
     
+    
+    def get_coords_as_Pxl(self) -> tuple[int, int]:
+        """
+        Returns the current position as the x,y pixel position on the map.
+        Returns:
+          coord_m2pxl (tuple(in, int)): the coordinates of the waypoint in pixels.
+        """
+        waypoint = (self.pos_x, self.pos_y, self.pos_w)
+        return self.coord_m2pxl(waypoint)
+    
+    # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
+    # of the surrounding pixels
+    def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int] | None:
+      if type(ocgrid) is OccupancyGrid:
+        data_array_2d = np.reshape(ocgrid.data, (ocgrid.info.width, -1))
+      else:
+        data_array_2d = ocgrid
+        
+      x, y = pixel
+      pixel_vals = []
+      
+      print('(x, y): (', x, ", ", y, ")")
+      print('(grid width, grid height): ', ocgrid.info.width, " ", ocgrid.info.height)
+      print('array shape: ', np.shape(data_array_2d))
+      
+      if ((x<=0) or (y<=0) or (x>=ocgrid.info.width-1) or (y>=ocgrid.info.height-1)):
+        print("Requested pixel is on border of map or outside map.")
+        pixel_vals = None
+      else:
+        for i in range(-1, 2):
+          for j in range(-1, 2):
+            pixel_vals.append(data_array_2d[x+i][y+j])
+      print(pixel_vals)
+      return pixel_vals
+    
     def waypointPxl_compute(self) -> tuple[int, int]:
         """
         Searches for unexplored pixels within a radius around the current robot position and returns
