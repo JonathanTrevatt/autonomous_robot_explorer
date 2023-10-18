@@ -25,15 +25,18 @@ cd mkdir metr4202_ws/src
 git clone https://github.com/Darkspore52/tb3_controller.git
 
 **Build and source files:**\
+
+```bash
 source /opt/ros/humble/setup.bash\
 cd .. # To metr4202_ws\
 colcon build\
 source install/setup.bash
+```
 
 ### Launch gazebo map
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 
-# Or, for other world files:
+ # Or, for other world files:
 
 ros2 launch worlds/world_name.launch.py
 
