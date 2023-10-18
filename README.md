@@ -12,8 +12,9 @@ Pei-Jer Tsai - p.tsai@uqconnect.edu.au - 46411172
 ## Build and run instructions:
 ### In powershell
 **Start from clean environment:**
-
+```bash
 wsl --shutdown
+```
 
 ### In WSL ubuntu environment:
 ```bash
