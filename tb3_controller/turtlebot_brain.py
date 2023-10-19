@@ -220,12 +220,16 @@ class Brain(Node):
           Represented as a tuple of 3 floats: the x and y coordinates in meters, and w,
           the bearing (as a quaternion) which is arbitrarily set to 0.
         """
-        mapPos_x, mapPos_y = waypointPxl
-        pos_x = (mapPos_x + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.x
-        pos_y = (mapPos_y + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.y
-        pos_w = 0 # Arbitrary quaternion bearing
-        waypoint = (pos_x, pos_y, pos_w)
-        return waypoint
+        if waypointPxl != None:
+          mapPos_x, mapPos_y = waypointPxl
+          pos_x = (mapPos_x + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.x
+          pos_y = (mapPos_y + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.y
+          pos_w = 0 # Arbitrary quaternion bearing
+          waypoint = (pos_x, pos_y, pos_w)
+          return waypoint
+        else:
+          print("map is done")
+          exit()
 
     def coord_m2pxl(self, waypoint: tuple[float, float, float]) -> tuple[int, int]:
         """
