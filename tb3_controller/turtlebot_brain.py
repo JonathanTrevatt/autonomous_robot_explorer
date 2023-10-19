@@ -103,9 +103,13 @@ class Brain(Node):
             self.new_unreachable_positions = np.zeros((msg.info.width + 1, msg.info.height + 1), dtype=bool)
             print(msg.info.width, msg.info.height)
             print(self.unreachable_positions.shape[0], self.unreachable_positions.shape[1])
-            self.unreachable_positions = np.pad(self.unreachable_positions,
-                                            ((0, (msg.info.width - self.old_map_size[0])),
-                                             (0, (msg.info.height - self.old_map_size[1]))), mode="constant")
+            self.unreachable_positions = \
+              np.pad(
+                self.unreachable_positions,
+                ((0, (msg.info.width - self.old_map_size[0])),
+                (0, (msg.info.height - self.old_map_size[1]))), 
+                mode="constant"
+                )
             self.old_map_size = (msg.info.width, msg.info.height)
             np.copyto(self.new_unreachable_positions, self.unreachable_positions)
             self.unreachable_positions = self.new_unreachable_positions
