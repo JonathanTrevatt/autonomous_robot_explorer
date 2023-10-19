@@ -113,16 +113,14 @@ class Brain(Node):
             self.unreachable_positions = self.new_unreachable_positions
         self.ready_map = True
         
-        if not self.init_costmap_flag:
-          self.valid_waypoint_map = OccupancyGrid()
-          self.valid_waypoint_map.info = msg.info
-          self.valid_waypoint_map.header = msg.header
-          self.valid_waypoint_map.data = msg.data
-          
-          self.valid_waypoint_map.header.frame_id = 'valid_waypoint_map'
-          self.init_costmap_flag = True
         
-        self.valid_waypoint_map.data = msg.data
+        """if not self.init_costmap_flag:
+          self.valid_waypoint_map = msg
+          
+          #self.valid_waypoint_map.header.frame_id = 'valid_waypoint_map'
+          self.init_costmap_flag = True"""
+        
+        """self.valid_waypoint_map.data = msg.data
         for i in self.valid_waypoint_map.data:
           if (i == -1) or (i >80):
             self.valid_waypoint_map.data[i] = 100
@@ -131,7 +129,8 @@ class Brain(Node):
         self.valid_waypoint_map.header.stamp = self.get_clock().now().to_msg()
         self.valid_waypoint_map.info = msg.info                                       # Update map dimensions
         self.valid_waypoint_map.info.map_load_time = self.get_clock().now().to_msg()
-        self.map_reachable_publisher.publish(self.valid_waypoint_map)
+        self.map_reachable_publisher.publish(self.valid_waypoint_map)"""
+        
         return
 
     def costmap_callback(self, msg:OccupancyGrid) -> None:
