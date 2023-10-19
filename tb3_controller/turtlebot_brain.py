@@ -131,14 +131,7 @@ class Brain(Node):
         return
 
     def costmap_callback(self, msg:OccupancyGrid) -> None:
-      """self.costmapMsg = msg
-      self.costmapArray2d = np.reshape(msg.data, (-1, msg.info.width))
-      self.costmapInfo = msg.info
-      if self.unreachable_positions == []:
-        self.unreachable_positions = np.zeros((msg.info.height, msg.info.width), dtype=bool)
-      self.init_costmap_flag = True
-      if not self.init_valid_waypoint_map_flag:
-            self.init_valid_waypoint_map(msg)"""
+      """UNUSED"""
 
       return
 
@@ -151,26 +144,6 @@ class Brain(Node):
           msg (Path): The parameter `msg` is of type `Path`.
         """
         self.path = msg
-    
-    def init_valid_waypoint_map(self, msg:OccupancyGrid) -> None:
-        """
-        The function initializes a new OccupancyGrid called "map_unreachable" with the same header and info
-        as the subscribed map, and sets the data values to either 0 or 100 based on whether the in the subscribed
-        map is >80 (% chance that it is occupied).
-        
-        Args:
-          msg (OccupancyGrid): The parameter `msg` is of type `OccupancyGrid`. It is used to initialize the
-        `map_unreachable` attribute of the class.
-        
-        Returns:
-          `map_unreachable` object.
-        """
-        if self.init_costmap_flag:
-          self.valid_waypointPxl_grid = OccupancyGrid()
-          self.valid_waypointPxl_grid.info = msg.info
-          self.valid_waypointPxl_grid.header.frame_id = 'valid_waypoint_map'
-          self.update_valid_waypoint_map()
-        return
 
     def update_valid_waypoint_map(self):
       if self.init_costmap_flag:
