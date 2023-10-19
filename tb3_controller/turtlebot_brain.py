@@ -38,8 +38,7 @@ class Brain(Node):
             depth=1)
         
         print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
-        self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
-        self.costmap_subscription   = self.create_subscription  (OccupancyGrid,             'global_costmap/costmap',   self.costmap_callback,      10)
+        self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10) # costmap topic would be 'global_costmap/costmap'
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
@@ -47,7 +46,6 @@ class Brain(Node):
         self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'valid_waypoint_map', qos_profile)
 
         self.nav = BasicNavigator() # Initialise navigator
-        #self.nav.lifecycleStartup() #init_pose = self.cur_pos
         print("----------------------------------------------------------------")
 
     # USING NAV2 FOR AUTOMATIC PATH PLANNING
@@ -132,11 +130,6 @@ class Brain(Node):
         self.map_reachable_publisher.publish(self.valid_waypoint_map)"""
         
         return
-
-    def costmap_callback(self, msg:OccupancyGrid) -> None:
-      """UNUSED"""
-
-      return
 
     def path_callback(self, msg:Path) -> None:
         """
