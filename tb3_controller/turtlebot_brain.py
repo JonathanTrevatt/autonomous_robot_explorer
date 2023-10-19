@@ -114,19 +114,23 @@ class Brain(Node):
         self.ready_map = True
         
         if not self.init_costmap_flag:
-          self.valid_waypoint_map = copy.copy(msg)
+          self.valid_waypoint_map = OccupancyGrid()
+          self.valid_waypoint_map.info = msg.info
+          self.valid_waypoint_map.header = msg.header
+          self.valid_waypoint_map.data = msg.data
+          
           self.valid_waypoint_map.header.frame_id = 'valid_waypoint_map'
           self.init_costmap_flag = True
         
-        data_array = msg.data
-        for i in data_array:
+        self.valid_waypoint_map.data = msg.data
+        for i in self.valid_waypoint_map.data:
           if (i == -1) or (i >80):
-            data_array[i] = 100
-          else: data_array[i] = 0
+            self.valid_waypoint_map.data[i] = 100
+          else: self.valid_waypoint_map.data[i] = 0
         
-        #self.valid_waypoint_map.info = msg.info
-        #self.valid_waypoint_map.header.stamp = msg.header.stamp
-        self.valid_waypoint_map.data = data_array
+        self.valid_waypoint_map.header.stamp = self.get_clock().now().to_msg()
+        self.valid_waypoint_map.info = msg.info                                       # Update map dimensions
+        self.valid_waypoint_map.info.map_load_time = self.get_clock().now().to_msg()
         self.map_reachable_publisher.publish(self.valid_waypoint_map)
         return
 
@@ -144,22 +148,6 @@ class Brain(Node):
           msg (Path): The parameter `msg` is of type `Path`.
         """
         self.path = msg
-
-    def update_valid_waypoint_map(self):
-      if self.init_costmap_flag:
-        valid_waypointPxl_data = array('b')
-        for i in self.costmapMsg.data:
-          if ((i == -1) or (i > 85)):
-            valid_waypointPxl_data.append(100)
-          else:
-            valid_waypointPxl_data.append(0)
-
-        self.valid_waypointPxl_grid.data = valid_waypointPxl_data
-        self.valid_waypointPxl_grid.header.stamp = self.get_clock().now().to_msg()
-        self.valid_waypointPxl_grid.info = self.costmapMsg.info
-        self.valid_waypointPxl_grid.info.map_load_time = self.get_clock().now().to_msg()
-        self.map_reachable_publisher.publish(self.valid_waypointPxl_grid)
-      return
 
     def bt_log_callback(self, msg:BehaviorTreeLog) -> None:
       """
