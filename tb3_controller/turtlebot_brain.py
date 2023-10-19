@@ -30,6 +30,7 @@ class Brain(Node):
         self.init_costmap_flag = False
         self.old_map_size = (0,0)
         self.unreachable_positions = np.zeros((1,1), dtype=bool)
+        self.last_move = self.get_clock().now()
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
@@ -77,6 +78,10 @@ class Brain(Node):
             waypoint = (self.pos_x, self.pos_y, self.pos_w)
             self.move_to_waypoint(waypoint)
         self.ready_odom = True
+
+        if (self.last_move + rclpy.time.Duration(seconds=30)) - self.last_move > rclpy.time.Duration(seconds=0):
+           self.nav.cancelTask()
+           self.nav_canceled = True
         
     def map_callback(self, msg:OccupancyGrid) -> None:
         """
@@ -222,9 +227,9 @@ class Brain(Node):
         """
         if waypointPxl != None:
           mapPos_x, mapPos_y = waypointPxl
-          pos_x = (mapPos_x + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.x
-          pos_y = (mapPos_y + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.y
-          pos_w = 0 # Arbitrary quaternion bearing
+          pos_x = (mapPos_x) * self.mapInfo.resolution + self.mapInfo.origin.position.x
+          pos_y = (mapPos_y) * self.mapInfo.resolution + self.mapInfo.origin.position.y
+          pos_w = 1.0 # Arbitrary quaternion bearing
           waypoint = (pos_x, pos_y, pos_w)
           return waypoint
         else:
@@ -525,7 +530,9 @@ class Brain(Node):
         pose.pose.position.x = waypoint[0]
         pose.pose.position.y = waypoint[1]
         pose.pose.orientation.w = float(waypoint[2])
-        self.nav.goToPose(pose)
+        self.waypoint_publisher.publish(pose)
+        self.last_move = self.get_clock().now()
+        """
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
           if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
@@ -534,6 +541,7 @@ class Brain(Node):
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
           self.mark_range_unreachable(self.coord_m2pxl(waypoint), 3)
+        """
     
     def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
         """
@@ -591,10 +599,9 @@ class Brain(Node):
                     for x in range(-3, 4):
                         for y in range(-3, 4):
                             if xPxl + x >= 0 and yPxl + y >= 0:
-                                if (self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] <= 90 and \
-                                  self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] != -1):
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
                                     nearby_explored_pixels += 1
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] > 90:
+                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] == 100:
                                     explore = False
                                     break
                         if not explore:
