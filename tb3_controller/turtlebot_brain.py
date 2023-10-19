@@ -82,7 +82,7 @@ class Brain(Node):
             self.move_to_waypoint(waypoint)
         self.ready_odom = True
 
-        if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.1 or \
+        if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.05 or \
               abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.1:
            self.last_move_time = self.get_clock().now()
            self.last_pos = (msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.orientation.w)
@@ -91,6 +91,7 @@ class Brain(Node):
             self.mark_range_unreachable(self.coord_m2pxl((self.pose.pose.position.x, self.pose.pose.position.y, self.pose.pose.orientation.w)), 5)
             self.nav.cancelTask()
             self.nav_canceled = True
+        
         
     def map_callback(self, msg:OccupancyGrid) -> None:
         """
@@ -112,7 +113,7 @@ class Brain(Node):
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (msg.info.width, -1))
+        self.mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height), order='F')
         self.mapInfo = msg.info
         if self.old_map_size[0] <= msg.info.width and \
                   self.old_map_size[1] <= msg.info.height:
@@ -267,15 +268,7 @@ class Brain(Node):
         mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
         waypointPxl = (mapPos_x, mapPos_y)
         return waypointPxl
-    
-    def get_coords_as_Pxl(self) -> tuple[int, int]:
-        """
-        Returns the current position as the x,y pixel position on the map.
-        Returns:
-          coord_m2pxl (tuple(in, int)): the coordinates of the waypoint in pixels.
-        """
-        waypoint = (self.pos_x, self.pos_y, self.pos_w)
-        return self.coord_m2pxl(waypoint)
+
     
     # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
     # of the surrounding pixels
@@ -508,8 +501,11 @@ class Brain(Node):
         # generate list of unexplored pixels within search radius
         unexplored_list = self.map_get_unexplored_in_range(search_radius)
         print("waypoint_compute - unexplored_list: ", unexplored_list)
+        unexplored_x_y_coords = []
+        for pxl in unexplored_list:
+           unexplored_x_y_coords.append(self.coord_pxl2m(pxl))
         if len(unexplored_list) != 0:
-            print("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_list)
+            print("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_x_y_coords)
             print("randomly shuffling unexplored_list to remove preference for exploring in a certain direction.")
             random.shuffle(unexplored_list)
             print("Shuffled list = \n", unexplored_list)
@@ -577,49 +573,52 @@ class Brain(Node):
         print("Getting unexplored pixels in range.")
         unexplored_in_range = []
         print(self.mapInfo.width, self.mapInfo.height)
-        xmin = max(x_posPxl-radius, 0)
-        xmax = min(x_posPxl+radius, self.mapInfo.width - 1)
-        ymin = max(y_posPxl-radius, 0)
-        ymax = min(y_posPxl+radius, self.mapInfo.height - 1)
-
+        xmin = 0
+        xmax = self.mapInfo.width
+        ymin = 0
+        ymax = self.mapInfo.height
         print("xmin, xmax, ymin, ymax: ", xmin, xmax, ymin, ymax)
         print("mapArray2d.shape:", self.mapArray2d.shape)
-        for xPxl in np.linspace(xmin, xmax, int((xmax-xmin))):
-            for yPxl in np.linspace(ymin, ymax, int((ymax-ymin))):
-                appended = False
-                xPxl=int(xPxl)
-                yPxl=int(yPxl)
+        for xPxl in range(xmin, xmax):
+            for yPxl in range(ymin, ymax):
                 pxl = (xPxl, yPxl)
-                if self.mapArray2d[xPxl][yPxl] > 80:
-                    self.mark_range_unreachable(pxl, 3)
-                explore = True
-                for x in range(-1, 2):
-                    for y in range(-1, 2):
-                        if xPxl + x >= 0 and yPxl + y >= 0:
-                            if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] != -1:
+                if self.mapArray2d[xPxl][yPxl] == 100:
+                    self.mark_range_unreachable(pxl, 5)
+                elif self.mapArray2d[xPxl][yPxl] == -1:
+                    nearby_explored_pixels = 0
+                    explore = True
+                    for x in range(-1, 2):
+                        for y in range(-1, 2):
+                            if xPxl + x < 0 or yPxl + y < 0:
                                 explore = False
                                 break
-                    if not explore:
-                        break
-                if explore:
-                    # if pixel is unexplored
-                    nearby_explored_pixels = 0
-                    for x in range(-3, 4):
-                        for y in range(-3, 4):
-                            if xPxl + x >= 0 and yPxl + y >= 0:
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] == 0:
-                                    nearby_explored_pixels += 1
-                                if self.mapArray2d[min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)] == 100 or \
-                                        (min(xPxl + x, self.mapMsg.info.width - 1), min(yPxl + y, self.mapMsg.info.height - 1)) in self.unreachable_positions:
-                                    explore = False
-                                    break
+                            elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
+                                explore = False
+                                break
+                            elif self.mapArray2d[xPxl + x, yPxl + y] == 100:
+                                explore = False
+                                break
                         if not explore:
                             break
-                    if nearby_explored_pixels >= 5:
-                        if math.sqrt((pxl[0] - x_posPxl) ** 2 + (pxl[1] - y_posPxl) ** 2) > 10:
-                            unexplored_in_range.append(pxl)
-        for pixel in unexplored_in_range:
-            print("unexplored = ", self.coord_pxl2m(pixel))
+                    if explore:
+                        for x in range(-3, 4):
+                            for y in range(-3, 4):
+                                if xPxl + x < 0 or yPxl + y < 0:
+                                    explore = False
+                                    break
+                                elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
+                                    explore = False
+                                    break
+                                elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
+                                    nearby_explored_pixels += 1
+                                elif self.mapArray2d[xPxl + x, yPxl + y] == 100:
+                                    explore = False
+                                    break
+                            if not explore:
+                                break
+                        if nearby_explored_pixels >= 17:
+                            if math.sqrt((pxl[0] - x_posPxl) ** 2 + (pxl[1] - y_posPxl) ** 2) > 1:
+                                unexplored_in_range.append(pxl)
         return unexplored_in_range
     
     def waypoint_check_reachable(self, unexplored_list: list[tuple[int, int]]) -> tuple[int, int] | None:
