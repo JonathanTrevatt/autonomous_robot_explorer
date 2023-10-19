@@ -11,7 +11,7 @@ import numpy as np
 import random
 from array import array
 import typing
-
+import copy
 class Brain(Node):
     def __init__(self) -> None:
         """
@@ -112,6 +112,22 @@ class Brain(Node):
             np.copyto(self.new_unreachable_positions, self.unreachable_positions)
             self.unreachable_positions = self.new_unreachable_positions
         self.ready_map = True
+        
+        if not self.init_costmap_flag:
+          self.valid_waypoint_map = copy.copy(msg)
+          self.valid_waypoint_map.header.frame_id = 'valid_waypoint_map'
+          self.init_costmap_flag = True
+        
+        data_array = msg.data
+        for i in data_array:
+          if (i == -1) or (i >80):
+            data_array[i] = 100
+          else: data_array[i] = 0
+        
+        #self.valid_waypoint_map.info = msg.info
+        #self.valid_waypoint_map.header.stamp = msg.header.stamp
+        self.valid_waypoint_map.data = data_array
+        self.map_reachable_publisher.publish(self.valid_waypoint_map)
         return
 
     def costmap_callback(self, msg:OccupancyGrid) -> None:
@@ -123,16 +139,7 @@ class Brain(Node):
       self.init_costmap_flag = True
       if not self.init_valid_waypoint_map_flag:
             self.init_valid_waypoint_map(msg)"""
-      valid_waypoint_map = msg
-      data_array = array('b')
-      for i in valid_waypoint_map.data:
-        if (i == -1) or (i >80):
-          data_array.append(100)
-        else: data_array.append(0)
-      
-      valid_waypoint_map.data = data_array
-      self.map_reachable_publisher.publish(valid_waypoint_map)
-      self.costmapMsg = msg
+
       return
 
     def path_callback(self, msg:Path) -> None:
