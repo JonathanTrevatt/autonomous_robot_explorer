@@ -489,28 +489,23 @@ class Brain(Node):
         print("---------------------")
         
         print('NOTE - turtlebot_brain.waypoint_compute: reached')
-        xPxl, yPxl = self.get_coords_as_Pxl()
-        min_search_radius = 20
-        max_search_radius = 200
-        search_radius = min_search_radius
+        search_radius = max(self.mapInfo.width, self.mapInfo.height)
         # search radius for reachable, unexplored pixels and set goal to go there
-        while search_radius <= max_search_radius:
-            print("waypoint_compute - Searching for unexplored pixels in radius: ", search_radius)
-            # generate list of unexplored pixels within search radius
-            unexplored_list = self.map_get_unexplored_in_range(search_radius)
-            print("waypoint_compute - unexplored_list: ", unexplored_list)
-            if len(unexplored_list) != 0:
-                print("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_list)
-                print("randomly shuffling unexplored_list to remove preference for exploring in a certain direction.")
-                random.shuffle(unexplored_list)
-                print("Shuffled list = \n", unexplored_list)
-                print("waypoint_compute - calling self.waypoint_check_reachable(unexplored_list)")
-                reachable_waypoint_pxl = self.waypoint_check_reachable(unexplored_list)
-                if reachable_waypoint_pxl is not None:
-                    return reachable_waypoint_pxl # Stop searching
-            print("waypoint_compute - unexplored_list is None, or every unexplored element is unreachable.")
-            print("Expanding search radius.")
-            search_radius += 5 # Expand search radius
+        print("waypoint_compute - Searching for unexplored pixels in radius: ", search_radius)
+        # generate list of unexplored pixels within search radius
+        unexplored_list = self.map_get_unexplored_in_range(search_radius)
+        print("waypoint_compute - unexplored_list: ", unexplored_list)
+        if len(unexplored_list) != 0:
+            print("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_list)
+            print("randomly shuffling unexplored_list to remove preference for exploring in a certain direction.")
+            random.shuffle(unexplored_list)
+            print("Shuffled list = \n", unexplored_list)
+            print("waypoint_compute - calling self.waypoint_check_reachable(unexplored_list)")
+            reachable_waypoint_pxl = self.waypoint_check_reachable(unexplored_list)
+            if reachable_waypoint_pxl is not None:
+                return reachable_waypoint_pxl # Stop searching
+        print("waypoint_compute - unexplored_list is None, or every unexplored element is unreachable.")
+        print("Expanding search radius.")
         print("waypoint_compute - Maximum search radius is reached.")
         print("waypoint_compute - Stopping.")
         return None # If no valid points are found, return None
