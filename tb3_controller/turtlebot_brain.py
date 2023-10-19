@@ -30,6 +30,7 @@ class Brain(Node):
         self.init_costmap_flag = False
         self.old_map_size = (0,0)
         self.unreachable_positions = np.zeros((1,1), dtype=bool)
+        self.printOnce_lastString = ''
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
@@ -94,7 +95,7 @@ class Brain(Node):
         Returns:
           nothing (None).
         """
-        print('NOTE - turtlebot_brain.map_callback: reached')
+        self.printOnce('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
         self.mapArray2d = np.reshape(msg.data, (msg.info.width, -1))
         self.mapInfo = msg.info
@@ -167,8 +168,21 @@ class Brain(Node):
                   waypoint = self.coord_pxl2m(waypointPxl)
                   print("waypoint: ", waypoint)
                   self.move_to_waypoint(waypoint)
-          else: print("robot busy")
+          else: self.printOnce("robot busy")
       self.ready_log = True
+
+    def printOnce(self, string: str) -> None:
+      """Makes sure that that a print message isn't repeated too many times.
+      If a print message is the same as last time this function was called, it doesn't print.
+
+      Args:
+          string (str): string to print
+      """
+      
+      if string != self.printOnce_lastString:
+        self.printOnce_lastString = string
+        print(string)
+      return
 
     def coord_pxl2m(self, waypointPxl: tuple[int, int]) -> tuple[float, float, float]:
         """
@@ -302,7 +316,7 @@ class Brain(Node):
         Returns:
           nothing (None).
         """
-        print("Marking waypoint as unreachable.")
+        self.printOnce("Marking waypoint as unreachable.")
         xPxl, yPxl = waypointPxl
         self.unreachable_positions[xPxl][yPxl] = True
         return
@@ -319,7 +333,7 @@ class Brain(Node):
         Returns:
           nothing (None).
         """
-        print("Marking waypoint as unreachable.")
+        self.printOnce("Marking waypoint as unreachable.")
         xPxl, yPxl = waypointPxl
         i = 0
         j = 0
@@ -447,7 +461,7 @@ class Brain(Node):
         """
         print("---------------------")
         
-        print('NOTE - turtlebot_brain.waypoint_compute: reached')
+        self.printOnce('NOTE - turtlebot_brain.waypoint_compute: reached')
         xPxl, yPxl = self.get_coords_as_Pxl()
         min_search_radius = 20
         max_search_radius = 200
