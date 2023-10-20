@@ -646,7 +646,7 @@ class Brain(Node):
                                     break
                             if not explore:
                                 break
-                        if nearby_explored_pixels >= 5:
+                        if nearby_explored_pixels >= 1:
                             if math.sqrt((pxl[0] - x_posPxl) ** 2 + (pxl[1] - y_posPxl) ** 2) > 10:
                                 unexplored_in_range.append(pxl)
         return unexplored_in_range
