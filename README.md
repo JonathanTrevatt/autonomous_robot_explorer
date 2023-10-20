@@ -39,7 +39,9 @@ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ```
 ```bash
 # Or, for other world files:
-ros2 launch worlds/world_name.launch.py
+ros2 launch ~/metr4202_ws/src/tb3_controller/worlds/world_name.launch.py
+# e.g.:
+# ros2 launch ~/metr4202_ws/src/tb3_controller/worlds/double_lane_small.launch.py
 ```
 
 ### In a fresh ubuntu terminal - Launch rviz/nav2 with SLAM:
@@ -51,10 +53,14 @@ ros2 launch turtlebot3_navigation2 navigation2.launch.py slam:=True
 ### In a fresh ubuntu terminal - Run the controller node:
 ```bash
 # Source setup.bash and underlay ros evironment
+cd metr4202_ws/src
 source /opt/ros/humble/setup.bash
-source metr4202_ws/install/setup.bash
+colcon build
+source install/setup.bash
 # Run our node
 ros2 run tb3_controller turtlebot_brain
+
+# When instantiation is finished, press 'ENTER' to start.
 ```
 ------------------
 ------------------
