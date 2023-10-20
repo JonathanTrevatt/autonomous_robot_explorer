@@ -1,0 +1,23 @@
+[2.350s] Invoking command in '/home/johnson/METR4202': PYTHONPATH=/home/johnson/METR4202/build/tb3_controller/prefix_override:/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/tb3_controller build --build-base /home/johnson/METR4202/build/tb3_controller/build install --record /home/johnson/METR4202/build/tb3_controller/install.log --single-version-externally-managed
+[2.988s] running egg_info
+[2.988s] writing build/tb3_controller/tb3_controller.egg-info/PKG-INFO
+[2.990s] writing dependency_links to build/tb3_controller/tb3_controller.egg-info/dependency_links.txt
+[2.990s] writing entry points to build/tb3_controller/tb3_controller.egg-info/entry_points.txt
+[2.990s] writing requirements to build/tb3_controller/tb3_controller.egg-info/requires.txt
+[2.990s] writing top-level names to build/tb3_controller/tb3_controller.egg-info/top_level.txt
+[2.997s] reading manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+[3.000s] writing manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+[3.001s] running build
+[3.001s] running build_py
+[3.003s] running install
+[3.004s] /usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+[3.004s]   warnings.warn(
+[3.009s] running install_lib
+[3.016s] running install_data
+[3.022s] running install_egg_info
+[3.026s] removing '/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info' (and everything under it)
+[3.032s] Copying build/tb3_controller/tb3_controller.egg-info to /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info
+[3.066s] running install_scripts
+[3.151s] Installing turtlebot_brain script to /home/johnson/METR4202/install/tb3_controller/lib/tb3_controller
+[3.153s] writing list of installed files to '/home/johnson/METR4202/build/tb3_controller/install.log'
+[3.292s] Invoked command in '/home/johnson/METR4202' returned '0': PYTHONPATH=/home/johnson/METR4202/build/tb3_controller/prefix_override:/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/tb3_controller build --build-base /home/johnson/METR4202/build/tb3_controller/build install --record /home/johnson/METR4202/build/tb3_controller/install.log --single-version-externally-managed

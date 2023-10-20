@@ -1,0 +1,27 @@
+running egg_info
+writing build/tb3_controller/tb3_controller.egg-info/PKG-INFO
+writing dependency_links to build/tb3_controller/tb3_controller.egg-info/dependency_links.txt
+writing entry points to build/tb3_controller/tb3_controller.egg-info/entry_points.txt
+writing requirements to build/tb3_controller/tb3_controller.egg-info/requires.txt
+writing top-level names to build/tb3_controller/tb3_controller.egg-info/top_level.txt
+reading manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+writing manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+running build
+running build_py
+copying tb3_controller/turtlebot_brain.py -> /home/johnson/METR4202/build/tb3_controller/build/lib/tb3_controller
+running install
+running install_lib
+copying /home/johnson/METR4202/build/tb3_controller/build/lib/tb3_controller/turtlebot_brain.py -> /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller
+byte-compiling /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller/turtlebot_brain.py to turtlebot_brain.cpython-310.pyc
+running install_data
+creating /home/johnson/METR4202/install/tb3_controller/share/ament_index
+creating /home/johnson/METR4202/install/tb3_controller/share/ament_index/resource_index
+creating /home/johnson/METR4202/install/tb3_controller/share/ament_index/resource_index/packages
+copying resource/tb3_controller -> /home/johnson/METR4202/install/tb3_controller/share/ament_index/resource_index/packages
+copying package.xml -> /home/johnson/METR4202/install/tb3_controller/share/tb3_controller
+running install_egg_info
+removing '/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info' (and everything under it)
+Copying build/tb3_controller/tb3_controller.egg-info to /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info
+running install_scripts
+Installing turtlebot_brain script to /home/johnson/METR4202/install/tb3_controller/lib/tb3_controller
+writing list of installed files to '/home/johnson/METR4202/build/tb3_controller/install.log'
