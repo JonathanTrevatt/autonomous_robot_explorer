@@ -212,7 +212,7 @@ class Brain(Node):
           print("Printed ", self.printOnce_count, " times.")
         self.printOnce_count = 0
         self.printOnce_lastString = string
-        print(args)
+        print(string)
       return
     
     def coord_pxl2m(self, waypointPxl: tuple[int, int]) -> tuple[float, float, float]:
