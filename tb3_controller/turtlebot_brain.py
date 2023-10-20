@@ -518,7 +518,7 @@ class Brain(Node):
         self.printOnce("---------------------")
         
         self.printOnce('NOTE - turtlebot_brain.waypoint_compute: reached')
-        min_search_radius = 10
+        min_search_radius = 5
         increment = 1
         max_search_radius = max(self.mapInfo.width, self.mapInfo.height)
         # search radius for reachable, unexplored pixels and set goal to go there
