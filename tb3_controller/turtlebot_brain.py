@@ -37,6 +37,7 @@ class Brain(Node):
         self.printOnce_lastString = 'iujoyhk8lkerthd'
         self.printOnce_count = 0
         self.user_started_flag = False
+        self.verbosity = False
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
@@ -179,7 +180,7 @@ class Brain(Node):
         # Check map processing times
         time2 = self.get_clock().now().to_msg()
         print("Map callback processing time: ", float(time2.sec + time2.nanosec/1000000000) - float(time1.sec + time1.nanosec/1000000000), "s")
-        input("paused to read times...")
+        #input("paused to read times...")
         return
 
     def path_callback(self, msg:Path) -> None:
@@ -231,6 +232,8 @@ class Brain(Node):
       Args:
           string (str): string to print
       """
+      if not self.verbosity:
+        return
       string = ""
       # Construct string to print
       for arg in args:
