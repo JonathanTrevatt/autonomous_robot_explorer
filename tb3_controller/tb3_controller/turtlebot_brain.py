@@ -1,34 +1,23 @@
-"""
-System Demonstration Checklist:
-□ Uses SLAM to create a map (I.e. launch file opens slam, this node subscribes to map)
-
-Use slam to create map
-subscribe to map
-Detect unexplored area
-    Suggestion: use watershedding method
-    Fill region (with model of robot) from robot location (going around obstacles)
-    explore first unexplored region that is filled
-    I.e., goes to the closest unexplored area
-generate suggested waypoint based on unexplored area of map
-test if waypoint is reachable (if not, list it as a bad waypoint and pick a new one)
-Go to waypoint (detect if navigation fails)
-"""
-
 import rclpy
+import math
 from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, QoSDurabilityPolicy
 from nav2_simple_commander.robot_navigator import BasicNavigator
-from nav2_msgs.msg import BehaviorTreeLog
+from nav2_msgs.msg import BehaviorTreeLog, Costmap
 from nav_msgs.msg import OccupancyGrid, Odometry, Path
-import os
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 import numpy as np
 import random
 from array import array
+import typing
 
 class Brain(Node):
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Initialization function for the Brain class, which sets up various
+        subscriptions and publishers, as well as initializes flags and variables.
+        """
         super().__init__('brain')
         self.unreachable_positions = [] # set to np.zeros((msg.info.height, msg.info.width), dtype=bool) once in map callback
         # flags that determine if basic data has been instantiated by callbacks yet
@@ -37,30 +26,47 @@ class Brain(Node):
         self.ready_log = False
         self.first_waypoint_sent = False
         self.nav_canceled = False
-        self.map_unreachable_initFlag = False
-
-        print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
-        # Subscriber example code:
-        self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                  self.map_callback,      10)
-        self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',    self.bt_log_callback,   10)
-        self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                 self.odom_callback,     10)
-        self.path_subscription      = self.create_subscription  (Path,                      'local_plan',           self.path_callback,     10)
-        self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
-        self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'map_reachable',    10)
+        self.init_valid_waypoint_map_flag = False
+        self.init_costmap_flag = False
+        self.computing = True
+        self.old_map_size = (0,0)
+        self.unreachable_positions = np.zeros((1,1), dtype=bool)
+        self.last_waypoint_time = self.get_clock().now()
+        self.last_move_time = self.get_clock().now()
+        self.last_pos = (0, 0, 0)
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
             history=QoSHistoryPolicy.KEEP_LAST,
             durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
             depth=1)
+        
+        print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
+        self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
+        self.costmap_subscription   = self.create_subscription  (OccupancyGrid,             'global_costmap/costmap',   self.costmap_callback,      10)
+        self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
+        self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
+        self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
+        self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
+        self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'valid_waypoint_map', qos_profile)
 
         self.nav = BasicNavigator() # Initialise navigator
-        self.nav.lifecycleStartup() #init_pose = self.cur_pos
+        #self.nav.lifecycleStartup() #init_pose = self.cur_pos
+        print("----------------------------------------------------------------")
 
     # USING NAV2 FOR AUTOMATIC PATH PLANNING
 
     # DEFINING CALLBACK FUNCTIONS
-    def odom_callback(self, msg:Odometry):
+    def odom_callback(self, msg:Odometry) -> None:
+        """
+        Called whenever a new odometry message is published to the 'odom' topic.
+        Updates global variables with the current position of the robot and 
+        sends the first waypoint to move to if the map is ready.
+        
+        Args:
+          msg (Odometry): Message object that contains information about the 
+          robot's odometry, such as its position and orientation.
+        """
         self.pos_x = msg.pose.pose.position.x
         self.pos_y = msg.pose.pose.position.y
         self.pos_w = msg.pose.pose.orientation.w
@@ -69,93 +75,256 @@ class Brain(Node):
         self.cur_pos.pose.position.x = self.pos_x
         self.cur_pos.pose.position.y = self.pos_y
         self.cur_pos.pose.orientation.w = self.pos_w
+        
         if self.ready_map and not self.first_waypoint_sent:  
             self.first_waypoint_sent = True
             waypoint = (self.pos_x, self.pos_y, self.pos_w)
             self.move_to_waypoint(waypoint)
         self.ready_odom = True
+
+        if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.05 or \
+              abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.1:
+           self.last_move_time = self.get_clock().now()
+           self.last_pos = (msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.orientation.w)
+
+        if (self.last_move_time + rclpy.time.Duration(seconds = 3)) - self.get_clock().now() < rclpy.time.Duration(seconds = 0) and not self.computing:
+            self.mark_range_unreachable(self.coord_m2pxl((self.pose.pose.position.x, self.pose.pose.position.y, self.pose.pose.orientation.w)), 5)
+            self.nav.cancelTask()
+            self.nav_canceled = True
         
-    def map_callback(self, msg:OccupancyGrid):
+        
+    def map_callback(self, msg:OccupancyGrid) -> None:
         """
-        map callback to assign map data to variables
-        Represents a 2-D grid map, in which each cell represents the 
-        probability of occupancy.
-        Values range [-1, 100], where -1 represents an unknown probablility.
+        Called whenever a new OccupancyGrid message is published to the 'map' topic.
+        Updates global variables with the new map data, after converting to a 2D array.
+        Initializes an array for unreachable positions if necessary. 
+        Initializes and publishes the map of known unreachable pixels.
+        Sets the ready_map flag to True.
+        
+        Values range [-1, 100], where -1 represents an unknown probability.
+        
+        Args:
+          msg (OccupancyGrid): The parameter `msg` is of type `OccupancyGrid`, which represents a 2-D 
+          grid map, in which each cell represents the probability of occupancy. Each cell can take 
+          values of -1 (unknown), or [0-100] (the % probability that the cell is occupied).
+
+        Returns:
+          nothing (None).
         """
         print('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (-1, msg.info.width))
+        self.mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height), order='F')
         self.mapInfo = msg.info
-        if self.unreachable_positions == []:
-            self.unreachable_positions = np.zeros((msg.info.height, msg.info.width), dtype=bool)
-        
-        if not self.map_unreachable_initFlag:
-            self.init_map_unreachable(msg)
-            self.map_reachable_publisher.publish(self.map_unreachable)
-
+        if self.old_map_size[0] <= msg.info.width and \
+                  self.old_map_size[1] <= msg.info.height:
+            self.new_unreachable_positions = np.zeros((msg.info.width + 1, msg.info.height + 1), dtype=bool)
+            print(msg.info.width, msg.info.height)
+            print(self.unreachable_positions.shape[0], self.unreachable_positions.shape[1])
+            self.unreachable_positions = np.pad(self.unreachable_positions,
+                                            ((0, (msg.info.width - self.old_map_size[0])),
+                                             (0, (msg.info.height - self.old_map_size[1]))), mode="constant")
+            self.old_map_size = (msg.info.width, msg.info.height)
+            np.copyto(self.new_unreachable_positions, self.unreachable_positions)
+            self.unreachable_positions = self.new_unreachable_positions
         self.ready_map = True
-        self.map_reachable_publisher.publish(self.map_unreachable)
         return
-    
-    def path_callback(self, msg:Path):
+
+    def costmap_callback(self, msg:OccupancyGrid) -> None:
+      """self.costmapMsg = msg
+      self.costmapArray2d = np.reshape(msg.data, (-1, msg.info.width))
+      self.costmapInfo = msg.info
+      if self.unreachable_positions == []:
+        self.unreachable_positions = np.zeros((msg.info.height, msg.info.width), dtype=bool)
+      self.init_costmap_flag = True
+      if not self.init_valid_waypoint_map_flag:
+            self.init_valid_waypoint_map(msg)"""
+      valid_waypoint_map = msg
+      data_array = array('b')
+      for i in valid_waypoint_map.data:
+        if (i == -1) or (i >80):
+          data_array.append(100)
+        else: data_array.append(0)
+      
+      valid_waypoint_map.data = data_array
+      self.map_reachable_publisher.publish(valid_waypoint_map)
+      self.costmapMsg = msg
+      return
+
+    def path_callback(self, msg:Path) -> None:
+        """
+        Called whenever a new Path message is published to the 'local_plan' topic.
+        Saves the path as the global variable self.path.
+        
+        Args:
+          msg (Path): The parameter `msg` is of type `Path`.
+        """
         self.path = msg
     
-    def init_map_unreachable(self, msg:OccupancyGrid):
-        self.map_unreachable_initFlag = True
-
-        self.map_unreachable = OccupancyGrid()
-        self.map_unreachable.header.frame_id = "map"
-        self.map_unreachable.info = msg.info
-        size = np.array(msg.data).size
-        map_unreachable_data = array('b', [int(xv) if c else 101*int(yv) for c, xv, yv in zip(np.array(msg.data) > 80, np.zeros(size), np.ones(size))])
-
-        self.map_unreachable.data = map_unreachable_data
+    def init_valid_waypoint_map(self, msg:OccupancyGrid) -> None:
+        """
+        The function initializes a new OccupancyGrid called "map_unreachable" with the same header and info
+        as the subscribed map, and sets the data values to either 0 or 100 based on whether the in the subscribed
+        map is >80 (% chance that it is occupied).
+        
+        Args:
+          msg (OccupancyGrid): The parameter `msg` is of type `OccupancyGrid`. It is used to initialize the
+        `map_unreachable` attribute of the class.
+        
+        Returns:
+          `map_unreachable` object.
+        """
+        if self.init_costmap_flag:
+          self.valid_waypointPxl_grid = OccupancyGrid()
+          self.valid_waypointPxl_grid.info = msg.info
+          self.valid_waypointPxl_grid.header.frame_id = 'valid_waypoint_map'
+          self.update_valid_waypoint_map()
         return
 
-    
-    def bt_log_callback(self, msg:BehaviorTreeLog):
-        for event in msg.event_log:
-            if (event.node_name == 'NavigateRecovery' and \
-                event.current_status == 'IDLE') or self.nav_canceled:
-                self.nav_canceled = False
-                if self.ready_odom and self.ready_map:
-                    waypointPxl = self.waypointPxl_compute()
-                    print("waypointPxl: ", waypointPxl)
-                    waypoint = self.coord_pxl2m(waypointPxl)
-                    print("waypoint: ", waypoint)
-                    self.move_to_waypoint(waypoint)
-            else: print("robot busy")
-        self.ready_log = True
+    def update_valid_waypoint_map(self):
+      if self.init_costmap_flag:
+        valid_waypointPxl_data = array('b')
+        for i in self.costmapMsg.data:
+          if ((i == -1) or (i > 85)):
+            valid_waypointPxl_data.append(100)
+          else:
+            valid_waypointPxl_data.append(0)
 
-    def coord_pxl2m(self, waypointPxl):
-        """
-        Converts x,y,w map pixel coords to global coords in m.
-        """
-        mapPos_x, mapPos_y = waypointPxl
-        pos_x = (mapPos_x * self.mapInfo.resolution) + self.mapInfo.origin.position.x
-        pos_y = (mapPos_y * self.mapInfo.resolution) + self.mapInfo.origin.position.y
-        pos_w = 0
-        waypoint = (pos_x, pos_y, pos_w)
-        return waypoint
+        self.valid_waypointPxl_grid.data = valid_waypointPxl_data
+        self.valid_waypointPxl_grid.header.stamp = self.get_clock().now().to_msg()
+        self.valid_waypointPxl_grid.info = self.costmapMsg.info
+        self.valid_waypointPxl_grid.info.map_load_time = self.get_clock().now().to_msg()
+        self.map_reachable_publisher.publish(self.valid_waypointPxl_grid)
+      return
 
-    def coord_m2pxl(self, waypoint):
+    def bt_log_callback(self, msg:BehaviorTreeLog) -> None:
+      """
+      Called whenever a new BehaviorTreeLog message is published to the 'behavior_tree_log' topic.
+        This is the start of the logic loop that computes points and commands the robot.
+        Checks the log for the 'IDLE' event. If the robot is not busy, and the odometry and map data 
+        is initialised, it will compute a waypoint and command the robot to move to it.
+        Otherwise it prints "robot busy".
+      
+      Args:
+        msg (BehaviorTreeLog): The parameter `msg` is an instance of the `BehaviorTreeLog` class. It
+      contains information about the behavior tree log, including the event log.
+      """
+      for event in msg.event_log:
+          if (event.node_name == 'NavigateRecovery' and \
+                  event.current_status == 'IDLE') or self.nav_canceled:
+              self.nav_canceled = False
+              if self.ready_odom and self.ready_map:
+                  waypointPxl = self.waypointPxl_compute()
+                  print("waypointPxl: ", waypointPxl)
+                  waypoint = self.coord_pxl2m(waypointPxl)
+                  print("waypoint: ", waypoint)
+                  self.computing = False
+                  self.last_move_time = self.get_clock().now()
+                  self.last_pos = (self.pos_x, self.pos_y, self.pos_w)
+                  self.move_to_waypoint(waypoint)
+          else: print("robot busy")
+      self.ready_log = True
+
+    def coord_pxl2m(self, waypointPxl: tuple[int, int]) -> tuple[float, float, float]:
         """
-        Converts global x,y coords in m to pixel coords on the map.
+        Converts pixel coordinates (in the map frame) to meter coordinates (in the world frame)
+        using the map resolution and origin position.
+        
+        Args:
+          waypointPxl (tuple[int, int]): The coordinates of a waypoint as a pixel coordinate. 
+          Represented as a tuple of integer x and y coordinates of the waypoint on the map.
+        
+        Returns:
+          waypoint (tuple[float, float, float]): The coordinates of a waypoint as coordinates in meters in the world frame. 
+          Represented as a tuple of 3 floats: the x and y coordinates in meters, and w,
+          the bearing (as a quaternion) which is arbitrarily set to 0.
         """
-        pos_x, pos_y, pos_w = waypoint
-        mapPos_x = int((pos_x - self.mapInfo.origin.position.x)/self.mapInfo.resolution)
-        mapPos_y = int((pos_y - self.mapInfo.origin.position.y)/self.mapInfo.resolution)
+        if waypointPxl != None:
+          mapPos_x, mapPos_y = waypointPxl
+          pos_x = (mapPos_x) * self.mapInfo.resolution + self.mapInfo.origin.position.x
+          pos_y = (mapPos_y) * self.mapInfo.resolution + self.mapInfo.origin.position.y
+          pos_w = 1.0 # Arbitrary quaternion bearing
+          waypoint = (pos_x, pos_y, pos_w)
+          return waypoint
+        else:
+          print("map is done")
+          exit()
+
+    def coord_m2pxl(self, waypoint: tuple[float, float, float]) -> tuple[int, int]:
+        """
+        Converts a waypoint's coordinates from meters (in the world frame) to pixels 
+        (in the map frame) based on the map's resolution and origin position.
+        
+        Args:
+          waypoint (tuple[float, float, float]): The coordinates of a waypoint as coordinates in meters in the world frame. 
+          Represented as a tuple of 3 floats: the pos_x and pos_y coordinates in meters, and pos_w, 
+          the bearing (as a quaternion).
+        
+        Returns:
+          waypointPxl (tuple(in, int)): The coordinates of a waypoint as a pixel coordinate. 
+            Represented as a tuple of integer x and y coordinates of the waypoint on the map.
+        """
+        pos_x, pos_y, _ = waypoint
+        mapPos_x = int((pos_x - self.mapInfo.origin.position.x) / self.mapInfo.resolution)
+        mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
         waypointPxl = (mapPos_x, mapPos_y)
         return waypointPxl
+
     
-    def get_coords_as_Pxl(self):
-        """
-        Returns the current position as the x,y pixel position on the map.
-        """
-        waypoint = (self.pos_x, self.pos_y, self.pos_w)
-        return self.coord_m2pxl(waypoint)
+    # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
+    # of the surrounding pixels
+    def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int]:
+      pixel_vals = np.array([[],[],[]])
+      if type(ocgrid) is OccupancyGrid:
+        data_array_2d = np.reshape(ocgrid.data, (ocgrid.info.width, -1))
+      else:
+        data_array_2d = ocgrid
+      x, y = pixel
+      print("map shape = height, width = y,x: ", np.shape(data_array_2d)) # map shape:  (102, 99)
+      if x<=0                 or  y>=ocgrid.info.height: a = None 
+      else: a = data_array_2d[x-1][y+1]
+      
+      if                          y>=ocgrid.info.height: b = None 
+      else: b = data_array_2d[x][y+1]
+      
+      if x>=ocgrid.info.width or  y>=ocgrid.info.height: c = None 
+      else: c = data_array_2d[x+1][y+1]
+      
+      if x<=0                 or  y>=ocgrid.info.height: d = None 
+      else: d = data_array_2d[x-1][y]
+      
+      if                          y>=ocgrid.info.height: e = None 
+      else: e = data_array_2d[x][y]
+      
+      if x>=ocgrid.info.width or  y>=ocgrid.info.height: f = None 
+      else: f = data_array_2d[x+1][y]
+      
+      if x<=0                 or  y<=0: h = None 
+      else: h = data_array_2d[x-1][y-1]
+      
+      if                          y>=0: i = None 
+      else: i = data_array_2d[x][y-1]
+      
+      if x>=ocgrid.info.width or y>=0: j = None 
+      else: j = data_array_2d[x+1][y-1]
+      
+      pixel_vals = np.array(
+        [[a,b,c],[d,e,f],[h,i,j]])
+
+      return pixel_vals
     
-    def mark_range_unreachable(self, pxl, radius):
+
+    
+    # TODO - needs testing, may not work
+    def mark_range_unreachable(self, pxl: tuple[int, int], radius: int) -> None:
+        """
+        Marks a given pixel, along with a given range around that pixel, as known unreachable.
+        I.e., the robot cannot or should not attempt to path-find to them.
+        
+        Args:
+          pxl (tuple[int, int]): A pixel position on a map, around which to mark unreachable.
+          radius: The radius parameter represents the distance from the center pixel (pxl) within which
+                    we want to mark the range as unreachable.
+        """
         x_posPxl, y_posPxl = pxl
         xmin = max(x_posPxl-radius, 0)
         xmax = min(x_posPxl+radius, self.mapInfo.width - 1)
@@ -167,18 +336,35 @@ class Brain(Node):
             for yPxl in np.linspace(ymin, ymax, ymax-ymin):
                 pxl = (int(xPxl), int(yPxl))
                 self.mark_waypointPxl_unreachable(pxl)
-        self.map_reachable_publisher.publish(self.map_unreachable)
 
-    def mark_waypointPxl_unreachable(self, waypointPxl):
+    def mark_waypointPxl_unreachable(self, waypointPxl: tuple[int, int]) -> None:
         """
-        Marks a map x,y pixel position as unreachable so that we won't try to pathfind there in future.
+        Marks a given waypoint pixel as unreachable.
+        I.e., the robot cannot or should not attempt to path-find there.
+        
+        Args:
+          waypointPxl (tuple[int, int]): The pixel coordinates of a waypoint to mark as unreachable.
+        
+        Returns:
+          nothing (None).
         """
         print("Marking waypoint as unreachable.")
         xPxl, yPxl = waypointPxl
         self.unreachable_positions[xPxl][yPxl] = True
         return
 
-    def mark_area_unreachable(self, waypointPxl):
+    def mark_area_unreachable(self, waypointPxl: tuple[int, int]) -> None:
+        """
+        Marks a specified waypoint as unreachable by setting the corresponding positions in the
+        `unreachable_positions` array to `True`.
+        Similar to `mark_range_unreachable`.
+        
+        Args:
+          waypointPxl (tuple[int, int]): The x, y pixel coordinates of a waypoint on a map.
+        
+        Returns:
+          nothing (None).
+        """
         print("Marking waypoint as unreachable.")
         xPxl, yPxl = waypointPxl
         i = 0
@@ -198,20 +384,32 @@ class Brain(Node):
         self.unreachable_positions[xPxl][yPxl] = True
         return
 
-
-    def is_waypointPxl_unreachable(self, waypointPxl):
+    def is_waypointPxl_unreachable(self, waypointPxl: tuple[int, int]) -> bool:
         """
-        Returns a bool: true if given x,y map pixel coords have been previously marked as unreachable - else false.
+        Checks if a given waypoint pixel has been marked as unreachable based on a 2D array of unreachable positions.
+
+        Args:
+          waypointPxl (tuple[int, int]): The coordinates (x, y) of a waypoint in pixel units.
+        
+        Returns:
+          self.unreachable_positions[xPxl][yPxl] (bool): 
+          The value at the position (xPxl, yPxl) in the 2D list self.unreachable_positions.
         """
         xPxl, yPxl = waypointPxl
         return self.unreachable_positions[xPxl][yPxl]
 
-    # TODO - implement
-    def try_generate_path(self, waypoint):
+    def try_generate_path(self, waypoint: tuple[float, float, float]):
         """
-        Attempts to generate a path to a waypoint. On failure, returns False, else, True.
+        Tries to generate a path between the current pose and a given waypoint using the
+        navigation module. 
+        On failure, returns False, otherwise, returns True.
+        
+        Args:
+          waypoint (tuple[float, float, float]): The (x, y, w) waypoint tuple to try to generate a path to.
+        
+        Returns:
+          (bool): If the path is successfully generated, it returns True. Otherwise, it returns False.
         """
-
         new_pose = PoseStamped()
         new_pose.pose.position.x = float(waypoint[0])
         new_pose.pose.position.y = float(waypoint[1])
@@ -231,106 +429,216 @@ class Brain(Node):
             return True
         return False
     
-    def waypoint_compute_trivial(self):
+    def waypoint_compute_trivial(self) -> tuple[float, float, float]:
+        """
+        Returns a waypoint with coordinates (0.5, 0.5, 1).
+        Used as a trivial case for testing and marking purposes.
+        
+        Returns:
+          waypoint (tuple[float, float, float]): a n (x,y,w) waypoint tuple (0.5, 0.5, 1).
+        """
         waypoint = (0.5, 0.5, 1)
         return waypoint
+    
+    
+    def get_coords_as_Pxl(self) -> tuple[int, int]:
+        """
+        Returns the current position as the x,y pixel position on the map.
+        Returns:
+          coord_m2pxl (tuple(in, int)): the coordinates of the waypoint in pixels.
+        """
+        waypoint = (self.pos_x, self.pos_y, self.pos_w)
+        return self.coord_m2pxl(waypoint)
+    
+    # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
+    # of the surrounding pixels
+    def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int] | None:
+      if type(ocgrid) is OccupancyGrid:
+        data_array_2d = np.reshape(ocgrid.data, (ocgrid.info.width, -1))
+      else:
+        data_array_2d = ocgrid
+        
+      x, y = pixel
+      pixel_vals = []
+      
+      print('(x, y): (', x, ", ", y, ")")
+      print('(grid width, grid height): ', ocgrid.info.width, " ", ocgrid.info.height)
+      print('array shape: ', np.shape(data_array_2d))
+      
+      if ((x<=0) or (y<=0) or (x>=ocgrid.info.width-1) or (y>=ocgrid.info.height-1)):
+        print("Requested pixel is on border of map or outside map.")
+        pixel_vals = None
+      else:
+        for i in range(-1, 2):
+          for j in range(-1, 2):
+            pixel_vals.append(data_array_2d[x+i][y+j])
+      print(pixel_vals)
+      return pixel_vals
+    
+    def waypointPxl_compute(self) -> tuple[int, int]:
+        """
+        Searches for unexplored pixels within a radius around the current robot position and returns
+        the first reachable unexplored pixel, or None if no valid points are found.
 
-    def waypointPxl_compute(self):
+        Returns:
+          reachable_waypoint_pxl (tuple(int,int)|None): The (x,y) pixel coordinates of a valid point (if found), otherwise None.
         """
-        Returns a goal waypoint to pathfind to unexplored areas of the map.
+        print("---------------------")
         """
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 99))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 98))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 97))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 96))) # (x leftward, y upward from bottom right)
+        print(self.get_surrounding_pixel_values(self.mapMsg, (102, 95))) # (x leftward, y upward from bottom right)
+        """
+        print("---------------------")
+        
         print('NOTE - turtlebot_brain.waypoint_compute: reached')
-        xPxl, yPxl = self.get_coords_as_Pxl()
-        min_search_radius = 10
-        max_search_radius = 30
-        search_radius = min_search_radius
+        self.computing = True
+        search_radius = max(self.mapInfo.width, self.mapInfo.height)
         # search radius for reachable, unexplored pixels and set goal to go there
-        while search_radius <= max_search_radius:
-            print("waypoint_compute - Searching for unexplored pixels in radius: ", search_radius)
-            # generate list of unexplored pixels within search radius
-            unexplored_list = self.map_get_unexplored_in_range(search_radius)
-            print("waypoint_compute - unexplored_list: ", unexplored_list)
-            if unexplored_list is not None:
-                print("waypoint_compute - unexplored_list is not None - unexplored_list = \n", unexplored_list)
-                print("randomly shuffling unexplored_list to remove preference for exploring in a certain direction.")
-                random.shuffle(unexplored_list)
-                print("Shuffled list = \n", unexplored_list)
-                print("waypoint_compute - calling self.waypoint_check_reachable(unexplored_list)")
-                reachable_waypoint_pxl = self.waypoint_check_reachable(unexplored_list)
-                if reachable_waypoint_pxl is not None:
-                    return reachable_waypoint_pxl # Stop searching
-            print("waypoint_compute - unexplored_list is None, or every unexplored element is unreachable.")
-            print("Expanding search radius.")
-            search_radius += 5 # Expand search radius
+        print("waypoint_compute - Searching for unexplored pixels in radius: ", search_radius)
+        # generate list of unexplored pixels within search radius
+        unexplored_list = self.map_get_unexplored_in_range(search_radius)
+        print("waypoint_compute - unexplored_list: ", unexplored_list)
+        unexplored_x_y_coords = []
+        for pxl in unexplored_list:
+           unexplored_x_y_coords.append(self.coord_pxl2m(pxl))
+        if len(unexplored_list) != 0:
+            print("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_x_y_coords)
+            print("randomly shuffling unexplored_list to remove preference for exploring in a certain direction.")
+            random.shuffle(unexplored_list)
+            print("Shuffled list = \n", unexplored_list)
+            print("waypoint_compute - calling self.waypoint_check_reachable(unexplored_list)")
+            reachable_waypoint_pxl = self.waypoint_check_reachable(unexplored_list)
+            if reachable_waypoint_pxl is not None:
+                return reachable_waypoint_pxl # Stop searching
+        print("waypoint_compute - unexplored_list is None, or every unexplored element is unreachable.")
+        print("Expanding search radius.")
         print("waypoint_compute - Maximum search radius is reached.")
         print("waypoint_compute - Stopping.")
         return None # If no valid points are found, return None
 
-    # TODO - Low priority - Use python function instead of terminal command to implement
-    def move_to_waypoint(self, waypoint):
+    def move_to_waypoint(self, waypoint: tuple[float, float, float]):
         """
-        Publishes waypoint for nav2 to guide robot, using terminal commands.
+        Moves the robot to a specified waypoint (in meters in the global frame) and handles cancellation or failure cases.
+        
+        Args:
+          waypoint (tuple[float, float, float]): The waypoint (x,y,w) tuple to move to.
         """
         x, y, w = waypoint
         print("Moving to waypoint: ", waypoint)
         self.IDLE = False
-        pose = PoseStamped()
-        pose.header.frame_id = 'map'
-        pose.pose.position.x = waypoint[0]
-        pose.pose.position.y = waypoint[1]
-        pose.pose.orientation.w = float(waypoint[2])
-        self.nav.goToPose(pose)
+        self.pose = PoseStamped()
+        self.pose.header.frame_id = 'map'
+        self.pose.pose.position.x = waypoint[0]
+        self.pose.pose.position.y = waypoint[1]
+        self.pose.pose.orientation.w = float(waypoint[2])
+        self.waypoint_publisher.publish(self.pose)
+        self.last_waypoint_time = self.get_clock().now()
+        """
         while not self.nav.isTaskComplete():
-            feedback = self.nav.getFeedback()
-            if Duration.from_msg(feedback.navigation_time) > Duration(seconds=10.0):
-                self.nav_canceled = True
-                self.nav.cancelTask()
+          feedback = self.nav.getFeedback()
+          if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
+            self.nav_canceled = True
+            self.nav.cancelTask()
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
-            self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
-    
-    def move_to_waypointPxl(self, waypointPxl):
+          self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
         """
-        Does the same as move_to_waypoint(self, waypoint), but accepts map pixel coordinates.
+    
+    def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
+        """
+        Moves the robot to a specified waypoint (in integer map pixel coordinates) and handles cancellation or failure cases.
+        
+        Args:
+          waypoint (tuple(int,int)): The map pixel waypoint (x,y) tuple to move to.
         """
         waypoint = self.coord_pxl2m(waypointPxl)
         self.move_to_waypoint(waypoint)
 
-    def map_get_unexplored_in_range(self, radius):
+    def map_get_unexplored_in_range(self, radius: int):
         """
-        Searches a range of map pixels and returns a list of unexplored pixels in that range.
+        Returns a list of unexplored pixels within a given radius from the current position.
+        
+        Args:
+          radius (int): The distance from the current position in pixels. It defines the range 
+          within which the function will search for unexplored pixels.
+        
+        Returns:
+          unexplored_in_range (list(tuple(int,int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range.
         """
         current_posPxl = self.get_coords_as_Pxl()
         x_posPxl, y_posPxl = current_posPxl
         print("Getting unexplored pixels in range.")
         unexplored_in_range = []
         print(self.mapInfo.width, self.mapInfo.height)
-        xmin = max(x_posPxl-radius, 0)
-        xmax = min(x_posPxl+radius, self.mapInfo.width - 1)
-        ymin = max(y_posPxl-radius, 0)
-        ymax = min(y_posPxl+radius, self.mapInfo.height - 1)
-
+        xmin = 0
+        xmax = self.mapInfo.width
+        ymin = 0
+        ymax = self.mapInfo.height
         print("xmin, xmax, ymin, ymax: ", xmin, xmax, ymin, ymax)
         print("mapArray2d.shape:", self.mapArray2d.shape)
-        for xPxl in np.linspace(xmin, xmax, xmax-xmin):
-            for yPxl in np.linspace(ymin, ymax, ymax-ymin):
-                xPxl=int(xPxl)
-                yPxl=int(yPxl)
+        for xPxl in range(xmin, xmax):
+            for yPxl in range(ymin, ymax):
                 pxl = (xPxl, yPxl)
-                if self.mapArray2d[xPxl][yPxl] > 80:
-                    self.mark_range_unreachable(pxl, 10)
-                elif self.mapArray2d[xPxl][yPxl] == -1: # if pixel is unexplored
-                    unexplored_in_range.append(pxl)
+                if self.mapArray2d[xPxl][yPxl] == 100:
+                    self.mark_range_unreachable(pxl, 5)
+                elif self.mapArray2d[xPxl][yPxl] == -1:
+                    nearby_explored_pixels = 0
+                    explore = True
+                    for x in range(-1, 2):
+                        for y in range(-1, 2):
+                            if xPxl + x < 0 or yPxl + y < 0:
+                                explore = False
+                                break
+                            elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
+                                explore = False
+                                break
+                            elif self.mapArray2d[xPxl + x, yPxl + y] == 100:
+                                explore = False
+                                break
+                        if not explore:
+                            break
+                    if explore:
+                        for x in range(-3, 4):
+                            for y in range(-3, 4):
+                                if xPxl + x < 0 or yPxl + y < 0:
+                                    explore = False
+                                    break
+                                elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
+                                    explore = False
+                                    break
+                                elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
+                                    nearby_explored_pixels += 1
+                                elif self.mapArray2d[xPxl + x, yPxl + y] == 100:
+                                    explore = False
+                                    break
+                            if not explore:
+                                break
+                        if nearby_explored_pixels >= 17:
+                            if math.sqrt((pxl[0] - x_posPxl) ** 2 + (pxl[1] - y_posPxl) ** 2) > 1:
+                                unexplored_in_range.append(pxl)
         return unexplored_in_range
     
-    def waypoint_check_reachable(self, unexplored_list):
+    def waypoint_check_reachable(self, unexplored_list: list[tuple[int, int]]) -> tuple[int, int] | None:
         """
-        Checks a list of unexplored map pxls for a pxl that is not in the list of known unreachable pixels
-        and that a path can be generated to, and returns the coordinates of that pixel.
+        Checks if a randomly selected pixel from the unexplored_list is reachable and 
+        returns the pixel coordinates if it is, otherwise marks the pixel as unreachable
+        and tries another random pixel until all pixels in the list have been checked.
+        
+        Args:
+          unexplored_list (list(tuple(int,int))): The `unexplored_list` parameter is a 
+          list of pixels that have not been explored yet. 
+          Each pixel in the list represents a location that the code needs to check for reachability.
+        
+        Returns:
+          waypointPxl (tuple(int,int)|None): the (x,y) tuple pixel coordinates of a reachable waypoint 
+          (if one is found), otherwise returns None.
         """
         print("waypoint_check_reachable - Getting unexplored pixel from unexplored_list.")
         #print("waypoint_check_reachable - unexplored_list: \n", unexplored_list)
-        for i in range(len(unexplored_list)):
+        for _ in range(len(unexplored_list)):
             waypointPxl = unexplored_list.pop()                    # Choose a pixel at random
             if not self.is_waypointPxl_unreachable(waypointPxl):   # if pixel is not in list of known unreachable pixels
                 waypoint = self.coord_pxl2m(waypointPxl)            
@@ -342,7 +650,17 @@ class Brain(Node):
         # Every element of the list is unreachable -> return None
         return None
 
-def main(args=None):
+def main(args=None) -> None:
+    """
+    Entrypoint for the ROS node.
+    Initializes the rclpy library, creates an instance of the Brain class, spins the
+    brain node, destroys the brain node, and shuts down rclpy.
+    
+    Args:
+      args: Passes command-line arguments to the `main` function. 
+      Optional parameter that defaults to `None`. 
+      Can be used to configure or customize the behavior of the program.
+    """
     print('NOTE - turtlebot_brain.main: Starting main')
     print('NOTE - turtlebot_brain.main: instantiating rclpy')
     rclpy.init(args=args)
@@ -355,6 +673,8 @@ def main(args=None):
     brain.destroy_node() # Destroy the node explicitly
     print('NOTE - turtlebot_brain.main: shutting down rclpy')
     rclpy.shutdown()
+    return
 
+# If the current module is being run as the main program, call the `main()` function.
 if __name__ == '__main__':
     main()
