@@ -147,17 +147,10 @@ class Brain(Node):
         # Generate custom map data based on current map data
         self.valid_waypoint_map.data = array('b')
         
-        for i in range(len(msg.data)):
-          if ((msg.data[i] == -1) or (msg.data[i] >= 80)):
-            self.valid_waypoint_map.data.append(100)
-          else:
-              self.valid_waypoint_map.data.append(0)
-        """
         # mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height), order='F')
         #new_map_array2d = 100*np.multiply(np.where(self.mapArray2d == -1, True, False), np.where(self.mapArray2d >= 80, True, False))
         new_map_array2d = 100*(np.where(self.mapArray2d == -1, True, False))
         valid_waypoint_map = 100*np.ones(np.shape(self.mapArray2d))
-        print(np.shape(self.mapArray2d))
         for x in range(np.shape(self.mapArray2d)[0]):
           for y in range(np.shape(self.mapArray2d)[0]):
             surrounding_values = self.get_surrounding_pixel_values(self.mapArray2d, (x,y))
@@ -169,21 +162,22 @@ class Brain(Node):
                 if val == -1: unknown_pxl_count += 1
                 elif ((val >=0) and (val < 80)): free_pxl_count += 1
                 else: wall_pxl_count += 1
+              # Conditions of surrounding pixels for a valid waypoint (depends on get_surrounding_pixel_values radius)
               if ((unknown_pxl_count>=15) and (free_pxl_count>=10) and (wall_pxl_count == 0)):
                 valid_waypoint_map[x][y] = 0
-              
-        
-        print(list(new_map_array2d))
+              # mark unreachable positions on map
+              if self.unreachable_positions[x][y] == True:
+                valid_waypoint_map[x][y] = 80
+
+
         new_map_array1d = np.reshape(valid_waypoint_map, (msg.info.width * msg.info.height), order='F')
         
-        #self.get_surrounding_pixel_values(msg, )
-          #self.valid_waypoint_map.data.append(msg.data[i])
         self.valid_waypoint_map.data = array('b')
         for ele in new_map_array1d:
           ele = int(ele)
           self.valid_waypoint_map.data.append(ele)
         self.map_reachable_publisher.publish(self.valid_waypoint_map)
-        """
+        
         return
 
     def path_callback(self, msg:Path) -> None:
@@ -294,49 +288,6 @@ class Brain(Node):
         mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
         waypointPxl = (mapPos_x, mapPos_y)
         return waypointPxl
-
-    
-    """# takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
-    # of the surrounding pixels
-    def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int]:
-      pixel_vals = np.array([[],[],[]])
-      if type(ocgrid) is OccupancyGrid:
-        data_array_2d = np.reshape(ocgrid.data, (ocgrid.info.width, -1))
-      else:
-        data_array_2d = ocgrid
-      x, y = pixel
-      self.printOnce("map shape = height, width = y,x: ", np.shape(data_array_2d)) # map shape:  (102, 99)
-      if x<=0                 or  y>=ocgrid.info.height: a = None 
-      else: a = data_array_2d[x-1][y+1]
-      
-      if                          y>=ocgrid.info.height: b = None 
-      else: b = data_array_2d[x][y+1]
-      
-      if x>=ocgrid.info.width or  y>=ocgrid.info.height: c = None 
-      else: c = data_array_2d[x+1][y+1]
-      
-      if x<=0                 or  y>=ocgrid.info.height: d = None 
-      else: d = data_array_2d[x-1][y]
-      
-      if                          y>=ocgrid.info.height: e = None 
-      else: e = data_array_2d[x][y]
-      
-      if x>=ocgrid.info.width or  y>=ocgrid.info.height: f = None 
-      else: f = data_array_2d[x+1][y]
-      
-      if x<=0                 or  y<=0: h = None 
-      else: h = data_array_2d[x-1][y-1]
-      
-      if                          y>=0: i = None 
-      else: i = data_array_2d[x][y-1]
-      
-      if x>=ocgrid.info.width or y>=0: j = None 
-      else: j = data_array_2d[x+1][y-1]
-      
-      pixel_vals = np.array(
-        [[a,b,c],[d,e,f],[h,i,j]])
-
-      return pixel_vals"""
     
     # TODO - needs testing, may not work
     def mark_range_unreachable(self, pxl: tuple[int, int], radius: int) -> None:
@@ -475,7 +426,7 @@ class Brain(Node):
     
     # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
     # of the surrounding pixels
-    def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int] | None:
+    def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int], radius: int = 5) -> list[int] | None:
       if type(ocgrid) is OccupancyGrid:
         data_array_2d = np.reshape(ocgrid.data, (ocgrid.info.width, ocgrid.info.height), order='F')
         
@@ -485,9 +436,6 @@ class Brain(Node):
       x, y = pixel
       pixel_vals = []
       
-      #self.printOnce('(x, y): (', x, ", ", y, ")")
-      #self.printOnce('(grid width, grid height): ', ocgrid.info.width, " ", ocgrid.info.height)
-      #self.printOnce('array shape: ', np.shape(data_array_2d))
       radius = 5
       if ((x<=0+radius) or (y<=0+radius) or (x>=np.shape(data_array_2d)[0]-1-radius) or (y>=np.shape(data_array_2d)[1]-1-radius)):
         self.printOnce("Requested pixel is on border of map or outside map.")
@@ -507,15 +455,6 @@ class Brain(Node):
         Returns:
           reachable_waypoint_pxl (tuple(int,int)|None): The (x,y) pixel coordinates of a valid point (if found), otherwise None.
         """
-        self.printOnce("---------------------")
-        """
-        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 99))) # (x leftward, y upward from bottom right)
-        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 98))) # (x leftward, y upward from bottom right)
-        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 97))) # (x leftward, y upward from bottom right)
-        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 96))) # (x leftward, y upward from bottom right)
-        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 95))) # (x leftward, y upward from bottom right)
-        """
-        self.printOnce("---------------------")
         
         self.printOnce('NOTE - turtlebot_brain.waypoint_compute: reached')
         min_search_radius = 10
