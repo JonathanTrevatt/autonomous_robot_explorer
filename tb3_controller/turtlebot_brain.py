@@ -26,11 +26,23 @@ class Brain(Node):
         self.ready_log = False
         self.first_waypoint_sent = False
         self.nav_canceled = False
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
         self.init_valid_waypoint_map_flag = False
         self.init_costmap_flag = False
         self.old_map_size = (0,0)
         self.unreachable_positions = np.zeros((1,1), dtype=bool)
         self.printOnce_lastString = ''
+=======
+        self.init_myMap_flag = False
+        self.computing = True
+        self.old_map_size = (0,0)
+        self.unreachable_positions = np.zeros((1,1), dtype=bool)
+        self.last_waypoint_time = self.get_clock().now()
+        self.last_move_time = self.get_clock().now()
+        self.last_pos = (0, 0, 0)
+        self.printOnce_lastString = 'iujoyhk8lkerthd'
+        self.printOnce_count = 0
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
@@ -38,8 +50,13 @@ class Brain(Node):
             durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
             depth=1)
         
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
         print('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
         self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10) # costmap topic would be 'global_costmap/costmap'
+=======
+        self.printOnce('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
+        self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
@@ -47,7 +64,12 @@ class Brain(Node):
         self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'valid_waypoint_map', qos_profile)
 
         self.nav = BasicNavigator() # Initialise navigator
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
         print("----------------------------------------------------------------")
+=======
+        #self.nav.lifecycleStartup() #init_pose = self.cur_pos
+        self.printOnce("----------------------------------------------------------------")
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
 
     # USING NAV2 FOR AUTOMATIC PATH PLANNING
 
@@ -76,6 +98,16 @@ class Brain(Node):
             waypoint = (self.pos_x, self.pos_y, self.pos_w)
             self.move_to_waypoint(waypoint)
         self.ready_odom = True
+
+        if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.05 or \
+              abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.1:
+           self.last_move_time = self.get_clock().now()
+           self.last_pos = (msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.orientation.w)
+
+        if (self.last_move_time + rclpy.time.Duration(seconds = 3)) - self.get_clock().now() < rclpy.time.Duration(seconds = 0) and not self.computing:
+            self.mark_range_unreachable(self.coord_m2pxl((self.pose.pose.position.x, self.pose.pose.position.y, self.pose.pose.orientation.w)), 5)
+            self.nav.cancelTask()
+            self.nav_canceled = True
         
     def map_callback(self, msg:OccupancyGrid) -> None:
         """
@@ -97,11 +129,16 @@ class Brain(Node):
         """
         self.printOnce('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
         self.mapArray2d = np.reshape(msg.data, (msg.info.width, -1))
+=======
+        self.mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height), order='F')
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
         self.mapInfo = msg.info
         if self.old_map_size[0] <= msg.info.width and \
                   self.old_map_size[1] <= msg.info.height:
             self.new_unreachable_positions = np.zeros((msg.info.width + 1, msg.info.height + 1), dtype=bool)
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
             print(msg.info.width, msg.info.height)
             print(self.unreachable_positions.shape[0], self.unreachable_positions.shape[1])
             self.unreachable_positions = \
@@ -111,11 +148,19 @@ class Brain(Node):
                 (0, (msg.info.height - self.old_map_size[1]))), 
                 mode="constant"
                 )
+=======
+            self.printOnce("map width/height: ", msg.info.width, "/", msg.info.height)
+            self.printOnce("unreachable_positions.shape x/y: ", self.unreachable_positions.shape[0], "/", self.unreachable_positions.shape[1])
+            self.unreachable_positions = np.pad(self.unreachable_positions,
+                                            ((0, (msg.info.width - self.old_map_size[0])),
+                                             (0, (msg.info.height - self.old_map_size[1]))), mode="constant")
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
             self.old_map_size = (msg.info.width, msg.info.height)
             np.copyto(self.new_unreachable_positions, self.unreachable_positions)
             self.unreachable_positions = self.new_unreachable_positions
         self.ready_map = True
         
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
         
         """if not self.init_costmap_flag:
           self.valid_waypoint_map = msg
@@ -133,6 +178,33 @@ class Brain(Node):
         self.valid_waypoint_map.info = msg.info                                       # Update map dimensions
         self.valid_waypoint_map.info.map_load_time = self.get_clock().now().to_msg()
         self.map_reachable_publisher.publish(self.valid_waypoint_map)"""
+=======
+        if not self.init_myMap_flag:
+          self.valid_waypoint_map = OccupancyGrid()
+          self.init_myMap_flag = True
+        
+        # Update map time
+        #self.valid_waypoint_map.header.stamp = self.get_clock().now().to_msg()
+        #self.valid_waypoint_map.info.map_load_time = self.get_clock().now().to_msg()
+        self.valid_waypoint_map.header.frame_id = msg.header.frame_id # transfer function for map coords
+        self.valid_waypoint_map.header.stamp = msg.header.stamp
+
+        # Update map dimensions
+        self.valid_waypoint_map.info.origin = msg.info.origin
+        self.valid_waypoint_map.info.height = msg.info.height
+        self.valid_waypoint_map.info.width = msg.info.width
+        self.valid_waypoint_map.info.resolution = msg.info.resolution
+        self.valid_waypoint_map.info.map_load_time = msg.info.map_load_time
+        
+        self.valid_waypoint_map.data = array('b')
+        for i in range(len(msg.data)):
+          #if ((msg.data[i] == -1) or (msg.data[i] >= 80)):
+          #  self.valid_waypoint_map.data.append(100)
+          #else: self.valid_waypoint_map.data.append(0)
+          self.valid_waypoint_map.data.append(msg.data[i])
+        #
+        self.map_reachable_publisher.publish(self.valid_waypoint_map)
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
         
         return
 
@@ -160,30 +232,55 @@ class Brain(Node):
       """
       for event in msg.event_log:
           if (event.node_name == 'NavigateRecovery' and \
-              event.current_status == 'IDLE') or self.nav_canceled:
+                  event.current_status == 'IDLE') or self.nav_canceled:
               self.nav_canceled = False
               if self.ready_odom and self.ready_map:
                   waypointPxl = self.waypointPxl_compute()
-                  print("waypointPxl: ", waypointPxl)
+                  self.printOnce("waypointPxl: ", waypointPxl)
                   waypoint = self.coord_pxl2m(waypointPxl)
-                  print("waypoint: ", waypoint)
+                  self.printOnce("waypoint: ", waypoint)
+                  self.computing = False
+                  self.last_move_time = self.get_clock().now()
+                  self.last_pos = (self.pos_x, self.pos_y, self.pos_w)
                   self.move_to_waypoint(waypoint)
           else: self.printOnce("robot busy")
       self.ready_log = True
 
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
     def printOnce(self, string: str) -> None:
+=======
+    def printOnce(self, *args) -> None:
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
       """Makes sure that that a print message isn't repeated too many times.
       If a print message is the same as last time this function was called, it doesn't print.
 
       Args:
           string (str): string to print
       """
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
       
       if string != self.printOnce_lastString:
         self.printOnce_lastString = string
         print(string)
       return
 
+=======
+      string = ""
+      # Construct string to print
+      for arg in args:
+         string += str(arg)
+      
+      if string == self.printOnce_lastString:
+        self.printOnce_count += 1
+      else:
+        if self.printOnce_count >= 2:
+          print("Printed ", self.printOnce_count, " times.")
+        self.printOnce_count = 0
+        self.printOnce_lastString = string
+        print(args)
+      return
+    
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
     def coord_pxl2m(self, waypointPxl: tuple[int, int]) -> tuple[float, float, float]:
         """
         Converts pixel coordinates (in the map frame) to meter coordinates (in the world frame)
@@ -200,6 +297,7 @@ class Brain(Node):
         """
         if waypointPxl != None:
           mapPos_x, mapPos_y = waypointPxl
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
           pos_x = (mapPos_x + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.x
           pos_y = (mapPos_y + 0.5) * self.mapInfo.resolution + self.mapInfo.origin.position.y
           pos_w = 0 # Arbitrary quaternion bearing
@@ -207,6 +305,15 @@ class Brain(Node):
           return waypoint
         else:
           print("map is done")
+=======
+          pos_x = (mapPos_x) * self.mapInfo.resolution + self.mapInfo.origin.position.x
+          pos_y = (mapPos_y) * self.mapInfo.resolution + self.mapInfo.origin.position.y
+          pos_w = 1.0 # Arbitrary quaternion bearing
+          waypoint = (pos_x, pos_y, pos_w)
+          return waypoint
+        else:
+          self.printOnce("map is done")
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
           exit()
 
     def coord_m2pxl(self, waypoint: tuple[float, float, float]) -> tuple[int, int]:
@@ -228,15 +335,51 @@ class Brain(Node):
         mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
         waypointPxl = (mapPos_x, mapPos_y)
         return waypointPxl
+
     
-    def get_coords_as_Pxl(self) -> tuple[int, int]:
-        """
-        Returns the current position as the x,y pixel position on the map.
-        Returns:
-          coord_m2pxl (tuple(in, int)): the coordinates of the waypoint in pixels.
-        """
-        waypoint = (self.pos_x, self.pos_y, self.pos_w)
-        return self.coord_m2pxl(waypoint)
+    # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
+    # of the surrounding pixels
+    def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int]:
+      pixel_vals = np.array([[],[],[]])
+      if type(ocgrid) is OccupancyGrid:
+        data_array_2d = np.reshape(ocgrid.data, (ocgrid.info.width, -1))
+      else:
+        data_array_2d = ocgrid
+      x, y = pixel
+      self.printOnce("map shape = height, width = y,x: ", np.shape(data_array_2d)) # map shape:  (102, 99)
+      if x<=0                 or  y>=ocgrid.info.height: a = None 
+      else: a = data_array_2d[x-1][y+1]
+      
+      if                          y>=ocgrid.info.height: b = None 
+      else: b = data_array_2d[x][y+1]
+      
+      if x>=ocgrid.info.width or  y>=ocgrid.info.height: c = None 
+      else: c = data_array_2d[x+1][y+1]
+      
+      if x<=0                 or  y>=ocgrid.info.height: d = None 
+      else: d = data_array_2d[x-1][y]
+      
+      if                          y>=ocgrid.info.height: e = None 
+      else: e = data_array_2d[x][y]
+      
+      if x>=ocgrid.info.width or  y>=ocgrid.info.height: f = None 
+      else: f = data_array_2d[x+1][y]
+      
+      if x<=0                 or  y<=0: h = None 
+      else: h = data_array_2d[x-1][y-1]
+      
+      if                          y>=0: i = None 
+      else: i = data_array_2d[x][y-1]
+      
+      if x>=ocgrid.info.width or y>=0: j = None 
+      else: j = data_array_2d[x+1][y-1]
+      
+      pixel_vals = np.array(
+        [[a,b,c],[d,e,f],[h,i,j]])
+
+      return pixel_vals
+    
+
     
     # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
     # of the surrounding pixels
@@ -299,7 +442,7 @@ class Brain(Node):
         ymin = max(y_posPxl-radius, 0)
         ymax = min(y_posPxl+radius, self.mapInfo.height - 1)
 
-        print("mapArray2d.shape:", self.mapArray2d.shape)
+        #self.printOnce("mapArray2d.shape:", self.mapArray2d.shape)
         for xPxl in np.linspace(xmin, xmax, xmax-xmin):
             for yPxl in np.linspace(ymin, ymax, ymax-ymin):
                 pxl = (int(xPxl), int(yPxl))
@@ -429,18 +572,31 @@ class Brain(Node):
       x, y = pixel
       pixel_vals = []
       
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
       print('(x, y): (', x, ", ", y, ")")
       print('(grid width, grid height): ', ocgrid.info.width, " ", ocgrid.info.height)
       print('array shape: ', np.shape(data_array_2d))
       
       if ((x<=0) or (y<=0) or (x>=ocgrid.info.width-1) or (y>=ocgrid.info.height-1)):
         print("Requested pixel is on border of map or outside map.")
+=======
+      self.printOnce('(x, y): (', x, ", ", y, ")")
+      self.printOnce('(grid width, grid height): ', ocgrid.info.width, " ", ocgrid.info.height)
+      self.printOnce('array shape: ', np.shape(data_array_2d))
+      
+      if ((x<=0) or (y<=0) or (x>=ocgrid.info.width-1) or (y>=ocgrid.info.height-1)):
+        self.printOnce("Requested pixel is on border of map or outside map.")
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
         pixel_vals = None
       else:
         for i in range(-1, 2):
           for j in range(-1, 2):
             pixel_vals.append(data_array_2d[x+i][y+j])
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
       print(pixel_vals)
+=======
+      self.printOnce(pixel_vals)
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
       return pixel_vals
     
     def waypointPxl_compute(self) -> tuple[int, int]:
@@ -451,6 +607,7 @@ class Brain(Node):
         Returns:
           reachable_waypoint_pxl (tuple(int,int)|None): The (x,y) pixel coordinates of a valid point (if found), otherwise None.
         """
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
         print("---------------------")
         """
         print(self.get_surrounding_pixel_values(self.mapMsg, (102, 99))) # (x leftward, y upward from bottom right)
@@ -486,6 +643,42 @@ class Brain(Node):
             search_radius += 5 # Expand search radius
         print("waypoint_compute - Maximum search radius is reached.")
         print("waypoint_compute - Stopping.")
+=======
+        self.printOnce("---------------------")
+        """
+        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 99))) # (x leftward, y upward from bottom right)
+        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 98))) # (x leftward, y upward from bottom right)
+        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 97))) # (x leftward, y upward from bottom right)
+        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 96))) # (x leftward, y upward from bottom right)
+        self.printOnce(self.get_surrounding_pixel_values(self.mapMsg, (102, 95))) # (x leftward, y upward from bottom right)
+        """
+        self.printOnce("---------------------")
+        
+        self.printOnce('NOTE - turtlebot_brain.waypoint_compute: reached')
+        self.computing = True
+        search_radius = max(self.mapInfo.width, self.mapInfo.height)
+        # search radius for reachable, unexplored pixels and set goal to go there
+        self.printOnce("waypoint_compute - Searching for unexplored pixels in radius: ", search_radius)
+        # generate list of unexplored pixels within search radius
+        unexplored_list = self.map_get_unexplored_in_range(search_radius)
+        self.printOnce("waypoint_compute - unexplored_list: ", unexplored_list)
+        unexplored_x_y_coords = []
+        for pxl in unexplored_list:
+           unexplored_x_y_coords.append(self.coord_pxl2m(pxl))
+        if len(unexplored_list) != 0:
+            self.printOnce("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_x_y_coords)
+            self.printOnce("randomly shuffling unexplored_list to remove preference for exploring in a certain direction.")
+            random.shuffle(unexplored_list)
+            self.printOnce("Shuffled list = \n", unexplored_list)
+            self.printOnce("waypoint_compute - calling self.waypoint_check_reachable(unexplored_list)")
+            reachable_waypoint_pxl = self.waypoint_check_reachable(unexplored_list)
+            if reachable_waypoint_pxl is not None:
+                return reachable_waypoint_pxl # Stop searching
+        self.printOnce("waypoint_compute - unexplored_list is None, or every unexplored element is unreachable.")
+        self.printOnce("Expanding search radius.")
+        self.printOnce("waypoint_compute - Maximum search radius is reached.")
+        self.printOnce("waypoint_compute - Stopping.")
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
         return None # If no valid points are found, return None
 
     def move_to_waypoint(self, waypoint: tuple[float, float, float]):
@@ -496,14 +689,16 @@ class Brain(Node):
           waypoint (tuple[float, float, float]): The waypoint (x,y,w) tuple to move to.
         """
         x, y, w = waypoint
-        print("Moving to waypoint: ", waypoint)
+        self.printOnce("Moving to waypoint: ", waypoint)
         self.IDLE = False
-        pose = PoseStamped()
-        pose.header.frame_id = 'map'
-        pose.pose.position.x = waypoint[0]
-        pose.pose.position.y = waypoint[1]
-        pose.pose.orientation.w = float(waypoint[2])
-        self.nav.goToPose(pose)
+        self.pose = PoseStamped()
+        self.pose.header.frame_id = 'map'
+        self.pose.pose.position.x = waypoint[0]
+        self.pose.pose.position.y = waypoint[1]
+        self.pose.pose.orientation.w = float(waypoint[2])
+        self.waypoint_publisher.publish(self.pose)
+        self.last_waypoint_time = self.get_clock().now()
+        """
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
           if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
@@ -511,7 +706,12 @@ class Brain(Node):
             self.nav.cancelTask()
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
           self.mark_range_unreachable(self.coord_m2pxl(waypoint), 3)
+=======
+          self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
+        """
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
     
     def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
         """
@@ -536,8 +736,9 @@ class Brain(Node):
         """
         current_posPxl = self.get_coords_as_Pxl()
         x_posPxl, y_posPxl = current_posPxl
-        print("Getting unexplored pixels in range.")
+        self.printOnce("Getting unexplored pixels in range.")
         unexplored_in_range = []
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
         print(self.mapInfo.width, self.mapInfo.height)
         xmin = max(x_posPxl-radius, 0)
         xmax = min(x_posPxl+radius, self.mapInfo.width - 1)
@@ -586,6 +787,55 @@ class Brain(Node):
                     self.mark_waypointPxl_unreachable(pxl)
         for pixel in unexplored_in_range:
             print("unexplored = ", self.coord_pxl2m(pixel))
+=======
+        self.printOnce("map width/height: ", self.mapInfo.width, "/", self.mapInfo.height)
+        xmin = 0
+        xmax = self.mapInfo.width
+        ymin = 0
+        ymax = self.mapInfo.height
+        self.printOnce("xmin, xmax, ymin, ymax: ", xmin, ", ", xmax, ", ", ymin, ", ", ymax)
+        #self.printOnce("mapArray2d.shape:", self.mapArray2d.shape)
+        for xPxl in range(xmin, xmax):
+            for yPxl in range(ymin, ymax):
+                pxl = (xPxl, yPxl)
+                if self.mapArray2d[xPxl][yPxl] == 100:
+                    self.mark_range_unreachable(pxl, 5)
+                elif self.mapArray2d[xPxl][yPxl] == -1:
+                    nearby_explored_pixels = 0
+                    explore = True
+                    for x in range(-1, 2):
+                        for y in range(-1, 2):
+                            if xPxl + x < 0 or yPxl + y < 0:
+                                explore = False
+                                break
+                            elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
+                                explore = False
+                                break
+                            elif self.mapArray2d[xPxl + x, yPxl + y] == 100:
+                                explore = False
+                                break
+                        if not explore:
+                            break
+                    if explore:
+                        for x in range(-3, 4):
+                            for y in range(-3, 4):
+                                if xPxl + x < 0 or yPxl + y < 0:
+                                    explore = False
+                                    break
+                                elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
+                                    explore = False
+                                    break
+                                elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
+                                    nearby_explored_pixels += 1
+                                elif self.mapArray2d[xPxl + x, yPxl + y] == 100:
+                                    explore = False
+                                    break
+                            if not explore:
+                                break
+                        if nearby_explored_pixels >= 17:
+                            if math.sqrt((pxl[0] - x_posPxl) ** 2 + (pxl[1] - y_posPxl) ** 2) > 1:
+                                unexplored_in_range.append(pxl)
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
         return unexplored_in_range
     
     def waypoint_check_reachable(self, unexplored_list: list[tuple[int, int]]) -> tuple[int, int] | None:
@@ -603,8 +853,13 @@ class Brain(Node):
           waypointPxl (tuple(int,int)|None): the (x,y) tuple pixel coordinates of a reachable waypoint 
           (if one is found), otherwise returns None.
         """
+<<<<<<< HEAD:tb3_controller/turtlebot_brain.py
         print("waypoint_check_reachable - Getting unexplored pixel from unexplored_list.")
         #print("waypoint_check_reachable - unexplored_list: \n", unexplored_list)
+=======
+        self.printOnce("waypoint_check_reachable - Getting unexplored pixel from unexplored_list.")
+        #self.printOnce("waypoint_check_reachable - unexplored_list: \n", unexplored_list)
+>>>>>>> Jonathan:tb3_controller/tb3_controller/turtlebot_brain.py
         for _ in range(len(unexplored_list)):
             waypointPxl = unexplored_list.pop()                    # Choose a pixel at random
             if not self.is_waypointPxl_unreachable(waypointPxl):   # if pixel is not in list of known unreachable pixels
