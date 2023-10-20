@@ -113,6 +113,8 @@ class Brain(Node):
         Returns:
           nothing (None).
         """
+        time1 = self.get_clock().now().to_msg() # start timer
+        
         self.printOnce('NOTE - turtlebot_brain.map_callback: reached')
         self.mapMsg = msg
         self.mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height), order='F')
@@ -137,7 +139,7 @@ class Brain(Node):
           self.init_myMap_flag = True
         # Update map header
         self.valid_waypoint_map.header.frame_id = msg.header.frame_id # id for transfer function for map frame is 'map'
-        self.valid_waypoint_map.header.stamp = msg.header.stamp # Or self.get_clock().now().to_msg() ?
+        self.valid_waypoint_map.header.stamp = msg.header.stamp # Or self.get_clock().now().to_msg()
         # Update map info (e.g. dimensions)
         self.valid_waypoint_map.info.origin = msg.info.origin
         self.valid_waypoint_map.info.height = msg.info.height
@@ -168,16 +170,16 @@ class Brain(Node):
               # mark unreachable positions on map
               if self.unreachable_positions[x][y] == True:
                 valid_waypoint_map[x][y] = 80
-
-
+        # Build and publish map from data
         new_map_array1d = np.reshape(valid_waypoint_map, (msg.info.width * msg.info.height), order='F')
-        
         self.valid_waypoint_map.data = array('b')
-        for ele in new_map_array1d:
-          ele = int(ele)
-          self.valid_waypoint_map.data.append(ele)
+        for ele in new_map_array1d: self.valid_waypoint_map.data.append(int(ele))
         self.map_reachable_publisher.publish(self.valid_waypoint_map)
         
+        # Check map processing times
+        time2 = self.get_clock().now().to_msg()
+        print("Map callback processing time: ", float(time2.sec + time2.nanosec/1000000000) - float(time1.sec + time1.nanosec/1000000000), "s")
+        input("paused to read times...")
         return
 
     def path_callback(self, msg:Path) -> None:
@@ -238,7 +240,7 @@ class Brain(Node):
         self.printOnce_count += 1
       else:
         if self.printOnce_count >= 2:
-          print("Printed ", self.printOnce_count, " times.")
+          print("Printed '", string, "' ", self.printOnce_count, " times.")
         self.printOnce_count = 0
         self.printOnce_lastString = string
         print(string)
@@ -444,7 +446,7 @@ class Brain(Node):
         for i in range(-radius, radius+1):
           for j in range(-1, 2):
             pixel_vals.append(data_array_2d[x+i][y+j])
-      self.printOnce(pixel_vals)
+      #self.printOnce(pixel_vals)
       return pixel_vals
     
     def waypointPxl_compute(self) -> tuple[int, int]:
