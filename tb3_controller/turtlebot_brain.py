@@ -352,64 +352,11 @@ class Brain(Node):
           waypointPxl (tuple(in, int)): The coordinates of a waypoint as a pixel coordinate. 
             Represented as a tuple of integer x and y coordinates of the waypoint on the map.
         """
-        if waypointPxl != None:
-          pos_x, pos_y, _ = waypoint
-          mapPos_x = int((pos_x - self.mapInfo.origin.position.x) / self.mapInfo.resolution)
-          mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
-          waypointPxl = (mapPos_x, mapPos_y)
-          return waypointPxl
-        else:
-          print("map is done")
-          exit()
-    
-    def get_coords_as_Pxl(self) -> tuple[int, int]:
-        """
-        Returns the current position as the x,y pixel position on the map.
-        Returns:
-          coord_m2pxl (tuple(in, int)): the coordinates of the waypoint in pixels.
-        """
-        waypoint = (self.pos_x, self.pos_y, self.pos_w)
-        return self.coord_m2pxl(waypoint)
-    
-    # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
-    # of the surrounding pixels
-    def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int]) -> list[int]:
-      pixel_vals = np.array([[],[],[]])
-      if type(ocgrid) is OccupancyGrid:
-        data_array_2d = np.reshape(ocgrid.data, (ocgrid.info.width, -1))
-      else:
-        data_array_2d = ocgrid
-      x, y = pixel
-      print("map shape = height, width = y,x: ", np.shape(data_array_2d)) # map shape:  (102, 99)
-      if x<=0                 or  y>=ocgrid.info.height: a = None 
-      else: a = data_array_2d[x-1][y+1]
-      
-      if                          y>=ocgrid.info.height: b = None 
-      else: b = data_array_2d[x][y+1]
-      
-      if x>=ocgrid.info.width or  y>=ocgrid.info.height: c = None 
-      else: c = data_array_2d[x+1][y+1]
-      
-      if x<=0                 or  y>=ocgrid.info.height: d = None 
-      else: d = data_array_2d[x-1][y]
-      
-      if                          y>=ocgrid.info.height: e = None 
-      else: e = data_array_2d[x][y]
-      
-      if x>=ocgrid.info.width or  y>=ocgrid.info.height: f = None 
-      else: f = data_array_2d[x+1][y]
-      
-      if x<=0                 or  y<=0: h = None 
-      else: h = data_array_2d[x-1][y-1]
-      
-      if                          y>=0: i = None 
-      else: i = data_array_2d[x][y-1]
-      
-      if x>=ocgrid.info.width or y>=0: j = None 
-      else: j = data_array_2d[x+1][y-1]
-      
-      pixel_vals = np.array(
-        [[a,b,c],[d,e,f],[h,i,j]])
+        pos_x, pos_y, _ = waypoint
+        mapPos_x = int((pos_x - self.mapInfo.origin.position.x) / self.mapInfo.resolution)
+        mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
+        waypointPxl = (mapPos_x, mapPos_y)
+        return waypointPxl
 
     # TODO - needs testing, may not work
     def mark_range_unreachable(self, pxl: tuple[int, int], radius: int) -> None:
@@ -615,31 +562,18 @@ class Brain(Node):
         self.pose.pose.position.x = waypoint[0]
         self.pose.pose.position.y = waypoint[1]
         self.pose.pose.orientation.w = float(waypoint[2])
-        self.nav.goToPose(self.pose)
-        #self.waypoint_publisher.publish(self.pose)
+        self.waypoint_publisher.publish(self.pose)
         self.last_waypoint_time = self.get_clock().now()
+        """
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
-          if feedback.distance_remaining <= 0.1 and Duration.from_msg(feedback.navigation_time) > Duration(seconds=1.0):
-            self.nav_canceled = True
-            self.nav.cancelTask()
-          elif feedback.number_of_recoveries >=2:
-            self.nav_canceled = True
-            self.nav.cancelTask()
-          """if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
-            self.nav_canceled = True
-            self.nav.cancelTask()
-          elif feedback.number_of_recoveries >= 1:
-            self.nav_canceled = True
-            self.nav.cancelTask()
-          elif feedback.distance_remaining <= 0.1 and Duration.from_msg(feedback.navigation_time) > Duration(seconds=1.0)
+          if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
             self.nav_canceled = True
             self.nav.cancelTask()
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
           self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
-          """
-      
+        """
 
     def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
         """
