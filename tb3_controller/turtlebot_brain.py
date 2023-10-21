@@ -8,11 +8,19 @@ from nav2_simple_commander.robot_navigator import BasicNavigator
 from nav2_msgs.msg import BehaviorTreeLog, Costmap
 from nav_msgs.msg import OccupancyGrid, Odometry, Path
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
+from sensor_msgs.msg import Image
 import numpy as np
 import random
 from array import array
 import typing
 import copy
+import argparse
+import imutils
+import cv2
+import sys
+from os import system
+from cv_bridge import CvBridge
+
 class Brain(Node):
     def __init__(self) -> None:
         """
@@ -38,6 +46,7 @@ class Brain(Node):
         self.printOnce_count = 0
         self.user_started_flag = False
         self.verbosity = False
+        self.counter = 0
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
@@ -47,6 +56,7 @@ class Brain(Node):
         
         self.printOnce('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
         self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
+        self.image_subscription     = self.create_subscription  (Image,                     '/camera/image_raw',        self.camera_callback,   10)
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
@@ -95,7 +105,7 @@ class Brain(Node):
                 self.nav.cancelTask()
                 self.nav_canceled = True
             self.last_pos = (msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.orientation.w)
-        
+
     def map_callback(self, msg:OccupancyGrid) -> None:
         """
         Called whenever a new OccupancyGrid message is published to the 'map' topic.
@@ -225,6 +235,20 @@ class Brain(Node):
           else: self.printOnce("robot busy")
       self.ready_log = True
 
+    def camera_callback(self, msg:Image) -> None:
+      self.counter += 1
+      #print(np.shape(msg.data))
+      cv_image = CvBridge().imgmsg_to_cv2(msg, desired_encoding='8SC3')
+      if self.counter == 100:
+        #cv2.imshow("Image", cv_image)  # Show the image using cv2.imshow() method
+        cv2.imshow('Image' , np.array(cv_image, dtype = np.uint8 ) )
+        cv2.waitKey()
+        cv2.destroyAllWindows()  # closing all open windows (after key press)
+        #input("PAUSE...")
+      #aruco_test(img_gray)
+      return
+    
+    # DEFINING HELPER FUNCTIONS
     def printOnce(self, *args) -> None:
       """Makes sure that that a print message isn't repeated too many times.
       If a print message is the same as last time this function was called, it doesn't print.
@@ -248,7 +272,7 @@ class Brain(Node):
         self.printOnce_lastString = string
         print(string)
       return
-    
+
     def coord_pxl2m(self, waypointPxl: tuple[int, int]) -> tuple[float, float, float]:
         """
         Converts pixel coordinates (in the map frame) to meter coordinates (in the world frame)
@@ -293,7 +317,7 @@ class Brain(Node):
         mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
         waypointPxl = (mapPos_x, mapPos_y)
         return waypointPxl
-    
+
     # TODO - needs testing, may not work
     def mark_range_unreachable(self, pxl: tuple[int, int], radius: int) -> None:
         """
@@ -408,7 +432,7 @@ class Brain(Node):
         if path is not None:
             return True
         return False
-    
+
     def waypoint_compute_trivial(self) -> tuple[float, float, float]:
         """
         Returns a waypoint with coordinates (0.5, 0.5, 1).
@@ -419,7 +443,7 @@ class Brain(Node):
         """
         waypoint = (0.5, 0.5, 1)
         return waypoint
-    
+
     def get_coords_as_Pxl(self) -> tuple[int, int]:
         """
         Returns the current position as the x,y pixel position on the map.
@@ -428,7 +452,7 @@ class Brain(Node):
         """
         waypoint = (self.pos_x, self.pos_y, self.pos_w)
         return self.coord_m2pxl(waypoint)
-    
+
     # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
     # of the surrounding pixels
     def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int], radius: int = 5) -> list[int] | None:
@@ -451,7 +475,7 @@ class Brain(Node):
             pixel_vals.append(data_array_2d[x+i][y+j])
       #self.printOnce(pixel_vals)
       return pixel_vals
-    
+
     def waypointPxl_compute(self) -> tuple[int, int]:
         """
         Searches for unexplored pixels within a radius around the current robot position and returns
@@ -516,7 +540,7 @@ class Brain(Node):
         if result == result.CANCELED or result == result.FAILED:
           self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
         """
-    
+
     def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
         """
         Moves the robot to a specified waypoint (in integer map pixel coordinates) and handles cancellation or failure cases.
@@ -634,7 +658,7 @@ class Brain(Node):
                             if math.sqrt((pxl[0] - x_posPxl) ** 2 + (pxl[1] - y_posPxl) ** 2) > 10:
                                 unexplored_in_range.append(pxl)
         return unexplored_in_range
-    
+
     def waypoint_check_reachable(self, unexplored_list: list[tuple[int, int]]) -> tuple[int, int] | None:
         """
         Checks if a randomly selected pixel from the unexplored_list is reachable and 
@@ -664,6 +688,121 @@ class Brain(Node):
         # Every element of the list is unreachable -> return None
         return None
 
+    def aruco_detect(self, image):
+      arucoDict = cv2.aruco.dictionary_get(cv2.aruco.DICT_6X6_50) # grab the dictionary of ArUco markers we’re using.
+      arucoParams = cv2.aruco.detectorParameters_create()           # Define the ArUco detection parameters
+      # corners: A list containing the (x, y)-coordinates of our detected ArUco markers
+      # ids: The ArUco IDs of the detected markers
+      # rejected: A list of markers that were found but rejected due to the marker code being unparsable (used for debugging purposes)
+      (corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams) # Perform ArUco marker detection
+    
+    def aruco_detect_video():
+      pass
+
+def init_camera(image):
+    # Define camera intrinsic properties (how a camera maps 3D points in the world to 2D points in an image)
+    # Matrix can be though of as a rotation matrix concatenated with a translation matrix)
+    focal_length = [image.shape[0], image.shape[0]]             # In pixels
+    origin = np.array([image.shape[0]/2, image.shape[1]/2])    # principal point (the point that all rays converge) in pixels
+    camera_matrix = np.array(
+    [[focal_length[0], 0, origin[0]],
+    [0, focal_length[1], origin[1]],
+    [0, 0, 1]], dtype="double")
+    distCoeffs = np.zeros((4, 1))           # lens distortion of camera (None)
+    return focal_length, origin, camera_matrix, distCoeffs
+  
+def aruco_test(image):
+  
+  ## Reading an image
+  #path = "./src/tb3_controller/tb3_controller/images/"
+  #filename = "tag_id_0.jpg"
+  #image_path = path + filename
+  #image = cv2.imread(image_path)
+  #type_arg = 'DICT_6X6_50'
+  #args = {"image": image_path, "type": type_arg}
+  #if image is None:
+  #    print("Check file path")
+  
+  # load the input image from disk and resize it
+  #print("[INFO] loading image...")
+  #image = cv2.imread(args["image"])
+  #image = cv2.imread(image)
+  #image = imutils.resize(image, width=600)
+  print("Image shape: ", image.shape)
+  # load the ArUCo dictionary, grab the ArUCo parameters, and detect the markers
+  #print("[INFO] detecting '{}' tags...".format(args["type"]))
+  print("[INFO] detecting '{}' tags...".format("DICT_6X6_50"))
+  arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
+  arucoParams = cv2.aruco.DetectorParameters()
+  
+  print("Attempting to process image:")
+  image, rvec, tvec, pose_mat = process_image(image, arucoDict, arucoParams)
+  if image is None: return
+  #save matrix/array as image file
+  #isWritten = cv2.imwrite(path + 'newImg.png', image)
+  #if isWritten:
+  #  print('Image is successfully saved as file.')
+
+  # Show image
+  window_name = 'image'  # Name display window for image
+  cv2.imshow("Image", image)  # Show the image using cv2.imshow() method
+  # wait for user key press (necessary to avoid Python kernel form crashing)
+  cv2.waitKey(0)
+  cv2.destroyAllWindows()  # closing all open windows (after key press)
+  return
+
+
+def process_image(image, arucoDict, arucoParams):
+    
+    print("Camera init")
+    focal_length, origin, camera_matrix, distCoeffs = init_camera(image)
+    
+    #Detect aruco tags
+    print("Searching for aruco tags in image")
+    (corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
+    if ids is None:
+      print("No aruco tags found in image")
+      return
+    tags_count = len(ids.flatten())
+    print("Found ", tags_count, " tags in image.")
+    cv2.aruco.drawDetectedMarkers(image, corners, ids)
+
+    marker_length = 100.00 # mm
+
+    poses = cv2.aruco.estimatePoseSingleMarkers(corners, marker_length, camera_matrix, distCoeffs)  
+    rvecs, tvecs, _objPoints = poses
+    
+    for i in range(tags_count):
+        (topLeft, topRight, bottomRight,bottomLeft) = corners[i][0]
+        id = ids[i]
+        size = abs(topRight[0] - topLeft[0])/2
+        rvec = rvecs[i][0] # Rotation with respect to camera
+        tvec = tvecs[i][0] # Translation with respect to camera
+        print("--------------")
+        print("Tag ID:", id)
+        print("rvec", rvec)
+        print("tvec", tvec)
+        rmat, _ = cv2.Rodrigues(rvec)
+        pose_mat = cv2.hconcat((rmat, tvec))
+        print("Pose matrix:", pose_mat)
+        print("--------------")
+        if False:
+            # Draw the bounding box around the detected ArUCo tag
+            image = draw_quad(image, topLeft, topRight, bottomRight, bottomLeft)
+            # Draw a point at the center of the detected ArUCo tag
+            image = draw_quad_centerpoint(image, topLeft, topRight, bottomRight, bottomLeft)
+            # Draw the ID of the detected ArUCo tag
+            image = draw_quad_markerID(image, topLeft, topRight, bottomRight, bottomLeft, id)
+        # Draw the estimated pose of the tag
+        cv2.drawFrameAxes(image, camera_matrix, distCoeffs, rvec, tvec, size, thickness = 3)
+    
+        # Choose the first tag detected for warping function
+        #(topLeft, topRight, bottomRight, bottomLeft) = corners[0][0]
+        #image = warp_quad_to_square(image, topLeft, topRight, bottomRight, bottomLeft)
+
+    return image, rvec, tvec, pose_mat
+
+
 def main(args=None) -> None:
     """
     Entrypoint for the ROS node.
@@ -675,7 +814,14 @@ def main(args=None) -> None:
       Optional parameter that defaults to `None`. 
       Can be used to configure or customize the behavior of the program.
     """
-    print('NOTE - turtlebot_brain.main: Starting main')
+    """print('NOTE - turtlebot_brain.main: Starting main')
+    print("---------------------------")
+    print("doing aruco test")
+    aruco_test()
+    input("aruco test done")
+    print("---------------------------")"""
+    
+    
     print('NOTE - turtlebot_brain.main: instantiating rclpy')
     rclpy.init(args=args)
     print('NOTE - turtlebot_brain.main: instantiating brain')
