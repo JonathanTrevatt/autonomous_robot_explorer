@@ -42,6 +42,7 @@ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ros2 launch ~/metr4202_ws/src/tb3_controller/worlds/world_name.launch.py
 # e.g.:
 # ros2 launch ~/metr4202_ws/src/tb3_controller/worlds/double_lane_small.launch.py
+ros2 launch ~/metr4202_ws/src/tb3_controller/worlds/aruco.launch.py
 ```
 
 ### In a fresh ubuntu terminal - Launch rviz/nav2 with SLAM:

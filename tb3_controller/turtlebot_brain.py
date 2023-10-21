@@ -9,6 +9,7 @@ from nav2_msgs.msg import BehaviorTreeLog, Costmap
 from nav_msgs.msg import OccupancyGrid, Odometry, Path
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 from sensor_msgs.msg import Image
+from tf2_ros import TFMessage
 import numpy as np
 import random
 from array import array
@@ -60,6 +61,7 @@ class Brain(Node):
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
+        self.tf_subscription        = self.create_subscription  (TFMessage,                  '/tf',                     self.tf_callback,   10)
         self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
         self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'valid_waypoint_map', qos_profile)
         self.map_unreachable_publisher= self.create_publisher     (OccupancyGrid,             'invalid_waypoint_map', qos_profile)
@@ -255,12 +257,35 @@ class Brain(Node):
       #print(np.shape(msg.data))
       cv_image = CvBridge().imgmsg_to_cv2(msg, desired_encoding='8SC3')
       cv_image = np.array(cv_image, dtype = np.uint8 )
-      if self.counter == 100:
+      #if self.counter == 100:
         #cv2.imshow("Image", cv_image)  # Show the image using cv2.imshow() method
-        cv2.imshow('Image' ,cv_image )
+        #cv2.imshow('Image' ,cv_image )
         #cv2.waitKey()
         #cv2.destroyAllWindows()  # closing all open windows (after key press)
-      aruco_test(cv_image)
+      #cv_image = cv2.flip(cv_image,0)
+      
+      processed_data = aruco_test(cv_image)
+      if processed_data is None:
+        return None
+  
+      image, rvec, tvec, pose_mat = processed_data
+  
+      
+      tag2cam_pos = tvec # camera to base_footprint vector (example: [381.16125448 -42.29419899 530.01135024])
+      cam2base = (-0.64829+0.64519, -0.64888+0.57273, 0.0010565-0.1039, 0.0010232+0.70742, 0.0024065-0.013475, 0.69496+0.010055, 0.71905-0.7066) # pos: x,y,z, ori: x,y,z,w
+      # base2map is just the current odometry
+      
+      return
+    
+    def tf_callback(self, msg:TFMessage):
+      """tfs = msg.transforms
+      print("--------------")
+      for tf in tfs:
+      #  if tf.header.frame_id == 'camera_rgb_optical_frame':
+        print("tf.header.frame_id: ", tf.header.frame_id)#.child_frame_id)
+      #    input("pause")
+      print("--------------")"""
+      
       return
     
     # DEFINING HELPER FUNCTIONS
@@ -646,17 +671,6 @@ class Brain(Node):
         # Every element of the list is unreachable -> return None
         return None
 
-    def aruco_detect(self, image):
-      arucoDict = cv2.aruco.dictionary_get(cv2.aruco.DICT_6X6_50) # grab the dictionary of ArUco markers we’re using.
-      arucoParams = cv2.aruco.detectorParameters_create()           # Define the ArUco detection parameters
-      # corners: A list containing the (x, y)-coordinates of our detected ArUco markers
-      # ids: The ArUco IDs of the detected markers
-      # rejected: A list of markers that were found but rejected due to the marker code being unparsable (used for debugging purposes)
-      (corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams) # Perform ArUco marker detection
-    
-    def aruco_detect_video():
-      pass
-
 def init_camera(image):
     # Define camera intrinsic properties (how a camera maps 3D points in the world to 2D points in an image)
     # Matrix can be though of as a rotation matrix concatenated with a translation matrix)
@@ -671,47 +685,47 @@ def init_camera(image):
   
 def aruco_test(image):
   
-  print("Image shape: ", image.shape)
+  #print("Image shape: ", image.shape)
   # load the ArUCo dictionary, grab the ArUCo parameters, and detect the markers
-  print("[INFO] detecting '{}' tags...".format("DICT_6X6_50"))
+  #print("[INFO] detecting '{}' tags...".format("DICT_6X6_50"))
   arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
   arucoParams = cv2.aruco.DetectorParameters()
   
-  print("Attempting to process image:")
+  #print("Attempting to process image:")
   processed_data = process_image(image, arucoDict, arucoParams)
   if processed_data is None:
     return None
   
   image, rvec, tvec, pose_mat = processed_data
-  cv2.imshow("Image", image)  # Show the image using cv2.imshow() method
-  # wait for user key press (necessary to avoid Python kernel from crashing)
-  input("Pause...")
-  cv2.waitKey(0)
-  cv2.destroyAllWindows()  # closing all open windows (after key press)
-  return
+  
+  return image, rvec, tvec, pose_mat
 
 
 
 def process_image(image, arucoDict, arucoParams):
     
-    print("Camera init")
+    #print("Camera init")
     focal_length, origin, camera_matrix, distCoeffs = init_camera(image)
     
     #Detect aruco tags
-    print("Searching for aruco tags in image")
+    #print("Searching for aruco tags in image")
+    """cv2.imshow('Image' , image )
+    cv2.waitKey()
+    cv2.destroyAllWindows()  # closing all open windows (after key press)"""
     (corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
+    #print("corners: ", corners)
+    #print("ids: ", ids)
+    #print("rejected: ", rejected)
     if ids is None:
-      print("No aruco tags found in image")
+      #print("No aruco tags found in image")
       return
     tags_count = len(ids.flatten())
-    print("Found ", tags_count, " tags in image.")
     cv2.aruco.drawDetectedMarkers(image, corners, ids)
-
     marker_length = 100.00 # mm
-
     poses = cv2.aruco.estimatePoseSingleMarkers(corners, marker_length, camera_matrix, distCoeffs)  
     rvecs, tvecs, _objPoints = poses
     
+    print("Found ", tags_count, " tags in image.")
     for i in range(tags_count):
         (topLeft, topRight, bottomRight,bottomLeft) = corners[i][0]
         id = ids[i]
@@ -720,11 +734,11 @@ def process_image(image, arucoDict, arucoParams):
         tvec = tvecs[i][0] # Translation with respect to camera
         print("--------------")
         print("Tag ID:", id)
-        print("rvec", rvec)
+        #print("rvec", rvec)
         print("tvec", tvec)
         rmat, _ = cv2.Rodrigues(rvec)
         pose_mat = cv2.hconcat((rmat, tvec))
-        print("Pose matrix:", pose_mat)
+        #print("Pose matrix:", pose_mat)
         print("--------------")
         if False:
             # Draw the bounding box around the detected ArUCo tag
