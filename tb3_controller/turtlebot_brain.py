@@ -16,7 +16,7 @@ from array import array
 import typing
 import copy
 import argparse
-# import imutils
+import imutils
 import cv2
 import sys
 from os import system
@@ -57,7 +57,7 @@ class Brain(Node):
         
         self.printOnce('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
         self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
-        # self.image_subscription     = self.create_subscription  (Image,                     '/camera/image_raw',        self.camera_callback,   10)
+        self.image_subscription     = self.create_subscription  (Image,                     '/camera/image_raw',        self.camera_callback,   10)
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
@@ -146,7 +146,7 @@ class Brain(Node):
                     if self.mapArray2d[xPxl][yPxl] >= 80:
                         self.mark_range_unreachable(pxl, 3)
         
-        """        # Initialise custom map
+        # Initialise custom map
         if not self.init_myMap_flag:
           self.valid_waypoint_map = OccupancyGrid()
           self.init_myMap_flag = True
@@ -201,7 +201,7 @@ class Brain(Node):
         self.invalid_waypoint_map.info.resolution = msg.info.resolution
         self.invalid_waypoint_map.info.map_load_time = msg.info.map_load_time
         for ele in new_unreachablemap_array1d: self.invalid_waypoint_map.data.append(ele)
-        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)"""
+        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)
         
         # Check map processing times
         time2 = self.get_clock().now().to_msg()
