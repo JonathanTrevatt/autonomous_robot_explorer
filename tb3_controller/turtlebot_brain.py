@@ -239,13 +239,13 @@ class Brain(Node):
       self.counter += 1
       #print(np.shape(msg.data))
       cv_image = CvBridge().imgmsg_to_cv2(msg, desired_encoding='8SC3')
+      cv_image = np.array(cv_image, dtype = np.uint8 )
       if self.counter == 100:
         #cv2.imshow("Image", cv_image)  # Show the image using cv2.imshow() method
-        cv2.imshow('Image' , np.array(cv_image, dtype = np.uint8 ) )
-        cv2.waitKey()
-        cv2.destroyAllWindows()  # closing all open windows (after key press)
-        #input("PAUSE...")
-      #aruco_test(img_gray)
+        cv2.imshow('Image' ,cv_image )
+        #cv2.waitKey()
+        #cv2.destroyAllWindows()  # closing all open windows (after key press)
+      aruco_test(cv_image)
       return
     
     # DEFINING HELPER FUNCTIONS
@@ -713,43 +713,25 @@ def init_camera(image):
   
 def aruco_test(image):
   
-  ## Reading an image
-  #path = "./src/tb3_controller/tb3_controller/images/"
-  #filename = "tag_id_0.jpg"
-  #image_path = path + filename
-  #image = cv2.imread(image_path)
-  #type_arg = 'DICT_6X6_50'
-  #args = {"image": image_path, "type": type_arg}
-  #if image is None:
-  #    print("Check file path")
-  
-  # load the input image from disk and resize it
-  #print("[INFO] loading image...")
-  #image = cv2.imread(args["image"])
-  #image = cv2.imread(image)
-  #image = imutils.resize(image, width=600)
   print("Image shape: ", image.shape)
   # load the ArUCo dictionary, grab the ArUCo parameters, and detect the markers
-  #print("[INFO] detecting '{}' tags...".format(args["type"]))
   print("[INFO] detecting '{}' tags...".format("DICT_6X6_50"))
   arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
   arucoParams = cv2.aruco.DetectorParameters()
   
   print("Attempting to process image:")
-  image, rvec, tvec, pose_mat = process_image(image, arucoDict, arucoParams)
-  if image is None: return
-  #save matrix/array as image file
-  #isWritten = cv2.imwrite(path + 'newImg.png', image)
-  #if isWritten:
-  #  print('Image is successfully saved as file.')
-
-  # Show image
-  window_name = 'image'  # Name display window for image
+  processed_data = process_image(image, arucoDict, arucoParams)
+  if processed_data is None:
+    return None
+  
+  image, rvec, tvec, pose_mat = processed_data
   cv2.imshow("Image", image)  # Show the image using cv2.imshow() method
-  # wait for user key press (necessary to avoid Python kernel form crashing)
+  # wait for user key press (necessary to avoid Python kernel from crashing)
+  input("Pause...")
   cv2.waitKey(0)
   cv2.destroyAllWindows()  # closing all open windows (after key press)
   return
+
 
 
 def process_image(image, arucoDict, arucoParams):
