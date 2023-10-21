@@ -30,8 +30,8 @@ def generate_launch_description():
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
-    x_pose = LaunchConfiguration('x_pose', default='-0.5')
-    y_pose = LaunchConfiguration('y_pose', default='-2.0')
+    x_pose = LaunchConfiguration('x_pose', default='-2.0')
+    y_pose = LaunchConfiguration('y_pose', default='-0.5')
 
     my_custom_launch_file_dir = os.path.dirname(os.path.realpath(__file__))
     world = os.path.join(my_custom_launch_file_dir, 'aruco.world')
