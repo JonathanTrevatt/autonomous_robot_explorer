@@ -144,7 +144,7 @@ class Brain(Node):
                     if self.mapArray2d[xPxl][yPxl] >= 80:
                         self.mark_range_unreachable(pxl, 3)
         
-        # Initialise custom map
+        """        # Initialise custom map
         if not self.init_myMap_flag:
           self.valid_waypoint_map = OccupancyGrid()
           self.init_myMap_flag = True
@@ -199,7 +199,7 @@ class Brain(Node):
         self.invalid_waypoint_map.info.resolution = msg.info.resolution
         self.invalid_waypoint_map.info.map_load_time = msg.info.map_load_time
         for ele in new_unreachablemap_array1d: self.invalid_waypoint_map.data.append(ele)
-        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)
+        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)"""
         
         # Check map processing times
         time2 = self.get_clock().now().to_msg()
