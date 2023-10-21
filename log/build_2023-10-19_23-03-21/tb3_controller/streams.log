@@ -1,0 +1,26 @@
+[1.513s] Invoking command in '/home/johnson/METR4202': PYTHONPATH=/home/johnson/METR4202/build/tb3_controller/prefix_override:/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/tb3_controller build --build-base /home/johnson/METR4202/build/tb3_controller/build install --record /home/johnson/METR4202/build/tb3_controller/install.log --single-version-externally-managed
+[2.142s] running egg_info
+[2.145s] writing build/tb3_controller/tb3_controller.egg-info/PKG-INFO
+[2.146s] writing dependency_links to build/tb3_controller/tb3_controller.egg-info/dependency_links.txt
+[2.147s] writing entry points to build/tb3_controller/tb3_controller.egg-info/entry_points.txt
+[2.148s] writing requirements to build/tb3_controller/tb3_controller.egg-info/requires.txt
+[2.149s] writing top-level names to build/tb3_controller/tb3_controller.egg-info/top_level.txt
+[2.153s] reading manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+[2.168s] writing manifest file 'build/tb3_controller/tb3_controller.egg-info/SOURCES.txt'
+[2.171s] /usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+[2.171s]   warnings.warn(
+[2.171s] running build
+[2.171s] running build_py
+[2.171s] copying tb3_controller/turtlebot_brain.py -> /home/johnson/METR4202/build/tb3_controller/build/lib/tb3_controller
+[2.172s] running install
+[2.172s] running install_lib
+[2.172s] copying /home/johnson/METR4202/build/tb3_controller/build/lib/tb3_controller/turtlebot_brain.py -> /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller
+[2.173s] byte-compiling /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller/turtlebot_brain.py to turtlebot_brain.cpython-310.pyc
+[2.186s] running install_data
+[2.186s] running install_egg_info
+[2.190s] removing '/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info' (and everything under it)
+[2.190s] Copying build/tb3_controller/tb3_controller.egg-info to /home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages/tb3_controller-0.0.0-py3.10.egg-info
+[2.191s] running install_scripts
+[2.262s] Installing turtlebot_brain script to /home/johnson/METR4202/install/tb3_controller/lib/tb3_controller
+[2.281s] writing list of installed files to '/home/johnson/METR4202/build/tb3_controller/install.log'
+[2.381s] Invoked command in '/home/johnson/METR4202' returned '0': PYTHONPATH=/home/johnson/METR4202/build/tb3_controller/prefix_override:/home/johnson/METR4202/install/tb3_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/tb3_controller build --build-base /home/johnson/METR4202/build/tb3_controller/build install --record /home/johnson/METR4202/build/tb3_controller/install.log --single-version-externally-managed
