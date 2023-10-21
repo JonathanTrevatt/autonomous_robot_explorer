@@ -312,7 +312,6 @@ class Brain(Node):
           waypointPxl (tuple(in, int)): The coordinates of a waypoint as a pixel coordinate. 
             Represented as a tuple of integer x and y coordinates of the waypoint on the map.
         """
-<<<<<<< HEAD
         if waypointPxl != None:
           pos_x, pos_y, _ = waypoint
           mapPos_x = int((pos_x - self.mapInfo.origin.position.x) / self.mapInfo.resolution)
@@ -371,13 +370,6 @@ class Brain(Node):
       
       pixel_vals = np.array(
         [[a,b,c],[d,e,f],[h,i,j]])
-=======
-        pos_x, pos_y, _ = waypoint
-        mapPos_x = int((pos_x - self.mapInfo.origin.position.x) / self.mapInfo.resolution)
-        mapPos_y = int((pos_y - self.mapInfo.origin.position.y) / self.mapInfo.resolution)
-        waypointPxl = (mapPos_x, mapPos_y)
-        return waypointPxl
->>>>>>> main
 
     # TODO - needs testing, may not work
     def mark_range_unreachable(self, pxl: tuple[int, int], radius: int) -> None:
@@ -597,7 +589,10 @@ class Brain(Node):
           if feedback.distance_remaining <= 0.1 and Duration.from_msg(feedback.navigation_time) > Duration(seconds=1.0):
             self.nav_canceled = True
             self.nav.cancelTask()
-          """          if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
+          elif feedback.number_of_recoveries >=2:
+            self.nav_canceled = True
+            self.nav.cancelTask()
+          """if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
             self.nav_canceled = True
             self.nav.cancelTask()
           elif feedback.number_of_recoveries >= 1:
