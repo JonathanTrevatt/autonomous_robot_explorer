@@ -528,18 +528,22 @@ class Brain(Node):
         self.pose.pose.position.x = waypoint[0]
         self.pose.pose.position.y = waypoint[1]
         self.pose.pose.orientation.w = float(waypoint[2])
-        self.waypoint_publisher.publish(self.pose)
+        self.nav.goToPose(self.pose)
+        #self.waypoint_publisher.publish(self.pose)
         self.last_waypoint_time = self.get_clock().now()
-        """
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
-          if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
+          if feedback.distance_remaining <= 0.1 and Duration.from_msg(feedback.navigation_time) > Duration(seconds=1.0):
+            self.nav_canceled = True
+            self.nav.cancelTask()
+          """          if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
             self.nav_canceled = True
             self.nav.cancelTask()
         result = self.nav.getResult()
         if result == result.CANCELED or result == result.FAILED:
           self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
-        """
+          """
+      
 
     def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
         """
