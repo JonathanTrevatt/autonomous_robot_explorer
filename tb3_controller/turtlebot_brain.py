@@ -247,21 +247,29 @@ class Brain(Node):
         #cv2.imshow('Image' ,cv_image )
         #cv2.waitKey()
         #cv2.destroyAllWindows()  # closing all open windows (after key press)
-      cv_image = cv2.flip(cv_image,0)
-      aruco_test(cv_image)
+      #cv_image = cv2.flip(cv_image,0)
       
-      #'camera_rgb_optical_frame'
+      processed_data = aruco_test(cv_image)
+      if processed_data is None:
+        return None
+  
+      image, rvec, tvec, pose_mat = processed_data
+  
+      
+      tag2cam_pos = tvec # camera to base_footprint vector (example: [381.16125448 -42.29419899 530.01135024])
+      cam2base = (-0.64829+0.64519, -0.64888+0.57273, 0.0010565-0.1039, 0.0010232+0.70742, 0.0024065-0.013475, 0.69496+0.010055, 0.71905-0.7066) # pos: x,y,z, ori: x,y,z,w
+      # base2map is just the current odometry
       
       return
     
     def tf_callback(self, msg:TFMessage):
-      tfs = msg.transforms
+      """tfs = msg.transforms
       print("--------------")
       for tf in tfs:
       #  if tf.header.frame_id == 'camera_rgb_optical_frame':
         print("tf.header.frame_id: ", tf.header.frame_id)#.child_frame_id)
       #    input("pause")
-      print("--------------")
+      print("--------------")"""
       
       return
     
@@ -721,8 +729,8 @@ def aruco_test(image):
   
   #print("Image shape: ", image.shape)
   # load the ArUCo dictionary, grab the ArUCo parameters, and detect the markers
-  #print("[INFO] detecting '{}' tags...".format("DICT_6X6_250"))
-  arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
+  #print("[INFO] detecting '{}' tags...".format("DICT_6X6_50"))
+  arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
   arucoParams = cv2.aruco.DetectorParameters()
   
   #print("Attempting to process image:")
