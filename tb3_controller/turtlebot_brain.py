@@ -1,26 +1,16 @@
 import rclpy
 import math
-from itertools import chain
-from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, QoSDurabilityPolicy
 from nav2_simple_commander.robot_navigator import BasicNavigator
-from nav2_msgs.msg import BehaviorTreeLog, Costmap
+from nav2_msgs.msg import BehaviorTreeLog
 from nav_msgs.msg import OccupancyGrid, Odometry
-from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseStamped
 from sensor_msgs.msg import Image
-from tf2_ros import TFMessage
-from tf2_ros import TFMessage
-from tf2_ros import TFMessage
 import numpy as np
-import random
 from array import array
-import typing
-import copy
-import argparse
 # # import imutils
 import cv2
-import sys
 from os import system
 from cv_bridge import CvBridge # Converts ros raw image file to opencv image file
 from scipy.spatial.transform import Rotation as R
@@ -156,6 +146,63 @@ class Brain(Node):
             if self.mapArray2d[xPxl][yPxl] >= 80:
               self.mark_range_unreachable(pxl, 3)
         self.ready_map = True
+
+        # Initialise custom map
+        if not self.init_myMap_flag:
+          self.valid_waypoint_map = OccupancyGrid()
+          self.init_myMap_flag = True
+        # Update map header
+        self.valid_waypoint_map.header.frame_id = msg.header.frame_id # id for transfer function for map frame is 'map'
+        self.valid_waypoint_map.header.stamp = msg.header.stamp # Or self.get_clock().now().to_msg()
+        # Update map info (e.g. dimensions)
+        self.valid_waypoint_map.info.origin = msg.info.origin
+        self.valid_waypoint_map.info.height = msg.info.height
+        self.valid_waypoint_map.info.width = msg.info.width
+        self.valid_waypoint_map.info.resolution = msg.info.resolution
+        self.valid_waypoint_map.info.map_load_time = msg.info.map_load_time
+        # Generate custom map data based on current map data
+        self.valid_waypoint_map.data = array('b')
+        
+        # mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height), order='F')
+        #new_map_array2d = 100*np.multiply(np.where(self.mapArray2d == -1, True, False), np.where(self.mapArray2d >= 80, True, False))
+        new_map_array2d = 100*(np.where(self.mapArray2d == -1, True, False))
+        valid_waypoint_map = 100*np.ones(np.shape(self.mapArray2d))
+        for x in range(np.shape(self.mapArray2d)[0]):
+          for y in range(np.shape(self.mapArray2d)[0]):
+            surrounding_values = self.get_surrounding_pixel_values(self.mapArray2d, (x,y))
+            unknown_pxl_count = 0
+            free_pxl_count = 0
+            wall_pxl_count = 0
+            if surrounding_values != None:
+              for val in surrounding_values:
+                if val == -1: unknown_pxl_count += 1
+                elif ((val >=0) and (val < 80)): free_pxl_count += 1
+                else: wall_pxl_count += 1
+              # Conditions of surrounding pixels for a valid waypoint (depends on get_surrounding_pixel_values radius)
+              if ((unknown_pxl_count>=15) and (free_pxl_count>=10) and (wall_pxl_count == 0)):
+                valid_waypoint_map[x][y] = 0
+              # mark unreachable positions on map
+              if self.unreachable_positions[x][y] == 100:
+                valid_waypoint_map[x][y] = 80
+        # Build and publish map from data
+        new_map_array1d = np.reshape(valid_waypoint_map, (msg.info.width * msg.info.height), order='F')
+        self.valid_waypoint_map.data = array('b')
+        for ele in new_map_array1d: self.valid_waypoint_map.data.append(int(ele))
+        self.map_reachable_publisher.publish(self.valid_waypoint_map)
+
+        new_unreachablemap_array1d = np.reshape(self.unreachable_positions, ((msg.info.width + 1) * (msg.info.height + 1)), order='F')
+        self.invalid_waypoint_map = OccupancyGrid()
+        self.invalid_waypoint_map.data = array('b')
+        self.invalid_waypoint_map.header.frame_id = msg.header.frame_id # id for transfer function for map frame is 'map'
+        self.invalid_waypoint_map.header.stamp = msg.header.stamp # Or self.get_clock().now().to_msg()
+        # Update map info (e.g. dimensions)
+        self.invalid_waypoint_map.info.origin = msg.info.origin
+        self.invalid_waypoint_map.info.height = msg.info.height + 1
+        self.invalid_waypoint_map.info.width = msg.info.width + 1
+        self.invalid_waypoint_map.info.resolution = msg.info.resolution
+        self.invalid_waypoint_map.info.map_load_time = msg.info.map_load_time
+        for ele in new_unreachablemap_array1d: self.invalid_waypoint_map.data.append(ele)
+        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)
 
       # Check map processing times
       time2 = self.get_clock().now().to_msg()
