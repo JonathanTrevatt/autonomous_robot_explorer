@@ -440,37 +440,6 @@ class Brain(Node):
         self.unreachable_positions[(xPxl, yPxl)] = 100
         return
 
-    def mark_area_unreachable(self, waypointPxl: tuple[int, int]) -> None:
-        """
-        Marks a specified waypoint as unreachable by setting the corresponding positions in the
-        `unreachable_positions` array to `True`.
-        Similar to `mark_range_unreachable`.
-        
-        Args:
-          waypointPxl (tuple[int, int]): The x, y pixel coordinates of a waypoint on a map.
-        
-        Returns:
-          nothing (None).
-        """
-        self.printOnce("Marking waypoint as unreachable.")
-        xPxl, yPxl = waypointPxl
-        i = 0
-        j = 0
-        while self.mapArray2d[xPxl + i][yPxl] == -1 and xPxl + i < self.mapMsg.info.width:
-            while self.mapArray2d[xPxl + i][yPxl + j] == -1 and yPxl + j < self.mapMsg.info.height:
-                self.unreachable_positions[xPxl + i][yPxl + j] = 100
-                j += 1
-            j = 0
-            i += 1
-        while self.mapArray2d[xPxl - i][yPxl] == -1 and xPxl - i >= 0:
-            while self.mapArray2d[xPxl - i][yPxl - j] == -1 and yPxl + j >= 0:
-                self.unreachable_positions[xPxl + i][yPxl + j] = 100
-                j += 1
-            j = 0
-            i += 1 
-        self.unreachable_positions[xPxl][yPxl] = 100
-        return
-
     def is_waypointPxl_unreachable(self, waypointPxl: tuple[int, int]) -> bool:
         """
         Checks if a given waypoint pixel has been marked as unreachable based on a 2D array of unreachable positions.
@@ -516,16 +485,6 @@ class Brain(Node):
             return True
         return False
 
-    def waypoint_compute_trivial(self) -> tuple[float, float, float]:
-        """
-        Returns a waypoint with coordinates (0.5, 0.5, 1).
-        Used as a trivial case for testing and marking purposes.
-        
-        Returns:
-          waypoint (tuple[float, float, float]): a n (x,y,w) waypoint tuple (0.5, 0.5, 1).
-        """
-        waypoint = (0.5, 0.5, 1)
-        return waypoint
 
     def get_coords_as_Pxl(self) -> tuple[int, int]:
         """
@@ -617,16 +576,6 @@ class Brain(Node):
         if result == result.CANCELED or result == result.FAILED:
           self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
         """
-
-    def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
-        """
-        Moves the robot to a specified waypoint (in integer map pixel coordinates) and handles cancellation or failure cases.
-        
-        Args:
-          waypoint (tuple(int,int)): The map pixel waypoint (x,y) tuple to move to.
-        """
-        waypoint = self.coord_pxl2m(waypointPxl)
-        self.move_to_waypoint(waypoint)
 
     def map_get_unexplored_in_range(self):
         """
