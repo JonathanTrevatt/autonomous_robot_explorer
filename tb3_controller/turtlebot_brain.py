@@ -10,13 +10,14 @@ from nav_msgs.msg import OccupancyGrid, Odometry, Path
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 from sensor_msgs.msg import Image
 from tf2_ros import TFMessage
+from tf2_ros import TFMessage
 import numpy as np
 import random
 from array import array
 import typing
 import copy
 import argparse
-import imutils
+# import imutils
 import cv2
 import sys
 from os import system
@@ -62,9 +63,9 @@ class Brain(Node):
             depth=1)
         
         self.printOnce('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
-        self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
-        self.image_subscription     = self.create_subscription  (Image,                     '/camera/image_raw',        self.camera_callback,   10)
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
+        self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
+        # self.image_subscription     = self.create_subscription  (Image,                     '/camera/image_raw',        self.camera_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
         self.tf_subscription        = self.create_subscription  (TFMessage,                  '/tf',                     self.tf_callback,   10)
@@ -105,10 +106,13 @@ class Brain(Node):
             self.move_to_waypoint(waypoint)
         self.ready_odom = True
 
+        if not self.computing and math.sqrt((self.pose.pose.position.x - msg.pose.pose.position.x) ** 2 + (self.pose.pose.position.y - msg.pose.pose.position.y) ** 2) < 0.1:
+           self.nav_canceled = True
+
         if not self.computing and (self.last_move_time + rclpy.time.Duration(seconds = 3)) - self.get_clock().now() < rclpy.time.Duration(seconds = 0):
             self.last_move_time = self.get_clock().now()
-            if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.05 or \
-                        abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.05:
+            if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.1 or \
+                        abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.1:
                 pass
             else:
                 self.mark_range_unreachable(self.coord_m2pxl((self.pose.pose.position.x, self.pose.pose.position.y, self.pose.pose.orientation.w)), 3)
@@ -153,7 +157,7 @@ class Brain(Node):
                     if self.mapArray2d[xPxl][yPxl] >= 80:
                         self.mark_range_unreachable(pxl, 3)
         
-        # Initialise custom map
+        """        # Initialise custom map
         if not self.init_myMap_flag:
           self.valid_waypoint_map = OccupancyGrid()
           self.init_myMap_flag = True
@@ -208,7 +212,7 @@ class Brain(Node):
         self.invalid_waypoint_map.info.resolution = msg.info.resolution
         self.invalid_waypoint_map.info.map_load_time = msg.info.map_load_time
         for ele in new_unreachablemap_array1d: self.invalid_waypoint_map.data.append(ele)
-        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)
+        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)"""
         
         # Check map processing times
         time2 = self.get_clock().now().to_msg()
@@ -240,22 +244,23 @@ class Brain(Node):
       contains information about the behavior tree log, including the event log.
       """
       for event in msg.event_log:
-        if (event.node_name == 'NavigateRecovery' and event.current_status == 'IDLE') or self.nav_canceled:
-          self.nav_canceled = False
-          if self.ready_odom and self.ready_map:
-            if not self.user_started_flag:
-              self.user_started_flag = True
-              input("Press Enter to continue...")
-            self.computing = True
-            waypointPxl = self.waypointPxl_compute()
-            self.printOnce("waypointPxl: ", waypointPxl)
-            waypoint = self.coord_pxl2m(waypointPxl)
-            self.printOnce("waypoint: ", waypoint)
-            self.computing = False
-            self.last_move_time = self.get_clock().now()
-            self.last_pos = (self.pos_x, self.pos_y, self.pos_w)
-            self.move_to_waypoint(waypoint)
-        else: self.printOnce("robot busy")
+          if (event.node_name == 'NavigateRecovery' and \
+                  event.current_status == 'IDLE') or self.nav_canceled:
+              if self.ready_odom and self.ready_map:
+                  self.nav_canceled = False
+                  if not self.user_started_flag:
+                    self.user_started_flag = True
+                    input("Press Enter to continue...")
+                  self.computing = True
+                  waypointPxl = self.waypointPxl_compute()
+                  self.printOnce("waypointPxl: ", waypointPxl)
+                  waypoint = self.coord_pxl2m(waypointPxl)
+                  self.printOnce("waypoint: ", waypoint)
+                  self.computing = False
+                  self.last_move_time = self.get_clock().now()
+                  self.last_pos = (self.pos_x, self.pos_y, self.pos_w)
+                  self.move_to_waypoint(waypoint)
+          else: self.printOnce("robot busy")
       self.ready_log = True
 
     def camera_callback(self, msg:Image) -> None:
@@ -564,7 +569,7 @@ class Brain(Node):
         Returns:
           reachable_waypoint_pxl (tuple(int,int)|None): The (x,y) pixel coordinates of a valid point (if found), otherwise None.
         """
-        
+        preferredWaypointDistance = 30 # Prefer the robot to explore areas that are around 30 pixels away
         self.printOnce('NOTE - turtlebot_brain.waypoint_compute: reached')
         # search radius for reachable, unexplored pixels and set goal to go there
         self.printOnce("waypoint_compute - Searching for unexplored pixels")
@@ -573,7 +578,7 @@ class Brain(Node):
         self.printOnce("waypoint_compute - unexplored_list: ", unexplored_list)
         unexplored_x_y_coords = []
         for pxl, distance in unexplored_list:
-            unexplored_x_y_coords.append((self.coord_pxl2m(pxl), distance))
+            unexplored_x_y_coords.append((self.coord_pxl2m(pxl), abs(distance - preferredWaypointDistance)))
         if len(unexplored_list) != 0:
             self.printOnce("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_x_y_coords)
             self.printOnce("sorting unexplored_list to prefer exploring closer to robot.")
@@ -594,11 +599,34 @@ class Brain(Node):
         Args:
           waypoint (tuple[float, float, float]): The waypoint (x,y,w) tuple to move to.
         """
-        pass
+        x, y, w = waypoint
+        self.printOnce("Moving to waypoint: ", waypoint)
+        self.IDLE = False
+        self.pose = PoseStamped()
+        self.pose.header.frame_id = 'map'
+        self.pose.pose.position.x = waypoint[0]
+        self.pose.pose.position.y = waypoint[1]
+        self.pose.pose.orientation.w = float(waypoint[2])
+        #self.nav.goToPose(self.pose)
+        self.waypoint_publisher.publish(self.pose)
+        self.last_waypoint_time = self.get_clock().now()
         """
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
+          if feedback.distance_remaining <= 0.1 and Duration.from_msg(feedback.navigation_time) > Duration(seconds=1.0):
+            self.nav_canceled = True
+            self.nav.cancelTask()
+          elif feedback.number_of_recoveries >=2:
+            self.nav_canceled = True
+            self.nav.cancelTask()
+            
           if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
+            self.nav_canceled = True
+            self.nav.cancelTask()
+          elif feedback.number_of_recoveries >= 1:
+            self.nav_canceled = True
+            self.nav.cancelTask()
+          elif feedback.distance_remaining <= 0.1 and Duration.from_msg(feedback.navigation_time) > Duration(seconds=1.0)
             self.nav_canceled = True
             self.nav.cancelTask()
         result = self.nav.getResult()
@@ -621,7 +649,7 @@ class Brain(Node):
         Returns a list of unexplored pixels within a given radius from the current position.
         
         Returns:
-          unexplored_in_range (list(tupletuple((int,int), int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range and their distance to the robot.
+          unexplored_in_range (list(tuple(tuple((int,int), int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range and their distance to the robot.
         """
         current_posPxl = self.get_coords_as_Pxl()
         x_posPxl, y_posPxl = current_posPxl
@@ -660,11 +688,12 @@ class Brain(Node):
                                 elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
                                     explore = False
                                     break
-                                elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
-                                    nearby_explored_pixels += 1
-                                elif self.is_waypointPxl_unreachable((xPxl + x, yPxl + y)):
+                                elif self.is_waypointPxl_unreachable((xPxl + x, yPxl + y)) or \
+                                        self.mapArray2d[(xPxl + x, yPxl + y)] == 100:
                                     explore = False
                                     break
+                                elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
+                                    nearby_explored_pixels += 1
                             if not explore:
                                 break
                         if nearby_explored_pixels >= 5:
