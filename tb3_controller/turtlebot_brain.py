@@ -56,9 +56,9 @@ class Brain(Node):
             depth=1)
         
         self.printOnce('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
+        self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
         self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
         # self.image_subscription     = self.create_subscription  (Image,                     '/camera/image_raw',        self.camera_callback,   10)
-        self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
         self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
         self.tf_subscription        = self.create_subscription  (TFMessage,                  '/tf',                     self.tf_callback,   10)
