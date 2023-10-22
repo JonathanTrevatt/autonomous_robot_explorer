@@ -260,63 +260,64 @@ class Brain(Node):
       self.ready_log = True
 
     def camera_callback(self, msg:Image) -> None:
-      time1 = self.get_clock().now().to_msg() # start timer
-      self.counter += 1
-      #print(np.shape(msg.data))
-      cv_image = CvBridge().imgmsg_to_cv2(msg, desired_encoding='8SC3')
-      cv_image = np.array(cv_image, dtype = np.uint8 )
-      
-      processed_data = aruco_test(cv_image)
-      if processed_data is None:
-        if hasattr(self, 'marker'):
-          self.marker_publisher.publish(self.marker)
-        return None
-  
-      image, rvec, tvec, pose_mat = processed_data
-      # transform representing tag position in camera coordinates (example: [381.16125448 -42.29419899 530.01135024]) - orientation is ignored
+        if self.ready_odom:
+            time1 = self.get_clock().now().to_msg() # start timer
+            self.counter += 1
+            #print(np.shape(msg.data))
+            cv_image = CvBridge().imgmsg_to_cv2(msg, desired_encoding='8SC3')
+            cv_image = np.array(cv_image, dtype = np.uint8 )
+            
+            processed_data = aruco_test(cv_image)
+            if processed_data is None:
+                if hasattr(self, 'marker'):
+                    self.marker_publisher.publish(self.marker)
+                return None
+        
+            image, rvec, tvec, pose_mat = processed_data
+            # transform representing tag position in camera coordinates (example: [381.16125448 -42.29419899 530.01135024]) - orientation is ignored
 
-      T_camera_rgb_optical_frame_tag = np.vstack((pose_mat, [0, 0, 0, 1]))
-      # pos_w represents the orientation of the x-axis about z of the robot base from the map x-axis  (in radians)
-      # The z-axis direction is assumed to be the same for the base and the world coordinate frames (vertical)
-      T_world_base_footprint = np.array([
-                            [math.cos(self.pos_w), -math.sin(self.pos_w), 0, self.pos_x],
-                            [math.sin(self.pos_w), math.cos(self.pos_w), 0, self.pos_y],
-                            [0, 0, 1, 0],
-                            [0, 0, 0, 1]
-                            ]) 
-      # Transformation matrix between the tag and the world frames
-      #print('T_world_base_footprint: ')
-      #print(T_world_base_footprint)
-      #print('T_base_footprint_camera_rgb_optical_frame: ')
-      #print(T_base_footprint_camera_rgb_optical_frame())
-      #print('T_camera_rgb_optical_frame_tag: ')
-      #print(T_camera_rgb_optical_frame_tag)
-      T_world_tag = T_world_base_footprint @ T_base_footprint_camera_rgb_optical_frame() @ T_camera_rgb_optical_frame_tag
-      #print('T_world_tag: ')
-      #print(T_world_tag)
-      tag_xy_in_world = (T_world_tag[0,3], T_world_tag[1,3])
-      print("tag_xy_in_world: ", tag_xy_in_world)
-      
-      if not self.init_marker_flag:
-        # Instantiate marker
-        self.marker = Marker()
-        self.marker.header.frame_id = "/map"
-        #marker.header.stamp = rospy.Time.now()
-        self.marker.type = 2                                                                                                                 # set shape, Arrow: 0; Cube: 1 ; Sphere: 2 ; Cylinder: 3
-        self.marker.id = 0
-        self.marker.scale.x, self.marker.scale.y, self.marker.scale.z = 0.05, 0.05, 0.05                                                                  # Set the scale of the marker
-        self.marker.color.r, self.marker.color.g, self.marker.color.b, self.marker.color.a = 0.0, 1.0, 0.0, 1.0                                             # Set the color
-        self.marker.pose.position.x, self.marker.pose.position.y, self.marker.pose.position.z = 1.0, 1.0, 0.0   # Set the pose position of the marker
-        self.marker.pose.orientation.x, self.marker.pose.orientation.y, self.marker.pose.orientation.z, self.marker.pose.orientation.w = 0.0, 0.0, 0.0, 1.0 # Set the pose orientation of the marker
+            T_camera_rgb_optical_frame_tag = np.vstack((pose_mat, [0, 0, 0, 1]))
+            # pos_w represents the orientation of the x-axis about z of the robot base from the map x-axis  (in radians)
+            # The z-axis direction is assumed to be the same for the base and the world coordinate frames (vertical)
+            T_world_base_footprint = np.array([
+                                  [math.cos(self.pos_w), -math.sin(self.pos_w), 0, self.pos_x],
+                                  [math.sin(self.pos_w), math.cos(self.pos_w), 0, self.pos_y],
+                                  [0, 0, 1, 0],
+                                  [0, 0, 0, 1]
+                                  ]) 
+            # Transformation matrix between the tag and the world frames
+            #print('T_world_base_footprint: ')
+            #print(T_world_base_footprint)
+            #print('T_base_footprint_camera_rgb_optical_frame: ')
+            #print(T_base_footprint_camera_rgb_optical_frame())
+            #print('T_camera_rgb_optical_frame_tag: ')
+            #print(T_camera_rgb_optical_frame_tag)
+            T_world_tag = T_world_base_footprint @ T_base_footprint_camera_rgb_optical_frame() @ T_camera_rgb_optical_frame_tag
+            #print('T_world_tag: ')
+            #print(T_world_tag)
+            tag_xy_in_world = (T_world_tag[0,3], T_world_tag[1,3])
+            print("tag_xy_in_world: ", tag_xy_in_world)
+            
+            if not self.init_marker_flag:
+              # Instantiate marker
+              self.marker = Marker()
+              self.marker.header.frame_id = "/map"
+              #marker.header.stamp = rospy.Time.now()
+              self.marker.type = 2                                                                                                                 # set shape, Arrow: 0; Cube: 1 ; Sphere: 2 ; Cylinder: 3
+              self.marker.id = 0
+              self.marker.scale.x, self.marker.scale.y, self.marker.scale.z = 0.05, 0.05, 0.05                                                                  # Set the scale of the marker
+              self.marker.color.r, self.marker.color.g, self.marker.color.b, self.marker.color.a = 0.0, 1.0, 0.0, 1.0                                             # Set the color
+              self.marker.pose.position.x, self.marker.pose.position.y, self.marker.pose.position.z = 1.0, 1.0, 0.0   # Set the pose position of the marker
+              self.marker.pose.orientation.x, self.marker.pose.orientation.y, self.marker.pose.orientation.z, self.marker.pose.orientation.w = 0.0, 0.0, 0.0, 1.0 # Set the pose orientation of the marker
 
-      # Mark tag position to be visualised in rviz
-      self.marker.pose.position.x, self.marker.pose.position.y, self.marker.pose.position.z = T_world_tag[0,3], T_world_tag[1,3], T_world_tag[2,3]   # Set the pose position of the marker
-      self.marker_publisher.publish(self.marker)
-      
-      # Check map processing times
-      time2 = self.get_clock().now().to_msg()
-      print("Camera callback processing time: ", float(time2.sec + time2.nanosec/1000000000) - float(time1.sec + time1.nanosec/1000000000), "s")
-      return
+            # Mark tag position to be visualised in rviz
+            self.marker.pose.position.x, self.marker.pose.position.y, self.marker.pose.position.z = T_world_tag[0,3], T_world_tag[1,3], T_world_tag[2,3]   # Set the pose position of the marker
+            self.marker_publisher.publish(self.marker)
+            
+            # Check map processing times
+            time2 = self.get_clock().now().to_msg()
+            print("Camera callback processing time: ", float(time2.sec + time2.nanosec/1000000000) - float(time1.sec + time1.nanosec/1000000000), "s")
+            return
     
     def tf_callback(self, msg:TFMessage):
       """tfs = msg.transforms
@@ -595,16 +596,7 @@ class Brain(Node):
         Args:
           waypoint (tuple[float, float, float]): The waypoint (x,y,w) tuple to move to.
         """
-        x, y, w = waypoint
-        self.printOnce("Moving to waypoint: ", waypoint)
-        self.IDLE = False
-        self.pose = PoseStamped()
-        self.pose.header.frame_id = 'map'
-        self.pose.pose.position.x = waypoint[0]
-        self.pose.pose.position.y = waypoint[1]
-        self.pose.pose.orientation.w = float(waypoint[2])
-        self.waypoint_publisher.publish(self.pose)
-        self.last_waypoint_time = self.get_clock().now()
+        pass
         """
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
@@ -721,8 +713,13 @@ def init_camera(image):
     [[focal_length[0], 0, origin[0]],
     [0, focal_length[1], origin[1]],
     [0, 0, 1]], dtype="double")
+    flip_matrix = np.array(
+    [[-1, 0, 0],
+    [0, -1, 0],
+    [0, 0, 1]]
+    )
     distCoeffs = np.zeros((4, 1))           # lens distortion of camera (None)
-    return focal_length, origin, camera_matrix, distCoeffs
+    return focal_length, origin, np.matmul(flip_matrix, camera_matrix), distCoeffs
   
 def aruco_test(image):
   
@@ -736,7 +733,6 @@ def aruco_test(image):
   processed_data = process_image(image, arucoDict, arucoParams)
   if processed_data is None:
     return None
-  
   image, rvec, tvec, pose_mat = processed_data
   
   return image, rvec, tvec, pose_mat
