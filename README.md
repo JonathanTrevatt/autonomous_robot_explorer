@@ -16,6 +16,17 @@ Pei-Jer Tsai - p.tsai@uqconnect.edu.au - 46411172
 wsl --shutdown
 ```
 
+### In WSL ubuntu environment - install dependencies:
+```bash
+pip install opencv-contrib-python
+pip install --upgrade numpy
+sudo apt-get install ros-humble-cv-bridge
+pip install imutils
+pip install scipy
+```
+
+
+
 ### In WSL ubuntu environment:
 ```bash
 # Create a new empty workspace directory in the home folder:
