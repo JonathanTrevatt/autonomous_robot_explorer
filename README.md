@@ -74,6 +74,12 @@ ros2 run tb3_controller turtlebot_brain
 
 # When instantiation is finished, press 'ENTER' to start.
 ```
+
+### To visualise the search frontier, unreachable map and ArUco tag locations:
+In Rviz make sure to subscribe to the following topics:
+- /valid_waypoint_map
+- /invalid_waypoint_map
+- /visualization_marker 
 ------------------
 ------------------
 
