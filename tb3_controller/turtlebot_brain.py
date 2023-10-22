@@ -155,6 +155,7 @@ class Brain(Node):
             pxl = (xPxl, yPxl)
             if self.mapArray2d[xPxl][yPxl] >= 80:
               self.mark_range_unreachable(pxl, 3)
+        self.ready_map = True
 
       # Check map processing times
       time2 = self.get_clock().now().to_msg()
