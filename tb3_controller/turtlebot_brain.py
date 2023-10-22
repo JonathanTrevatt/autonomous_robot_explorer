@@ -240,45 +240,42 @@ class Brain(Node):
       contains information about the behavior tree log, including the event log.
       """
       for event in msg.event_log:
-          if (event.node_name == 'NavigateRecovery' and \
-                  event.current_status == 'IDLE') or self.nav_canceled:
-              self.nav_canceled = False
-              if self.ready_odom and self.ready_map:
-                  if not self.user_started_flag:
-                    self.user_started_flag = True
-                    input("Press Enter to continue...")
-                  self.computing = True
-                  waypointPxl = self.waypointPxl_compute()
-                  self.printOnce("waypointPxl: ", waypointPxl)
-                  waypoint = self.coord_pxl2m(waypointPxl)
-                  self.printOnce("waypoint: ", waypoint)
-                  self.computing = False
-                  self.last_move_time = self.get_clock().now()
-                  self.last_pos = (self.pos_x, self.pos_y, self.pos_w)
-                  self.move_to_waypoint(waypoint)
-          else: self.printOnce("robot busy")
+        if (event.node_name == 'NavigateRecovery' and event.current_status == 'IDLE') or self.nav_canceled:
+          self.nav_canceled = False
+          if self.ready_odom and self.ready_map:
+            if not self.user_started_flag:
+              self.user_started_flag = True
+              input("Press Enter to continue...")
+            self.computing = True
+            waypointPxl = self.waypointPxl_compute()
+            self.printOnce("waypointPxl: ", waypointPxl)
+            waypoint = self.coord_pxl2m(waypointPxl)
+            self.printOnce("waypoint: ", waypoint)
+            self.computing = False
+            self.last_move_time = self.get_clock().now()
+            self.last_pos = (self.pos_x, self.pos_y, self.pos_w)
+            self.move_to_waypoint(waypoint)
+        else: self.printOnce("robot busy")
       self.ready_log = True
 
     def camera_callback(self, msg:Image) -> None:
       time1 = self.get_clock().now().to_msg() # start timer
-      self.counter += 1
-      #print(np.shape(msg.data))
       cv_image = CvBridge().imgmsg_to_cv2(msg, desired_encoding='8SC3')
       cv_image = np.array(cv_image, dtype = np.uint8 )
-      
+      #cv_image = cv2.flip(cv_image,1)
       processed_data = aruco_test(cv_image)
       if processed_data is None:
+        self.printOnce("no tag found")
         if hasattr(self, 'marker'):
           self.marker_publisher.publish(self.marker)
         return None
   
       image, rvec, tvec, pose_mat = processed_data
-      # transform representing tag position in camera coordinates (example: [381.16125448 -42.29419899 530.01135024]) - orientation is ignored
 
       T_camera_rgb_optical_frame_tag = np.vstack((pose_mat, [0, 0, 0, 1]))
       # pos_w represents the orientation of the x-axis about z of the robot base from the map x-axis  (in radians)
       # The z-axis direction is assumed to be the same for the base and the world coordinate frames (vertical)
-      T_world_base_footprint = np.array([
+      T_odom_base_footprint = np.array([
                             [math.cos(self.pos_w), -math.sin(self.pos_w), 0, self.pos_x],
                             [math.sin(self.pos_w), math.cos(self.pos_w), 0, self.pos_y],
                             [0, 0, 1, 0],
@@ -291,7 +288,8 @@ class Brain(Node):
       #print(T_base_footprint_camera_rgb_optical_frame())
       #print('T_camera_rgb_optical_frame_tag: ')
       #print(T_camera_rgb_optical_frame_tag)
-      T_world_tag = T_world_base_footprint @ T_base_footprint_camera_rgb_optical_frame() @ T_camera_rgb_optical_frame_tag
+      T_map_odom = Tmat((0.036022,-0.073511,0.036545), (-0.00053738,-0.0031041,-0.0052349,0.99998))
+      T_world_tag = T_map_odom @ T_odom_base_footprint @ T_base_footprint_camera_rgb_optical_frame() @ T_camera_rgb_optical_frame_tag
       #print('T_world_tag: ')
       #print(T_world_tag)
       tag_xy_in_world = (T_world_tag[0,3], T_world_tag[1,3])
