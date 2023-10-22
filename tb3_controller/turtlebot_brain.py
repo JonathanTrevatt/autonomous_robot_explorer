@@ -114,8 +114,6 @@ class Brain(Node):
             self.last_move_time = self.get_clock().now()
             if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.1 or \
                         abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.1:
-            if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.1 or \
-                        abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.1:
                 pass
             else:
                 self.mark_range_unreachable(self.coord_m2pxl((self.pose.pose.position.x, self.pose.pose.position.y, self.pose.pose.orientation.w)), 3)
@@ -433,7 +431,6 @@ class Brain(Node):
             return True
         return False
 
-
     def get_coords_as_Pxl(self) -> tuple[int, int]:
         """
         Returns the current position as the x,y pixel position on the map.
@@ -527,7 +524,6 @@ class Brain(Node):
         self.pose.pose.position.x = waypoint[0]
         self.pose.pose.position.y = waypoint[1]
         self.pose.pose.orientation.w = float(waypoint[2])
-        #self.nav.goToPose(self.pose)
         self.waypoint_publisher.publish(self.pose)
         self.last_waypoint_time = self.get_clock().now()
         """
@@ -564,7 +560,6 @@ class Brain(Node):
         unexplored_in_range = []
         self.printOnce("map width/height: ", self.mapInfo.width, "/", self.mapInfo.height)
         self.printOnce("xmin, xmax, ymin, ymax: ", 0, ", ", 0, ", ", self.mapInfo.width, ", ", self.mapInfo.height)
-        #self.printOnce("mapArray2d.shape:", self.mapArray2d.shape)
         for xPxl in range(0, self.mapInfo.width):
             for yPxl in range(0, self.mapInfo.height):
                 pxl = (xPxl, yPxl)
@@ -687,8 +682,6 @@ def find_aruco_tags(image, tagType = cv2.aruco.DICT_6X6_50):
   image, rvec, tvec, pose_mat = processed_data
   
   return image, rvec, tvec, pose_mat
-
-
 
 def process_image(image, arucoDict, arucoParams):
   """
