@@ -98,10 +98,13 @@ class Brain(Node):
             self.move_to_waypoint(waypoint)
         self.ready_odom = True
 
+        if not self.computing and math.sqrt((self.pose.pose.position.x - msg.pose.pose.position.x) ** 2 + (self.pose.pose.position.y - msg.pose.pose.position.y) ** 2) < 0.1:
+           self.nav_canceled = True
+
         if not self.computing and (self.last_move_time + rclpy.time.Duration(seconds = 3)) - self.get_clock().now() < rclpy.time.Duration(seconds = 0):
             self.last_move_time = self.get_clock().now()
-            if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.05 or \
-                        abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.05:
+            if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.1 or \
+                        abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.1:
                 pass
             else:
                 self.mark_range_unreachable(self.coord_m2pxl((self.pose.pose.position.x, self.pose.pose.position.y, self.pose.pose.orientation.w)), 3)
@@ -235,8 +238,8 @@ class Brain(Node):
       for event in msg.event_log:
           if (event.node_name == 'NavigateRecovery' and \
                   event.current_status == 'IDLE') or self.nav_canceled:
-              self.nav_canceled = False
               if self.ready_odom and self.ready_map:
+                  self.nav_canceled = False
                   if not self.user_started_flag:
                     self.user_started_flag = True
                     input("Press Enter to continue...")
@@ -524,7 +527,7 @@ class Brain(Node):
         Returns:
           reachable_waypoint_pxl (tuple(int,int)|None): The (x,y) pixel coordinates of a valid point (if found), otherwise None.
         """
-        
+        preferredWaypointDistance = 30 # Prefer the robot to explore areas that are around 30 pixels away
         self.printOnce('NOTE - turtlebot_brain.waypoint_compute: reached')
         # search radius for reachable, unexplored pixels and set goal to go there
         self.printOnce("waypoint_compute - Searching for unexplored pixels")
@@ -533,7 +536,7 @@ class Brain(Node):
         self.printOnce("waypoint_compute - unexplored_list: ", unexplored_list)
         unexplored_x_y_coords = []
         for pxl, distance in unexplored_list:
-            unexplored_x_y_coords.append((self.coord_pxl2m(pxl), distance))
+            unexplored_x_y_coords.append((self.coord_pxl2m(pxl), abs(distance - preferredWaypointDistance)))
         if len(unexplored_list) != 0:
             self.printOnce("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_x_y_coords)
             self.printOnce("sorting unexplored_list to prefer exploring closer to robot.")
@@ -562,9 +565,10 @@ class Brain(Node):
         self.pose.pose.position.x = waypoint[0]
         self.pose.pose.position.y = waypoint[1]
         self.pose.pose.orientation.w = float(waypoint[2])
-        self.nav.goToPose(self.pose)
-        #self.waypoint_publisher.publish(self.pose)
+        #self.nav.goToPose(self.pose)
+        self.waypoint_publisher.publish(self.pose)
         self.last_waypoint_time = self.get_clock().now()
+        """
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
           if feedback.distance_remaining <= 0.1 and Duration.from_msg(feedback.navigation_time) > Duration(seconds=1.0):
@@ -573,7 +577,8 @@ class Brain(Node):
           elif feedback.number_of_recoveries >=2:
             self.nav_canceled = True
             self.nav.cancelTask()
-          """if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
+            
+          if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
             self.nav_canceled = True
             self.nav.cancelTask()
           elif feedback.number_of_recoveries >= 1:
@@ -602,7 +607,7 @@ class Brain(Node):
         Returns a list of unexplored pixels within a given radius from the current position.
         
         Returns:
-          unexplored_in_range (list(tupletuple((int,int), int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range and their distance to the robot.
+          unexplored_in_range (list(tuple(tuple((int,int), int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range and their distance to the robot.
         """
         current_posPxl = self.get_coords_as_Pxl()
         x_posPxl, y_posPxl = current_posPxl
@@ -641,11 +646,12 @@ class Brain(Node):
                                 elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
                                     explore = False
                                     break
-                                elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
-                                    nearby_explored_pixels += 1
-                                elif self.is_waypointPxl_unreachable((xPxl + x, yPxl + y)):
+                                elif self.is_waypointPxl_unreachable((xPxl + x, yPxl + y)) or \
+                                        self.mapArray2d[(xPxl + x, yPxl + y)] == 100:
                                     explore = False
                                     break
+                                elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
+                                    nearby_explored_pixels += 1
                             if not explore:
                                 break
                         if nearby_explored_pixels >= 5:
