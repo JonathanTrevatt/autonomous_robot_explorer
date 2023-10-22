@@ -333,7 +333,7 @@ class Brain(Node):
       tag_xy_in_world = (T_world_tag[0,3], T_world_tag[1,3])
       print("tag_xy_in_world: ", tag_xy_in_world)
       
-          image, rvec, tvec, pose_mat = processed_data
+      image, rvec, tvec, pose_mat = processed_data
 
       # Mark tag position to be visualised in rviz
       print(T_world_tag)
