@@ -16,6 +16,17 @@ Pei-Jer Tsai - p.tsai@uqconnect.edu.au - 46411172
 wsl --shutdown
 ```
 
+### In WSL ubuntu environment - install dependencies:
+```bash
+pip install opencv-contrib-python
+pip install --upgrade numpy
+sudo apt-get install ros-humble-cv-bridge
+pip install imutils
+pip install scipy
+```
+
+
+
 ### In WSL ubuntu environment:
 ```bash
 # Create a new empty workspace directory in the home folder:
@@ -42,6 +53,7 @@ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ros2 launch ~/metr4202_ws/src/tb3_controller/worlds/world_name.launch.py
 # e.g.:
 # ros2 launch ~/metr4202_ws/src/tb3_controller/worlds/double_lane_small.launch.py
+ros2 launch ~/metr4202_ws/src/tb3_controller/worlds/aruco.launch.py
 ```
 
 ### In a fresh ubuntu terminal - Launch rviz/nav2 with SLAM:

@@ -10,6 +10,7 @@ from nav_msgs.msg import OccupancyGrid, Odometry, Path
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 from sensor_msgs.msg import Image
 from tf2_ros import TFMessage
+from tf2_ros import TFMessage
 import numpy as np
 import random
 from array import array
@@ -20,7 +21,9 @@ import argparse
 import cv2
 import sys
 from os import system
-from cv_bridge import CvBridge
+from cv_bridge import CvBridge # Converts ros raw image file to opencv image file
+from scipy.spatial.transform import Rotation as R
+from visualization_msgs.msg import Marker
 
 class Brain(Node):
     def __init__(self) -> None:
@@ -48,7 +51,11 @@ class Brain(Node):
         self.user_started_flag = False
         self.verbosity = False
         self.counter = 0
+        self.init_marker_flag = False
+        
+        
 
+        
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
             history=QoSHistoryPolicy.KEEP_LAST,
@@ -64,7 +71,8 @@ class Brain(Node):
         self.tf_subscription        = self.create_subscription  (TFMessage,                  '/tf',                     self.tf_callback,   10)
         self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
         self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'valid_waypoint_map', qos_profile)
-        self.map_unreachable_publisher= self.create_publisher     (OccupancyGrid,             'invalid_waypoint_map', qos_profile)
+        self.map_unreachable_publisher= self.create_publisher   (OccupancyGrid,             'invalid_waypoint_map', qos_profile)
+        self.marker_publisher        = self.create_publisher    (Marker,                    'visualization_marker', qos_profile)
 
         self.nav = BasicNavigator() # Initialise navigator
         #self.nav.lifecycleStartup() #init_pose = self.cur_pos
@@ -149,7 +157,7 @@ class Brain(Node):
                     if self.mapArray2d[xPxl][yPxl] >= 80:
                         self.mark_range_unreachable(pxl, 3)
         
-        """        # Initialise custom map
+        # Initialise custom map
         if not self.init_myMap_flag:
           self.valid_waypoint_map = OccupancyGrid()
           self.init_myMap_flag = True
@@ -204,7 +212,7 @@ class Brain(Node):
         self.invalid_waypoint_map.info.resolution = msg.info.resolution
         self.invalid_waypoint_map.info.map_load_time = msg.info.map_load_time
         for ele in new_unreachablemap_array1d: self.invalid_waypoint_map.data.append(ele)
-        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)"""
+        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)
         
         # Check map processing times
         time2 = self.get_clock().now().to_msg()
@@ -236,48 +244,80 @@ class Brain(Node):
       contains information about the behavior tree log, including the event log.
       """
       for event in msg.event_log:
-          if (event.node_name == 'NavigateRecovery' and \
-                  event.current_status == 'IDLE') or self.nav_canceled:
-              if self.ready_odom and self.ready_map:
-                  self.nav_canceled = False
-                  if not self.user_started_flag:
-                    self.user_started_flag = True
-                    input("Press Enter to continue...")
-                  self.computing = True
-                  waypointPxl = self.waypointPxl_compute()
-                  self.printOnce("waypointPxl: ", waypointPxl)
-                  waypoint = self.coord_pxl2m(waypointPxl)
-                  self.printOnce("waypoint: ", waypoint)
-                  self.computing = False
-                  self.last_move_time = self.get_clock().now()
-                  self.last_pos = (self.pos_x, self.pos_y, self.pos_w)
-                  self.move_to_waypoint(waypoint)
-          else: self.printOnce("robot busy")
+        if (event.node_name == 'NavigateRecovery' and event.current_status == 'IDLE') or self.nav_canceled:
+          self.nav_canceled = False
+          if self.ready_odom and self.ready_map:
+            if not self.user_started_flag:
+              self.user_started_flag = True
+              input("Press Enter to continue...")
+            self.computing = True
+            waypointPxl = self.waypointPxl_compute()
+            self.printOnce("waypointPxl: ", waypointPxl)
+            waypoint = self.coord_pxl2m(waypointPxl)
+            self.printOnce("waypoint: ", waypoint)
+            self.computing = False
+            self.last_move_time = self.get_clock().now()
+            self.last_pos = (self.pos_x, self.pos_y, self.pos_w)
+            self.move_to_waypoint(waypoint)
+        else: self.printOnce("robot busy")
       self.ready_log = True
 
     def camera_callback(self, msg:Image) -> None:
-      self.counter += 1
-      #print(np.shape(msg.data))
+      time1 = self.get_clock().now().to_msg() # start timer
       cv_image = CvBridge().imgmsg_to_cv2(msg, desired_encoding='8SC3')
       cv_image = np.array(cv_image, dtype = np.uint8 )
-      #if self.counter == 100:
-        #cv2.imshow("Image", cv_image)  # Show the image using cv2.imshow() method
-        #cv2.imshow('Image' ,cv_image )
-        #cv2.waitKey()
-        #cv2.destroyAllWindows()  # closing all open windows (after key press)
-      #cv_image = cv2.flip(cv_image,0)
-      
+      #cv_image = cv2.flip(cv_image,1)
       processed_data = aruco_test(cv_image)
       if processed_data is None:
+        self.printOnce("no tag found")
+        if hasattr(self, 'marker'):
+          self.marker_publisher.publish(self.marker)
         return None
   
       image, rvec, tvec, pose_mat = processed_data
-  
+
+      T_camera_rgb_optical_frame_tag = np.vstack((pose_mat, [0, 0, 0, 1]))
+      # pos_w represents the orientation of the x-axis about z of the robot base from the map x-axis  (in radians)
+      # The z-axis direction is assumed to be the same for the base and the world coordinate frames (vertical)
+      T_odom_base_footprint = np.array([
+                            [math.cos(self.pos_w), -math.sin(self.pos_w), 0, self.pos_x],
+                            [math.sin(self.pos_w), math.cos(self.pos_w), 0, self.pos_y],
+                            [0, 0, 1, 0],
+                            [0, 0, 0, 1]
+                            ]) 
+      # Transformation matrix between the tag and the world frames
+      #print('T_world_base_footprint: ')
+      #print(T_world_base_footprint)
+      #print('T_base_footprint_camera_rgb_optical_frame: ')
+      #print(T_base_footprint_camera_rgb_optical_frame())
+      #print('T_camera_rgb_optical_frame_tag: ')
+      #print(T_camera_rgb_optical_frame_tag)
+      T_map_odom = Tmat((0.036022,-0.073511,0.036545), (-0.00053738,-0.0031041,-0.0052349,0.99998))
+      T_world_tag = T_map_odom @ T_odom_base_footprint @ T_base_footprint_camera_rgb_optical_frame() @ T_camera_rgb_optical_frame_tag
+      #print('T_world_tag: ')
+      #print(T_world_tag)
+      tag_xy_in_world = (T_world_tag[0,3], T_world_tag[1,3])
+      print("tag_xy_in_world: ", tag_xy_in_world)
       
-      tag2cam_pos = tvec # camera to base_footprint vector (example: [381.16125448 -42.29419899 530.01135024])
-      cam2base = (-0.64829+0.64519, -0.64888+0.57273, 0.0010565-0.1039, 0.0010232+0.70742, 0.0024065-0.013475, 0.69496+0.010055, 0.71905-0.7066) # pos: x,y,z, ori: x,y,z,w
-      # base2map is just the current odometry
+      if not self.init_marker_flag:
+        # Instantiate marker
+        self.marker = Marker()
+        self.marker.header.frame_id = "/map"
+        #marker.header.stamp = rospy.Time.now()
+        self.marker.type = 2                                                                                                                 # set shape, Arrow: 0; Cube: 1 ; Sphere: 2 ; Cylinder: 3
+        self.marker.id = 0
+        self.marker.scale.x, self.marker.scale.y, self.marker.scale.z = 0.05, 0.05, 0.05                                                                  # Set the scale of the marker
+        self.marker.color.r, self.marker.color.g, self.marker.color.b, self.marker.color.a = 0.0, 1.0, 0.0, 1.0                                             # Set the color
+        self.marker.pose.position.x, self.marker.pose.position.y, self.marker.pose.position.z = 1.0, 1.0, 0.0   # Set the pose position of the marker
+        self.marker.pose.orientation.x, self.marker.pose.orientation.y, self.marker.pose.orientation.z, self.marker.pose.orientation.w = 0.0, 0.0, 0.0, 1.0 # Set the pose orientation of the marker
+
+      # Mark tag position to be visualised in rviz
+      self.marker.pose.position.x, self.marker.pose.position.y, self.marker.pose.position.z = T_world_tag[0,3], T_world_tag[1,3], T_world_tag[2,3]   # Set the pose position of the marker
+      self.marker_publisher.publish(self.marker)
       
+      # Check map processing times
+      time2 = self.get_clock().now().to_msg()
+      print("Camera callback processing time: ", float(time2.sec + time2.nanosec/1000000000) - float(time1.sec + time1.nanosec/1000000000), "s")
       return
     
     def tf_callback(self, msg:TFMessage):
@@ -536,7 +576,7 @@ class Brain(Node):
         self.printOnce("waypoint_compute - unexplored_list: ", unexplored_list)
         unexplored_x_y_coords = []
         for pxl, distance in unexplored_list:
-            unexplored_x_y_coords.append((self.coord_pxl2m(pxl), abs(distance - preferredWaypointDistance)))
+            unexplored_x_y_coords.append((self.coord_pxl2m(pxl), distance))
         if len(unexplored_list) != 0:
             self.printOnce("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_x_y_coords)
             self.printOnce("sorting unexplored_list to prefer exploring closer to robot.")
@@ -565,26 +605,12 @@ class Brain(Node):
         self.pose.pose.position.x = waypoint[0]
         self.pose.pose.position.y = waypoint[1]
         self.pose.pose.orientation.w = float(waypoint[2])
-        #self.nav.goToPose(self.pose)
         self.waypoint_publisher.publish(self.pose)
         self.last_waypoint_time = self.get_clock().now()
         """
         while not self.nav.isTaskComplete():
           feedback = self.nav.getFeedback()
-          if feedback.distance_remaining <= 0.1 and Duration.from_msg(feedback.navigation_time) > Duration(seconds=1.0):
-            self.nav_canceled = True
-            self.nav.cancelTask()
-          elif feedback.number_of_recoveries >=2:
-            self.nav_canceled = True
-            self.nav.cancelTask()
-            
           if Duration.from_msg(feedback.navigation_time) > Duration(seconds=30.0):
-            self.nav_canceled = True
-            self.nav.cancelTask()
-          elif feedback.number_of_recoveries >= 1:
-            self.nav_canceled = True
-            self.nav.cancelTask()
-          elif feedback.distance_remaining <= 0.1 and Duration.from_msg(feedback.navigation_time) > Duration(seconds=1.0)
             self.nav_canceled = True
             self.nav.cancelTask()
         result = self.nav.getResult()
@@ -607,7 +633,7 @@ class Brain(Node):
         Returns a list of unexplored pixels within a given radius from the current position.
         
         Returns:
-          unexplored_in_range (list(tuple(tuple((int,int), int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range and their distance to the robot.
+          unexplored_in_range (list(tupletuple((int,int), int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range and their distance to the robot.
         """
         current_posPxl = self.get_coords_as_Pxl()
         x_posPxl, y_posPxl = current_posPxl
@@ -646,12 +672,11 @@ class Brain(Node):
                                 elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
                                     explore = False
                                     break
-                                elif self.is_waypointPxl_unreachable((xPxl + x, yPxl + y)) or \
-                                        self.mapArray2d[(xPxl + x, yPxl + y)] == 100:
-                                    explore = False
-                                    break
                                 elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
                                     nearby_explored_pixels += 1
+                                elif self.is_waypointPxl_unreachable((xPxl + x, yPxl + y)):
+                                    explore = False
+                                    break
                             if not explore:
                                 break
                         if nearby_explored_pixels >= 5:
@@ -721,59 +746,74 @@ def aruco_test(image):
 
 
 def process_image(image, arucoDict, arucoParams):
-    
-    #print("Camera init")
-    focal_length, origin, camera_matrix, distCoeffs = init_camera(image)
-    
-    #Detect aruco tags
-    #print("Searching for aruco tags in image")
-    """cv2.imshow('Image' , image )
-    cv2.waitKey()
-    cv2.destroyAllWindows()  # closing all open windows (after key press)"""
-    (corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
-    #print("corners: ", corners)
-    #print("ids: ", ids)
-    #print("rejected: ", rejected)
-    if ids is None:
-      #print("No aruco tags found in image")
-      return
-    tags_count = len(ids.flatten())
-    cv2.aruco.drawDetectedMarkers(image, corners, ids)
-    marker_length = 100.00 # mm
-    poses = cv2.aruco.estimatePoseSingleMarkers(corners, marker_length, camera_matrix, distCoeffs)  
-    rvecs, tvecs, _objPoints = poses
-    
-    print("Found ", tags_count, " tags in image.")
-    for i in range(tags_count):
-        (topLeft, topRight, bottomRight,bottomLeft) = corners[i][0]
-        id = ids[i]
-        size = abs(topRight[0] - topLeft[0])/2
-        rvec = rvecs[i][0] # Rotation with respect to camera
-        tvec = tvecs[i][0] # Translation with respect to camera
-        print("--------------")
-        print("Tag ID:", id)
-        #print("rvec", rvec)
-        print("tvec", tvec)
-        rmat, _ = cv2.Rodrigues(rvec)
-        pose_mat = cv2.hconcat((rmat, tvec))
-        #print("Pose matrix:", pose_mat)
-        print("--------------")
-        if False:
-            # Draw the bounding box around the detected ArUCo tag
-            image = draw_quad(image, topLeft, topRight, bottomRight, bottomLeft)
-            # Draw a point at the center of the detected ArUCo tag
-            image = draw_quad_centerpoint(image, topLeft, topRight, bottomRight, bottomLeft)
-            # Draw the ID of the detected ArUCo tag
-            image = draw_quad_markerID(image, topLeft, topRight, bottomRight, bottomLeft, id)
-        # Draw the estimated pose of the tag
-        cv2.drawFrameAxes(image, camera_matrix, distCoeffs, rvec, tvec, size, thickness = 3)
-    
-        # Choose the first tag detected for warping function
-        #(topLeft, topRight, bottomRight, bottomLeft) = corners[0][0]
-        #image = warp_quad_to_square(image, topLeft, topRight, bottomRight, bottomLeft)
+  #print("Camera init")
+  focal_length, origin, camera_matrix, distCoeffs = init_camera(image)
+  
+  #Detect aruco tags
+  #print("Searching for aruco tags in image")
+  """cv2.imshow('Image' , image )
+  cv2.waitKey()
+  cv2.destroyAllWindows()  # closing all open windows (after key press)"""
+  (corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
+  #print("corners: ", corners)
+  #print("ids: ", ids)
+  #print("rejected: ", rejected)
+  if ids is None:
+    #print("No aruco tags found in image")
+    return
+  tags_count = len(ids.flatten())
+  cv2.aruco.drawDetectedMarkers(image, corners, ids)
+  marker_length = 0.1 # m
+  poses = cv2.aruco.estimatePoseSingleMarkers(corners, marker_length, camera_matrix, distCoeffs)  
+  rvecs, tvecs, _objPoints = poses
+  
+  print("Found ", tags_count, " tags in image.")
+  for i in range(tags_count):
+      (topLeft, topRight, bottomRight,bottomLeft) = corners[i][0]
+      id = ids[i]
+      size = abs(topRight[0] - topLeft[0])/2
+      rvec = rvecs[i][0] # Rotation with respect to camera
+      tvec = tvecs[i][0] # Translation with respect to camera
+      print("--------------")
+      print("Tag ID:", id)
+      #print("rvec", rvec)
+      print("tvec", tvec)
+      rmat, _ = cv2.Rodrigues(rvec)
+      pose_mat = cv2.hconcat((rmat, tvec))
+      #print("Pose matrix:", pose_mat)
+      print("--------------")
+      if False:
+          # Draw the bounding box around the detected ArUCo tag
+          image = draw_quad(image, topLeft, topRight, bottomRight, bottomLeft)
+          # Draw a point at the center of the detected ArUCo tag
+          image = draw_quad_centerpoint(image, topLeft, topRight, bottomRight, bottomLeft)
+          # Draw the ID of the detected ArUCo tag
+          image = draw_quad_markerID(image, topLeft, topRight, bottomRight, bottomLeft, id)
+      # Draw the estimated pose of the tag
+      cv2.drawFrameAxes(image, camera_matrix, distCoeffs, rvec, tvec, size, thickness = 3)
+  
+      # Choose the first tag detected for warping function
+      #(topLeft, topRight, bottomRight, bottomLeft) = corners[0][0]
+      #image = warp_quad_to_square(image, topLeft, topRight, bottomRight, bottomLeft)
 
-    return image, rvec, tvec, pose_mat
+  return image, rvec, tvec, pose_mat
+  
+def T_base_footprint_camera_rgb_optical_frame():
+  T_camera_rgb_frame_camera_rgb_optical_frame = Tmat((0,0,0), (-0.5,0.4996,-0.5,0.5004))
+  T1 = T_camera_rgb_frame_camera_rgb_optical_frame
+  T_camera_link_camera_rgb_frame = Tmat((0.003,0.011,0.009), (0,0,0,1))
+  T2 = T_camera_link_camera_rgb_frame
+  T_base_link_camera_link = Tmat((0.073,-0.011,0.084), (0,0,0,1))
+  T3 = T_base_link_camera_link
+  T_base_footprint_base_link = Tmat((0,0,0.01), (0,0,0,1))
+  T4 = T_base_footprint_base_link
+  return T4@T3@T2@T1
 
+def Tmat(p, q):
+  p = np.array([[p[0]], [p[1]], [p[2]]])#.transpose()
+  r = R.from_quat(q).as_matrix()
+  T = np.vstack((np.hstack((r,p)),[0,0,0,1]))
+  return T
 
 def main(args=None) -> None:
     """
