@@ -260,6 +260,8 @@ class Brain(Node):
 
     def camera_callback(self, msg:Image) -> None:
       time1 = self.get_clock().now().to_msg() # start timer
+      self.printOnce("camera callback")
+      if not hasattr(self, 'pos_w'): return
       cv_image = CvBridge().imgmsg_to_cv2(msg, desired_encoding='8SC3')
       cv_image = np.array(cv_image, dtype = np.uint8 )
       #cv_image = cv2.flip(cv_image,1)
@@ -271,8 +273,20 @@ class Brain(Node):
         return None
   
       image, rvec, tvec, pose_mat = processed_data
-
+      
       T_camera_rgb_optical_frame_tag = np.vstack((pose_mat, [0, 0, 0, 1]))
+      
+      I = np.array([
+                            [1., 0., 0., 0.],
+                            [0., 1., 0., 0.],
+                            [0., 0., 1., 0.],
+                            [0., 0., 0., 1.]
+                            ])
+      # Original versions of transforms. Modified below by rounding.
+      """T_camera_rgb_frame_camera_rgb_optical_frame = Tmat((0,0,0), (-0.5,0.4996,-0.5,0.5004))
+      T_camera_link_camera_rgb_frame = Tmat((0.003,0.011,0.009), (0,0,0,1))
+      T_base_link_camera_link = Tmat((0.073,-0.011,0.084), (0,0,0,1))
+      T_base_footprint_base_link = Tmat((0,0,0.01), (0,0,0,1))
       # pos_w represents the orientation of the x-axis about z of the robot base from the map x-axis  (in radians)
       # The z-axis direction is assumed to be the same for the base and the world coordinate frames (vertical)
       T_odom_base_footprint = np.array([
@@ -280,18 +294,37 @@ class Brain(Node):
                             [math.sin(self.pos_w), math.cos(self.pos_w), 0, self.pos_y],
                             [0, 0, 1, 0],
                             [0, 0, 0, 1]
-                            ]) 
-      # Transformation matrix between the tag and the world frames
-      #print('T_world_base_footprint: ')
-      #print(T_world_base_footprint)
-      #print('T_base_footprint_camera_rgb_optical_frame: ')
-      #print(T_base_footprint_camera_rgb_optical_frame())
-      #print('T_camera_rgb_optical_frame_tag: ')
-      #print(T_camera_rgb_optical_frame_tag)
-      T_map_odom = Tmat((0.036022,-0.073511,0.036545), (-0.00053738,-0.0031041,-0.0052349,0.99998))
-      T_world_tag = T_map_odom @ T_odom_base_footprint @ T_base_footprint_camera_rgb_optical_frame() @ T_camera_rgb_optical_frame_tag
-      #print('T_world_tag: ')
-      #print(T_world_tag)
+                            ])
+      T_odom_base_footprint = I
+      T_map_odom = Tmat((0.036022,-0.073511,0.036545), (-0.00053738,-0.0031041,-0.0052349,0.99998))"""
+
+      T_camera_rgb_frame_camera_rgb_optical_frame = Tmat((0,0,0), (-0.5,0.5,-0.5,0.5))
+      T_camera_link_camera_rgb_frame = Tmat((0.003,0.01,0.01), (0,0,0,1))
+      T_base_link_camera_link = Tmat((0.1,-0.01,0.1), (0,0,0,1))
+      T_base_footprint_base_link = Tmat((0,0,0.01), (0,0,0,1))
+      # pos_w represents the orientation of the x-axis about z of the robot base from the map x-axis  (in radians)
+      # The z-axis direction is assumed to be the same for the base and the world coordinate frames (vertical)
+      theta = self.pos_w + np.pi/2
+      T_odom_base_footprint = np.array([
+                            [math.cos(theta), -math.sin(theta), 0, self.pos_x],
+                            [math.sin(theta), math.cos(theta), 0, self.pos_y],
+                            [0, 0, 1, 0.01],
+                            [0, 0, 0, 1]
+                            ])
+      #T_odom_base_footprint = I
+      T_map_odom = Tmat((0.04,-0.07,0.037), (-0.0005,-0.003,-0.005,1))
+
+      T_world_tag = T_map_odom @ \
+                      T_odom_base_footprint @ \
+                      T_base_footprint_base_link @ \
+                      T_base_link_camera_link @ \
+                      T_camera_link_camera_rgb_frame @ \
+                      T_camera_rgb_frame_camera_rgb_optical_frame @ \
+                      T_camera_rgb_optical_frame_tag
+      
+      T_world_tag[0,3] = T_world_tag[0,3] - 0.14
+      T_world_tag[1,3] = T_world_tag[1,3] + 0.07
+      
       tag_xy_in_world = (T_world_tag[0,3], T_world_tag[1,3])
       print("tag_xy_in_world: ", tag_xy_in_world)
       
@@ -308,6 +341,7 @@ class Brain(Node):
         self.marker.pose.orientation.x, self.marker.pose.orientation.y, self.marker.pose.orientation.z, self.marker.pose.orientation.w = 0.0, 0.0, 0.0, 1.0 # Set the pose orientation of the marker
 
       # Mark tag position to be visualised in rviz
+      print(T_world_tag)
       self.marker.pose.position.x, self.marker.pose.position.y, self.marker.pose.position.z = T_world_tag[0,3], T_world_tag[1,3], T_world_tag[2,3]   # Set the pose position of the marker
       self.marker_publisher.publish(self.marker)
       
