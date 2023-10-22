@@ -6,9 +6,10 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, QoSDurabilityPolicy
 from nav2_simple_commander.robot_navigator import BasicNavigator
 from nav2_msgs.msg import BehaviorTreeLog, Costmap
-from nav_msgs.msg import OccupancyGrid, Odometry, Path
+from nav_msgs.msg import OccupancyGrid, Odometry
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 from sensor_msgs.msg import Image
+from tf2_ros import TFMessage
 from tf2_ros import TFMessage
 from tf2_ros import TFMessage
 import numpy as np
@@ -17,7 +18,7 @@ from array import array
 import typing
 import copy
 import argparse
-# import imutils
+# # import imutils
 import cv2
 import sys
 from os import system
@@ -55,7 +56,7 @@ class Brain(Node):
         
         
 
-        
+        # Instantiate subscriptions and publishers
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.SYSTEM_DEFAULT,
             history=QoSHistoryPolicy.KEEP_LAST,
@@ -65,10 +66,7 @@ class Brain(Node):
         self.printOnce('NOTE - turtlebot_brain.Brain: instantiating subscriptions')
         self.status_subscription    = self.create_subscription  (BehaviorTreeLog,           'behavior_tree_log',        self.bt_log_callback,   10)
         self.map_subscription       = self.create_subscription  (OccupancyGrid,             'map',                      self.map_callback,      10)
-        # self.image_subscription     = self.create_subscription  (Image,                     '/camera/image_raw',        self.camera_callback,   10)
         self.position_subscription  = self.create_subscription  (Odometry,                  'odom',                     self.odom_callback,     10)
-        self.path_subscription      = self.create_subscription  (Path,                      'local_plan',               self.path_callback,     10)
-        self.tf_subscription        = self.create_subscription  (TFMessage,                  '/tf',                     self.tf_callback,   10)
         self.waypoint_publisher     = self.create_publisher     (PoseStamped,               'goal_pose',    10)
         self.map_reachable_publisher= self.create_publisher     (OccupancyGrid,             'valid_waypoint_map', qos_profile)
         self.map_unreachable_publisher= self.create_publisher   (OccupancyGrid,             'invalid_waypoint_map', qos_profile)
@@ -109,8 +107,13 @@ class Brain(Node):
         if not self.computing and math.sqrt((self.pose.pose.position.x - msg.pose.pose.position.x) ** 2 + (self.pose.pose.position.y - msg.pose.pose.position.y) ** 2) < 0.1:
            self.nav_canceled = True
 
+        if not self.computing and math.sqrt((self.pose.pose.position.x - msg.pose.pose.position.x) ** 2 + (self.pose.pose.position.y - msg.pose.pose.position.y) ** 2) < 0.1:
+           self.nav_canceled = True
+
         if not self.computing and (self.last_move_time + rclpy.time.Duration(seconds = 3)) - self.get_clock().now() < rclpy.time.Duration(seconds = 0):
             self.last_move_time = self.get_clock().now()
+            if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.1 or \
+                        abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.1:
             if math.sqrt((self.last_pos[0] - msg.pose.pose.position.x) ** 2 + (self.last_pos[1] - msg.pose.pose.position.y) ** 2) > 0.1 or \
                         abs(msg.pose.pose.orientation.w - self.last_pos[2]) > 0.1:
                 pass
@@ -121,115 +124,46 @@ class Brain(Node):
             self.last_pos = (msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.orientation.w)
 
     def map_callback(self, msg:OccupancyGrid) -> None:
-        """
-        Called whenever a new OccupancyGrid message is published to the 'map' topic.
-        Updates global variables with the new map data, after converting to a 2D array.
-        Initializes an array for unreachable positions if necessary. 
-        Initializes and publishes the map of known unreachable pixels.
-        Sets the ready_map flag to True.
-        
-        Values range [-1, 100], where -1 represents an unknown probability.
-        
-        Args:
-          msg (OccupancyGrid): The parameter `msg` is of type `OccupancyGrid`, which represents a 2-D 
-          grid map, in which each cell represents the probability of occupancy. Each cell can take 
-          values of -1 (unknown), or [0-100] (the % probability that the cell is occupied).
+      """
+      Called whenever a new OccupancyGrid message is published to the 'map' topic.
+      Updates global variables with the new map data, after converting to a 2D array.
+      Initializes an array for unreachable positions if necessary. 
+      Initializes and publishes the map of known unreachable pixels.
+      Sets the ready_map flag to True.
+      Values range [-1, 100], where -1 represents an unknown probability.
+      
+      Args:
+        msg (OccupancyGrid): The parameter `msg` is of type `OccupancyGrid`, which represents a 2-D 
+        grid map, in which each cell represents the probability of occupancy. Each cell can take 
+        values of -1 (unknown), or [0-100] (the % probability that the cell is occupied).
 
-        Returns:
-          nothing (None).
-        """
-        time1 = self.get_clock().now().to_msg() # start timer
-        
-        self.printOnce('NOTE - turtlebot_brain.map_callback: reached')
-        self.mapMsg = msg
-        self.mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height), order='F')
-        self.mapInfo = msg.info
-        if self.old_map_size[0] < msg.info.width or \
-                  self.old_map_size[1] < msg.info.height:
-            self.ready_map = False
-            self.printOnce("map width/height: ", msg.info.width, "/", msg.info.height)
-            self.printOnce("unreachable_positions.shape x/y: ", self.unreachable_positions.shape[0], "/", self.unreachable_positions.shape[1])
-            self.unreachable_positions = np.zeros((self.mapInfo.width + 1, self.mapInfo.height + 1)).astype(int)
-            self.old_map_size = (msg.info.width, msg.info.height)
-            for xPxl in range(0, self.mapInfo.width):
-                for yPxl in range(0, self.mapInfo.height):
-                    pxl = (xPxl, yPxl)
-                    if self.mapArray2d[xPxl][yPxl] >= 80:
-                        self.mark_range_unreachable(pxl, 3)
-        
-        # Initialise custom map
-        if not self.init_myMap_flag:
-          self.valid_waypoint_map = OccupancyGrid()
-          self.init_myMap_flag = True
-        # Update map header
-        self.valid_waypoint_map.header.frame_id = msg.header.frame_id # id for transfer function for map frame is 'map'
-        self.valid_waypoint_map.header.stamp = msg.header.stamp # Or self.get_clock().now().to_msg()
-        # Update map info (e.g. dimensions)
-        self.valid_waypoint_map.info.origin = msg.info.origin
-        self.valid_waypoint_map.info.height = msg.info.height
-        self.valid_waypoint_map.info.width = msg.info.width
-        self.valid_waypoint_map.info.resolution = msg.info.resolution
-        self.valid_waypoint_map.info.map_load_time = msg.info.map_load_time
-        # Generate custom map data based on current map data
-        self.valid_waypoint_map.data = array('b')
-        
-        # mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height), order='F')
-        #new_map_array2d = 100*np.multiply(np.where(self.mapArray2d == -1, True, False), np.where(self.mapArray2d >= 80, True, False))
-        new_map_array2d = 100*(np.where(self.mapArray2d == -1, True, False))
-        valid_waypoint_map = 100*np.ones(np.shape(self.mapArray2d))
-        for x in range(np.shape(self.mapArray2d)[0]):
-          for y in range(np.shape(self.mapArray2d)[0]):
-            surrounding_values = self.get_surrounding_pixel_values(self.mapArray2d, (x,y))
-            unknown_pxl_count = 0
-            free_pxl_count = 0
-            wall_pxl_count = 0
-            if surrounding_values != None:
-              for val in surrounding_values:
-                if val == -1: unknown_pxl_count += 1
-                elif ((val >=0) and (val < 80)): free_pxl_count += 1
-                else: wall_pxl_count += 1
-              # Conditions of surrounding pixels for a valid waypoint (depends on get_surrounding_pixel_values radius)
-              if ((unknown_pxl_count>=15) and (free_pxl_count>=10) and (wall_pxl_count == 0)):
-                valid_waypoint_map[x][y] = 0
-              # mark unreachable positions on map
-              if self.unreachable_positions[x][y] == 100:
-                valid_waypoint_map[x][y] = 80
-        # Build and publish map from data
-        new_map_array1d = np.reshape(valid_waypoint_map, (msg.info.width * msg.info.height), order='F')
-        self.valid_waypoint_map.data = array('b')
-        for ele in new_map_array1d: self.valid_waypoint_map.data.append(int(ele))
-        self.map_reachable_publisher.publish(self.valid_waypoint_map)
+      Returns:
+        nothing (None).
+      """
+      time1 = self.get_clock().now().to_msg() # start timer
+      
+      self.printOnce('NOTE - turtlebot_brain.map_callback: reached')
+      self.mapMsg = msg
+      self.mapArray2d = np.reshape(msg.data, (msg.info.width, msg.info.height), order='F')
+      self.mapInfo = msg.info
+      if self.old_map_size[0] < msg.info.width or self.old_map_size[1] < msg.info.height:
+        self.ready_map = False
+        self.printOnce("map width/height: ", msg.info.width, "/", msg.info.height)
+        self.printOnce("unreachable_positions.shape x/y: ", self.unreachable_positions.shape[0], "/", self.unreachable_positions.shape[1])
+        self.unreachable_positions = np.zeros((self.mapInfo.width + 1, self.mapInfo.height + 1)).astype(int)
+        self.old_map_size = (msg.info.width, msg.info.height)
+        for xPxl in range(0, self.mapInfo.width):
+          for yPxl in range(0, self.mapInfo.height):
+            pxl = (xPxl, yPxl)
+            if self.mapArray2d[xPxl][yPxl] >= 80:
+              self.mark_range_unreachable(pxl, 3)
 
-        new_unreachablemap_array1d = np.reshape(self.unreachable_positions, ((msg.info.width + 1) * (msg.info.height + 1)), order='F')
-        self.invalid_waypoint_map = OccupancyGrid()
-        self.invalid_waypoint_map.data = array('b')
-        self.invalid_waypoint_map.header.frame_id = msg.header.frame_id # id for transfer function for map frame is 'map'
-        self.invalid_waypoint_map.header.stamp = msg.header.stamp # Or self.get_clock().now().to_msg()
-        # Update map info (e.g. dimensions)
-        self.invalid_waypoint_map.info.origin = msg.info.origin
-        self.invalid_waypoint_map.info.height = msg.info.height + 1
-        self.invalid_waypoint_map.info.width = msg.info.width + 1
-        self.invalid_waypoint_map.info.resolution = msg.info.resolution
-        self.invalid_waypoint_map.info.map_load_time = msg.info.map_load_time
-        for ele in new_unreachablemap_array1d: self.invalid_waypoint_map.data.append(ele)
-        self.map_unreachable_publisher.publish(self.invalid_waypoint_map)
-        
-        # Check map processing times
-        time2 = self.get_clock().now().to_msg()
-        print("Map callback processing time: ", float(time2.sec + time2.nanosec/1000000000) - float(time1.sec + time1.nanosec/1000000000), "s")
-        #input("paused to read times...")
-        self.ready_map = True
-        return
-
-    def path_callback(self, msg:Path) -> None:
-        """
-        Called whenever a new Path message is published to the 'local_plan' topic.
-        Saves the path as the global variable self.path.
-        
-        Args:
-          msg (Path): The parameter `msg` is of type `Path`.
-        """
-        self.path = msg
+      # Check map processing times
+      time2 = self.get_clock().now().to_msg()
+      print("Map callback processing time: ", float(time2.sec + time2.nanosec/1000000000) - float(time1.sec + time1.nanosec/1000000000), "s")
+      #input("paused to read times...")
+      self.ready_map = True
+      return
 
     def bt_log_callback(self, msg:BehaviorTreeLog) -> None:
       """
@@ -244,12 +178,13 @@ class Brain(Node):
       contains information about the behavior tree log, including the event log.
       """
       for event in msg.event_log:
+        # Wait for robot to be idle before calculating next waypoint
         if (event.node_name == 'NavigateRecovery' and event.current_status == 'IDLE') or self.nav_canceled:
-          self.nav_canceled = False
           if self.ready_odom and self.ready_map:
+            self.nav_canceled = False
             if not self.user_started_flag:
               self.user_started_flag = True
-              input("Press Enter to continue...")
+              input("Press Enter to continue...") # Wait for user input after initialisation before continuing
             self.computing = True
             waypointPxl = self.waypointPxl_compute()
             self.printOnce("waypointPxl: ", waypointPxl)
@@ -263,11 +198,24 @@ class Brain(Node):
       self.ready_log = True
 
     def camera_callback(self, msg:Image) -> None:
+      """
+      The `camera_callback` function processes an image received from a camera, detects ArUco tags in
+      the image, and calculates the position of the tags in the world coordinate frame.
+      
+      Args:
+        msg (Image): The `msg` parameter in the `camera_callback` function is of type `Image`. It
+      represents the image data received from the camera.
+      
+      Returns:
+        None.
+      """
       time1 = self.get_clock().now().to_msg() # start timer
+      self.printOnce("camera callback")
+      if not hasattr(self, 'pos_w'): return
       cv_image = CvBridge().imgmsg_to_cv2(msg, desired_encoding='8SC3')
       cv_image = np.array(cv_image, dtype = np.uint8 )
       #cv_image = cv2.flip(cv_image,1)
-      processed_data = aruco_test(cv_image)
+      processed_data = find_aruco_tags(cv_image)
       if processed_data is None:
         self.printOnce("no tag found")
         if hasattr(self, 'marker'):
@@ -275,43 +223,52 @@ class Brain(Node):
         return None
   
       image, rvec, tvec, pose_mat = processed_data
+      
+      # Original versions of transforms. Modified below by rounding.
+        #T_camera_rgb_frame_camera_rgb_optical_frame  = Tmat((0,0,0), (-0.5,0.4996,-0.5,0.5004))
+        #T_camera_link_camera_rgb_frame               = Tmat((0.003,0.011,0.009), (0,0,0,1))
+        #T_base_link_camera_link                      = Tmat((0.073,-0.011,0.084), (0,0,0,1))
+        #T_base_footprint_base_link                   = Tmat((0,0,0.01), (0,0,0,1))
+        #T_map_odom                                   = Tmat((0.036022,-0.073511,0.036545), (-0.00053738,-0.0031041,-0.0052349,0.99998))
 
-      T_camera_rgb_optical_frame_tag = np.vstack((pose_mat, [0, 0, 0, 1]))
+      # Define transform functions between frames to express tag location in the map coordinate frame
+      T_camera_rgb_optical_frame_tag                = np.vstack((pose_mat, [0, 0, 0, 1]))
+      T_camera_rgb_frame_camera_rgb_optical_frame   = Tmat((0,0,0), (-0.5,0.5,-0.5,0.5))
+      T_camera_link_camera_rgb_frame                = Tmat((0.003,0.01,0.01), (0,0,0,1))
+      T_base_link_camera_link                       = Tmat((0.1,-0.01,0.1), (0,0,0,1))
+      T_base_footprint_base_link                    = Tmat((0,0,0.01), (0,0,0,1))
       # pos_w represents the orientation of the x-axis about z of the robot base from the map x-axis  (in radians)
       # The z-axis direction is assumed to be the same for the base and the world coordinate frames (vertical)
+      theta = self.pos_w + np.pi/2
       T_odom_base_footprint = np.array([
-                            [math.cos(self.pos_w), -math.sin(self.pos_w), 0, self.pos_x],
-                            [math.sin(self.pos_w), math.cos(self.pos_w), 0, self.pos_y],
-                            [0, 0, 1, 0],
+                            [math.cos(theta), -math.sin(theta), 0, self.pos_x],
+                            [math.sin(theta), math.cos(theta), 0, self.pos_y],
+                            [0, 0, 1, 0.01],
                             [0, 0, 0, 1]
-                            ]) 
-      # Transformation matrix between the tag and the world frames
-      #print('T_world_base_footprint: ')
-      #print(T_world_base_footprint)
-      #print('T_base_footprint_camera_rgb_optical_frame: ')
-      #print(T_base_footprint_camera_rgb_optical_frame())
-      #print('T_camera_rgb_optical_frame_tag: ')
-      #print(T_camera_rgb_optical_frame_tag)
-      T_map_odom = Tmat((0.036022,-0.073511,0.036545), (-0.00053738,-0.0031041,-0.0052349,0.99998))
-      T_world_tag = T_map_odom @ T_odom_base_footprint @ T_base_footprint_camera_rgb_optical_frame() @ T_camera_rgb_optical_frame_tag
-      #print('T_world_tag: ')
-      #print(T_world_tag)
-      tag_xy_in_world = (T_world_tag[0,3], T_world_tag[1,3])
-      print("tag_xy_in_world: ", tag_xy_in_world)
+                            ])
+      #T_odom_base_footprint = I
+      T_map_odom = Tmat((0.04,-0.07,0.037), (-0.0005,-0.003,-0.005,1))
+
+      T_world_tag = T_map_odom @ \
+                      T_odom_base_footprint @ \
+                      T_base_footprint_base_link @ \
+                      T_base_link_camera_link @ \
+                      T_camera_link_camera_rgb_frame @ \
+                      T_camera_rgb_frame_camera_rgb_optical_frame @ \
+                      T_camera_rgb_optical_frame_tag
       
-      if not self.init_marker_flag:
-        # Instantiate marker
-        self.marker = Marker()
-        self.marker.header.frame_id = "/map"
-        #marker.header.stamp = rospy.Time.now()
-        self.marker.type = 2                                                                                                                 # set shape, Arrow: 0; Cube: 1 ; Sphere: 2 ; Cylinder: 3
-        self.marker.id = 0
-        self.marker.scale.x, self.marker.scale.y, self.marker.scale.z = 0.05, 0.05, 0.05                                                                  # Set the scale of the marker
-        self.marker.color.r, self.marker.color.g, self.marker.color.b, self.marker.color.a = 0.0, 1.0, 0.0, 1.0                                             # Set the color
-        self.marker.pose.position.x, self.marker.pose.position.y, self.marker.pose.position.z = 1.0, 1.0, 0.0   # Set the pose position of the marker
-        self.marker.pose.orientation.x, self.marker.pose.orientation.y, self.marker.pose.orientation.z, self.marker.pose.orientation.w = 0.0, 0.0, 0.0, 1.0 # Set the pose orientation of the marker
+      # Apply offset correction
+      T_world_tag[0,3] = T_world_tag[0,3] - 0.14
+      T_world_tag[1,3] = T_world_tag[1,3] + 0.07
+      
+      # Print location of tag in map frame (in m)
+      tag_xy_in_world = (T_world_tag[0,3], T_world_tag[1,3])
+      print("---------------------------")
+      print("tag_xy_in_world: ", tag_xy_in_world)
+      print("---------------------------")
 
       # Mark tag position to be visualised in rviz
+      print(T_world_tag)
       self.marker.pose.position.x, self.marker.pose.position.y, self.marker.pose.position.z = T_world_tag[0,3], T_world_tag[1,3], T_world_tag[2,3]   # Set the pose position of the marker
       self.marker_publisher.publish(self.marker)
       
@@ -320,24 +277,15 @@ class Brain(Node):
       print("Camera callback processing time: ", float(time2.sec + time2.nanosec/1000000000) - float(time1.sec + time1.nanosec/1000000000), "s")
       return
     
-    def tf_callback(self, msg:TFMessage):
-      """tfs = msg.transforms
-      print("--------------")
-      for tf in tfs:
-      #  if tf.header.frame_id == 'camera_rgb_optical_frame':
-        print("tf.header.frame_id: ", tf.header.frame_id)#.child_frame_id)
-      #    input("pause")
-      print("--------------")"""
-      
-      return
-    
     # DEFINING HELPER FUNCTIONS
     def printOnce(self, *args) -> None:
       """Makes sure that that a print message isn't repeated too many times.
       If a print message is the same as last time this function was called, it doesn't print.
+      If the same message is printed more than once, this will list the number of occurances of last message.
+      Will do nothing if self.verbosity is False.
 
       Args:
-          string (str): string to print
+          string (str): string to print and number of times called
       """
       if not self.verbosity:
         return
@@ -495,9 +443,25 @@ class Brain(Node):
         waypoint = (self.pos_x, self.pos_y, self.pos_w)
         return self.coord_m2pxl(waypoint)
 
-    # takes an OccupancyGrid object, and a pixel coordinate, and returns a list of the values
-    # of the surrounding pixels
     def get_surrounding_pixel_values(self, ocgrid: OccupancyGrid | np.dtype, pixel: tuple[int, int], radius: int = 5) -> list[int] | None:
+      """
+      The function `get_surrounding_pixel_values` takes an occupancy grid and a pixel coordinate, and
+      returns the values of the surrounding pixels within a given radius.
+      
+      Args:
+        ocgrid (OccupancyGrid | np.dtype): The `ocgrid` parameter is either an instance of the
+      `OccupancyGrid` class or a numpy array of type `np.dtype`.
+        pixel (tuple[int, int]): The `pixel` parameter is a tuple of two integers `(x, y)`
+      representing the coordinates of the pixel for which you want to retrieve the surrounding pixel
+      values.
+        radius (int): The `radius` parameter determines the size of the surrounding area around the
+      given `pixel` from which the pixel values will be extracted. The default value is set to 5,
+      which means that the function will retrieve the pixel values from a 5x5 square area centered
+      around the given `pixel. Defaults to 5
+      
+      Returns:
+        a list of integer values representing the surrounding pixels of the given pixel.
+      """
       if type(ocgrid) is OccupancyGrid:
         data_array_2d = np.reshape(ocgrid.data, (ocgrid.info.width, ocgrid.info.height), order='F')
         
@@ -515,7 +479,6 @@ class Brain(Node):
         for i in range(-radius, radius+1):
           for j in range(-1, 2):
             pixel_vals.append(data_array_2d[x+i][y+j])
-      #self.printOnce(pixel_vals)
       return pixel_vals
 
     def waypointPxl_compute(self) -> tuple[int, int]:
@@ -535,7 +498,7 @@ class Brain(Node):
         self.printOnce("waypoint_compute - unexplored_list: ", unexplored_list)
         unexplored_x_y_coords = []
         for pxl, distance in unexplored_list:
-            unexplored_x_y_coords.append((self.coord_pxl2m(pxl), distance))
+            unexplored_x_y_coords.append((self.coord_pxl2m(pxl), abs(distance - preferredWaypointDistance)))
         if len(unexplored_list) != 0:
             self.printOnce("waypoint_compute - unexplored_list is not Empty - unexplored_list = \n", unexplored_x_y_coords)
             self.printOnce("sorting unexplored_list to prefer exploring closer to robot.")
@@ -564,6 +527,7 @@ class Brain(Node):
         self.pose.pose.position.x = waypoint[0]
         self.pose.pose.position.y = waypoint[1]
         self.pose.pose.orientation.w = float(waypoint[2])
+        #self.nav.goToPose(self.pose)
         self.waypoint_publisher.publish(self.pose)
         self.last_waypoint_time = self.get_clock().now()
         """
@@ -577,12 +541,22 @@ class Brain(Node):
           self.mark_range_unreachable(self.coord_m2pxl(waypoint), 10)
         """
 
+    def move_to_waypointPxl(self, waypointPxl: tuple[int, int]):
+        """
+        Moves the robot to a specified waypoint (in integer map pixel coordinates) and handles cancellation or failure cases.
+        
+        Args:
+          waypoint (tuple(int,int)): The map pixel waypoint (x,y) tuple to move to.
+        """
+        waypoint = self.coord_pxl2m(waypointPxl)
+        self.move_to_waypoint(waypoint)
+
     def map_get_unexplored_in_range(self):
         """
         Returns a list of unexplored pixels within a given radius from the current position.
         
         Returns:
-          unexplored_in_range (list(tupletuple((int,int), int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range and their distance to the robot.
+          unexplored_in_range (list(tuple(tuple((int,int), int))): a list of unexplored pixels (as x,y map coordinate tuples) within a given range and their distance to the robot.
         """
         current_posPxl = self.get_coords_as_Pxl()
         x_posPxl, y_posPxl = current_posPxl
@@ -621,11 +595,12 @@ class Brain(Node):
                                 elif xPxl + x > self.mapInfo.width - 1 or yPxl + y > self.mapInfo.height - 1:
                                     explore = False
                                     break
-                                elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
-                                    nearby_explored_pixels += 1
-                                elif self.is_waypointPxl_unreachable((xPxl + x, yPxl + y)):
+                                elif self.is_waypointPxl_unreachable((xPxl + x, yPxl + y)) or \
+                                        self.mapArray2d[(xPxl + x, yPxl + y)] == 100:
                                     explore = False
                                     break
+                                elif self.mapArray2d[xPxl + x, yPxl + y] == 0:
+                                    nearby_explored_pixels += 1
                             if not explore:
                                 break
                         if nearby_explored_pixels >= 5:
@@ -664,30 +639,51 @@ class Brain(Node):
         return None
 
 def init_camera(image):
-    # Define camera intrinsic properties (how a camera maps 3D points in the world to 2D points in an image)
-    # Matrix can be though of as a rotation matrix concatenated with a translation matrix)
-    focal_length = [image.shape[0], image.shape[0]]             # In pixels
-    origin = np.array([image.shape[0]/2, image.shape[1]/2])    # principal point (the point that all rays converge) in pixels
-    camera_matrix = np.array(
-    [[focal_length[0], 0, origin[0]],
-    [0, focal_length[1], origin[1]],
-    [0, 0, 1]], dtype="double")
-    distCoeffs = np.zeros((4, 1))           # lens distortion of camera (None)
-    return focal_length, origin, camera_matrix, distCoeffs
+  """
+  The function initializes the camera by defining its intrinsic properties such as focal length,
+  principal point, camera matrix, and lens distortion. It uses generic (uncalibrated) values.
   
-def aruco_test(image):
+  Args:
+    image: The input image for which the camera intrinsic properties are being defined.
   
-  #print("Image shape: ", image.shape)
+  Returns:
+    the focal length, origin, camera matrix, and distortion coefficients of the camera.
+  """
+  # Define camera intrinsic properties (how a camera maps 3D points in the world to 2D points in an image)
+  # Matrix can be though of as a rotation matrix concatenated with a translation matrix)
+  focal_length = [image.shape[0], image.shape[0]]             # In pixels
+  origin = np.array([image.shape[0]/2, image.shape[1]/2])    # principal point (the point that all rays converge) in pixels
+  camera_matrix = np.array(
+  [[focal_length[0], 0, origin[0]],
+  [0, focal_length[1], origin[1]],
+  [0, 0, 1]], dtype="double")
+  distCoeffs = np.zeros((4, 1))           # lens distortion of camera (None)
+  return focal_length, origin, camera_matrix, distCoeffs
+  
+def find_aruco_tags(image, tagType = cv2.aruco.DICT_6X6_50):
+  """
+  The function `find_aruco_tags` takes an image and a tag type as input, detects ArUCo markers in the
+  image using the specified tag type, and returns the image, rotation vector, translation vector, and
+  pose matrix of the detected markers.
+  
+  Args:
+    image: The input image that contains the ArUCo tags.
+    tagType: The tagType parameter is used to specify the type of ArUCo dictionary to be used for
+  marker detection. In this code, the default value is cv2.aruco.DICT_6X6_50, which corresponds to a
+  dictionary with 6x6 markers and a total of 50
+  
+  Returns:
+    four values: image, rvec, tvec, and pose_mat.
+  """
+  
   # load the ArUCo dictionary, grab the ArUCo parameters, and detect the markers
-  #print("[INFO] detecting '{}' tags...".format("DICT_6X6_50"))
-  arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
+  arucoDict = cv2.aruco.getPredefinedDictionary(tagType)
   arucoParams = cv2.aruco.DetectorParameters()
   
   #print("Attempting to process image:")
   processed_data = process_image(image, arucoDict, arucoParams)
   if processed_data is None:
     return None
-  
   image, rvec, tvec, pose_mat = processed_data
   
   return image, rvec, tvec, pose_mat
@@ -695,21 +691,29 @@ def aruco_test(image):
 
 
 def process_image(image, arucoDict, arucoParams):
-  #print("Camera init")
+  """
+  The function processes an image by detecting ArUco tags, estimating their pose, and returning the
+  image along with the rotation vector, translation vector, and pose matrix of each detected tag.
+  
+  Args:
+    image: The input image on which the ArUco tags are detected and processed.
+    arucoDict: The `arucoDict` parameter is the dictionary of ArUco markers that will be used for
+  detection. ArUco markers are square markers with a unique pattern that can be detected by computer
+  vision algorithms. The dictionary contains the information about the marker patterns and their
+  corresponding IDs.
+    arucoParams: The `arucoParams` parameter is a dictionary that contains various parameters for the
+  ArUco marker detection algorithm. Some common parameters include:
+  
+  Returns:
+    the processed image, rotation vector (rvec), translation vector (tvec), and pose matrix
+  (pose_mat).
+  """
+  # Initialise camera using default parameters
   focal_length, origin, camera_matrix, distCoeffs = init_camera(image)
   
   #Detect aruco tags
-  #print("Searching for aruco tags in image")
-  """cv2.imshow('Image' , image )
-  cv2.waitKey()
-  cv2.destroyAllWindows()  # closing all open windows (after key press)"""
   (corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
-  #print("corners: ", corners)
-  #print("ids: ", ids)
-  #print("rejected: ", rejected)
-  if ids is None:
-    #print("No aruco tags found in image")
-    return
+  if ids is None:  return
   tags_count = len(ids.flatten())
   cv2.aruco.drawDetectedMarkers(image, corners, ids)
   marker_length = 0.1 # m
@@ -723,42 +727,26 @@ def process_image(image, arucoDict, arucoParams):
       size = abs(topRight[0] - topLeft[0])/2
       rvec = rvecs[i][0] # Rotation with respect to camera
       tvec = tvecs[i][0] # Translation with respect to camera
-      print("--------------")
       print("Tag ID:", id)
-      #print("rvec", rvec)
-      print("tvec", tvec)
       rmat, _ = cv2.Rodrigues(rvec)
       pose_mat = cv2.hconcat((rmat, tvec))
-      #print("Pose matrix:", pose_mat)
-      print("--------------")
-      if False:
-          # Draw the bounding box around the detected ArUCo tag
-          image = draw_quad(image, topLeft, topRight, bottomRight, bottomLeft)
-          # Draw a point at the center of the detected ArUCo tag
-          image = draw_quad_centerpoint(image, topLeft, topRight, bottomRight, bottomLeft)
-          # Draw the ID of the detected ArUCo tag
-          image = draw_quad_markerID(image, topLeft, topRight, bottomRight, bottomLeft, id)
-      # Draw the estimated pose of the tag
-      cv2.drawFrameAxes(image, camera_matrix, distCoeffs, rvec, tvec, size, thickness = 3)
-  
-      # Choose the first tag detected for warping function
-      #(topLeft, topRight, bottomRight, bottomLeft) = corners[0][0]
-      #image = warp_quad_to_square(image, topLeft, topRight, bottomRight, bottomLeft)
-
   return image, rvec, tvec, pose_mat
-  
-def T_base_footprint_camera_rgb_optical_frame():
-  T_camera_rgb_frame_camera_rgb_optical_frame = Tmat((0,0,0), (-0.5,0.4996,-0.5,0.5004))
-  T1 = T_camera_rgb_frame_camera_rgb_optical_frame
-  T_camera_link_camera_rgb_frame = Tmat((0.003,0.011,0.009), (0,0,0,1))
-  T2 = T_camera_link_camera_rgb_frame
-  T_base_link_camera_link = Tmat((0.073,-0.011,0.084), (0,0,0,1))
-  T3 = T_base_link_camera_link
-  T_base_footprint_base_link = Tmat((0,0,0.01), (0,0,0,1))
-  T4 = T_base_footprint_base_link
-  return T4@T3@T2@T1
 
 def Tmat(p, q):
+  """
+  The function Tmat takes a position vector p and a quaternion q as input, and returns the
+  corresponding transformation matrix T.
+  
+  Args:
+    p: The parameter `p` is a 3-element list or array representing the translation vector. It contains
+  the x, y, and z coordinates of the translation.
+    q: The parameter `q` is a quaternion representing the rotation. A quaternion is a mathematical
+  representation of a rotation in three-dimensional space. It consists of four numbers: `q = [w, x, y,
+  z]`, where `w` is the scalar part and `x`, `y`,
+  
+  Returns:
+    a transformation matrix T.
+  """
   p = np.array([[p[0]], [p[1]], [p[2]]])#.transpose()
   r = R.from_quat(q).as_matrix()
   T = np.vstack((np.hstack((r,p)),[0,0,0,1]))
@@ -778,11 +766,9 @@ def main(args=None) -> None:
     """print('NOTE - turtlebot_brain.main: Starting main')
     print("---------------------------")
     print("doing aruco test")
-    aruco_test()
+    find_aruco_tags()
     input("aruco test done")
     print("---------------------------")"""
-    
-    
     print('NOTE - turtlebot_brain.main: instantiating rclpy')
     rclpy.init(args=args)
     print('NOTE - turtlebot_brain.main: instantiating brain')
