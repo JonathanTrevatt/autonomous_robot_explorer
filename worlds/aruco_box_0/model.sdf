@@ -1,7 +1,7 @@
 <?xml  version="1.0" ?>
 <sdf version="1.5">
 
- <model name='aruco_box_42'>
+ <model name='aruco_box_0'>
       <pose>0 0 0.2 0 -0 0</pose>
       <link name='link'>
         <inertial>
@@ -39,7 +39,7 @@
         <visual name='aruco_box_mesh'>
           <geometry>
             <mesh>
-                <uri>model://aruco_box_42/model.dae</uri>
+                <uri>model://aruco_box_0/model.dae</uri>
                 <scale>0.1 0.1 0.1</scale>
             </mesh>
           </geometry>
