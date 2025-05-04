@@ -2,13 +2,13 @@ Group project for METR4202 robotics and automation course at the university of Q
 This code autonomously navigates a robot through an arbitrary environment, generating a map as it navigates and marking the coordinates of detected ArUco fiducial markers.\
 The code-base is designed for use with ROS (robot operating system).\
 We used:
-- a 'TurtleBot3 Waffle Pi', which has differential drive motion, a 2D LiDAR, and a front-facing RGB camera.\
-- SLAM (simultaneous localisation andd mapping) for map generation and robot localisation.\
-- a custom pathfinding algorithm to estimate the most efficient routes to explore the environment, and generate waypoints.\
-- 'nav2' to generate paths from waypoints.\
-- 'aruco_detect' Python library and the robots' RGB camera to detect ArUco markers and return their positions localised on the map generated using SLAM.\
-\
-Note: This project is deprecated and unmaintained, and as such, may no longer be functional.\
+- 'TurtleBot3 Waffle Pi' robot, which has differential drive motion, a 2D LiDAR, and a front-facing RGB camera.
+- SLAM (simultaneous localisation andd mapping) for map generation and robot localisation.
+- a custom pathfinding algorithm to estimate the most efficient routes to explore the environment, and generate waypoints.
+- 'nav2' to generate paths from waypoints.
+- OpenCV and 'aruco_detect' Python libraries and the robots' RGB camera to detect ArUco markers and return their positions localised on the map generated using SLAM.
+
+Note: This project is deprecated and unmaintained, and has been moved to this location years after the fact. Therefore, it may be incomplete or otherwise no-longer functional. Additionally, the repository name has changed since this readme was written.\
 
 Team members:
 --------------
