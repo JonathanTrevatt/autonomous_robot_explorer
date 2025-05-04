@@ -8,7 +8,7 @@ We used:
 - 'nav2' to generate paths from waypoints.
 - OpenCV and 'aruco_detect' Python libraries and the robots' RGB camera to detect ArUco markers and return their positions localised on the map generated using SLAM.
 
-Note: This project is deprecated and unmaintained, and has been moved to this location years after the fact. Therefore, it may be incomplete or otherwise no-longer functional. Additionally, the repository name has changed since this readme was written.\
+Note: This project is deprecated and unmaintained, and has been moved to this location years after the fact. Therefore, it may be incomplete or otherwise no-longer functional. Additionally, the repository name has changed since this readme was written.
 
 Team members:
 --------------
