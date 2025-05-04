@@ -1,6 +1,13 @@
 Group project for METR4202 robotics and automation course at the university of Queensland.\
-This code autonomously navigates a 'turtlebot' robot through an environment using a custom pathfinding algorithm and ROS (robot operating system).\
-The robot uses SLAM for mapping and navigation, and marks coordinates and orientations of QR codes detected via the on-board camera on the generated map.\
+This code autonomously navigates a robot through an arbitrary environment, generating a map as it navigates and marking the coordinates of detected ArUco fiducial markers.\
+The code-base is designed for use with ROS (robot operating system).\
+We used:
+- a 'TurtleBot3 Waffle Pi', which has differential drive motion, a 2D LiDAR, and a front-facing RGB camera.\
+- SLAM (simultaneous localisation andd mapping) for map generation and robot localisation.\
+- a custom pathfinding algorithm to estimate the most efficient routes to explore the environment, and generate waypoints.\
+- 'nav2' to generate paths from waypoints.\
+- 'aruco_detect' Python library and the robots' RGB camera to detect ArUco markers and return their positions localised on the map generated using SLAM.\
+\
 Note: This project is deprecated and unmaintained, and as such, may no longer be functional.\
 
 Team members:
