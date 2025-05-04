@@ -1,7 +1,7 @@
-Group project for METR4202 robotics and automation course at the university of Queensland./
-This code autonomously navigates a 'turtlebot' robot through an environment using a custom pathfinding algorithm and ROS (robot operating system)./
-The robot uses SLAM for mapping and navigation, and marks coordinates and orientations of QR codes detected via the on-board camera on the generated map./
-Note: This project is deprecated and unmaintained, and as such, may no longer be functional./
+Group project for METR4202 robotics and automation course at the university of Queensland.\
+This code autonomously navigates a 'turtlebot' robot through an environment using a custom pathfinding algorithm and ROS (robot operating system).\
+The robot uses SLAM for mapping and navigation, and marks coordinates and orientations of QR codes detected via the on-board camera on the generated map.\
+Note: This project is deprecated and unmaintained, and as such, may no longer be functional.\
 
 Team members:
 --------------
